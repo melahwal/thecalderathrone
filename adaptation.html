@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TV adaptation and franchise potential for The Caldera Throne by Mustafa M. El Ahwal.">
+  <title>TV Adaptation | The Caldera Throne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html" aria-label="The Caldera Throne home">
+      <span class="brand-mark"></span>
+      <span>The Caldera Throne</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="novels.html">Novels</a>
+      <a href="world.html">World</a>
+      <a href="characters.html">Characters</a>
+      <a href="adaptation.html">Adaptation</a>
+      <a href="author.html">Author</a>
+      <a href="rights.html">Rights</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section adaptation" id="adaptation">
+      <div class="adaptation-pitch">
+        <div class="adaptation-hero">
+          <h1 class="page-title">TV ADAPTATION &amp; SCREEN RIGHTS</h1>
+          <h2>A premium multi-season political war fantasy built around power, legitimacy, prophecy, logistics, and the cost of rule.</h2>
+          <p>THE CALDERA THRONE is designed for long-form premium television: adult, political, cinematic, and driven by consequence. Its drama moves through councils, records, food systems, military pressure, buried legitimacy, and the moral cost of governance. The first three books form a completed core arc, while Books Four and Five extend the saga into reconstruction, imperial pressure, and succession.</p>
+        </div>
+
+        <div class="screen-grid" aria-label="Visual pitch strengths">
+          <article class="pitch-card">
+            <h3>Political Engine</h3>
+            <p>Power moves through councils, records, food systems, succession claims, and controlled narratives before armies move.</p>
+          </article>
+          <article class="pitch-card">
+            <h3>Distinct Visual Worlds</h3>
+            <p>A volcanic island, caldera capital, coastal forts, mainland record halls, royal harbors, and Sarkath's imperial pressure.</p>
+          </article>
+          <article class="pitch-card">
+            <h3>Ensemble Cast</h3>
+            <p>A large adult cast built for layered loyalty, betrayal, moral fracture, and long-form character payoff.</p>
+          </article>
+          <article class="pitch-card">
+            <h3>Season Escalation</h3>
+            <p>Each season advances the property: collapse, ink war, return, reconstruction, and final reckoning.</p>
+          </article>
+        </div>
+
+        <div class="saga-overview pitch-section">
+          <h2>SERIES ENGINE</h2>
+          <p>THE CALDERA THRONE is a five-book adult political war fantasy about legitimacy, memory, and the cost of rebuilding a broken world. War arrives through ledgers before swords. Prophecy functions as state control before it functions as anything mystical. The completed trilogy delivers collapse and convergence, while Books Four and Five expand into reconstruction, imperial pressure, succession, and final reckoning.</p>
+        </div>
+
+        <div class="season-structure-box pitch-section" aria-labelledby="season-structure-title">
+          <h2 id="season-structure-title">SEASON STRUCTURE</h2>
+          <p class="season-format">Each season is envisioned as 8 episodes of approximately 50&ndash;60 minutes.</p>
+          <p class="season-format">The series is structured for a five-season adaptation, with each season built around a clear dramatic engine: collapse, ink war, return, reconstruction, and reckoning.</p>
+          <div class="season-timeline">
+            <article>
+              <span>Season 1 &mdash; Collapse</span>
+              <strong>Book 1: The Still and the Burning</strong>
+            </article>
+            <article>
+              <span>Season 2 &mdash; Ink War</span>
+              <strong>Book 2: The Empire of Ledgers</strong>
+            </article>
+            <article>
+              <span>Season 3 &mdash; Return</span>
+              <strong>Book 3: What the Mountain Kept</strong>
+            </article>
+            <article>
+              <span>Season 4 &mdash; Reconstruction</span>
+              <strong>Expansion Arc</strong>
+            </article>
+            <article>
+              <span>Season 5 &mdash; Reckoning</span>
+              <strong>Expansion Arc</strong>
+            </article>
+          </div>
+        </div>
+
+        <div class="rights-positioning pitch-section">
+          <h2>SCREEN RIGHTS POSITIONING</h2>
+          <p>The series is structured for premium serialized television: politically dense, visually distinct, ensemble-driven, and built around consequences rather than spectacle alone. The first three books form a completed core arc, while Books Four and Five extend the property into reconstruction, imperial pressure, and succession.</p>
+        </div>
+
+        <div class="series-status pitch-section" aria-label="Series status">
+          <span>Core Trilogy: Books 1&ndash;3 Complete</span>
+          <span>Expansion Arc: Books 4&ndash;5 In Development</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
+    <div class="footer-stats" aria-label="Visitor statistics">
+      Unique Visitors: <span data-unique-visitors>Loading...</span> | Total Visits: <span data-total-visits>Loading...</span>
+    </div>
+    <a href="#">Return to top</a>
+  </footer>
+
+  <script>
+    function loadVisitorStats() {
+      const uniqueVisitors = document.querySelector("[data-unique-visitors]");
+      const totalVisits = document.querySelector("[data-total-visits]");
+
+      if (!uniqueVisitors || !totalVisits) return;
+
+      fetch("/api/visitor-stats")
+        .then(response => response.json())
+        .then(data => {
+          uniqueVisitors.textContent = data.uniqueVisitors;
+          totalVisits.textContent = data.totalVisits;
+        })
+        .catch(() => {
+          uniqueVisitors.textContent = "—";
+          totalVisits.textContent = "—";
+        });
+    }
+
+    loadVisitorStats();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

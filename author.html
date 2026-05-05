@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About author Mustafa M. El Ahwal.">
+  <title>Author | The Caldera Throne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html" aria-label="The Caldera Throne home">
+      <span class="brand-mark"></span>
+      <span>The Caldera Throne</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="novels.html">Novels</a>
+      <a href="world.html">World</a>
+      <a href="characters.html">Characters</a>
+      <a href="adaptation.html">Adaptation</a>
+      <a href="author.html">Author</a>
+      <a href="rights.html">Rights</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section author" id="author">
+      <div class="author-layout author-container">
+        <div class="author-text">
+          <p class="eyebrow">About the author</p>
+          <h1 class="page-title">AUTHOR</h1>
+          <h2>Mustafa M. El Ahwal</h2>
+          <p>Mustafa M. El Ahwal is a senior finance and strategic planning executive with extensive experience in healthcare, corporate leadership, governance, and systems-based decision-making. His professional background informs the political, financial, and institutional depth of The Caldera Throne, a series where wars are shaped as much by ledgers, logistics, and legitimacy as by swords.</p>
+        </div>
+        <div class="author-image">
+          <img src="images/author.jpg" alt="Mustafa M. El Ahwal">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
+    <div class="footer-stats" aria-label="Visitor statistics">
+      Unique Visitors: <span data-unique-visitors>Loading...</span> | Total Visits: <span data-total-visits>Loading...</span>
+    </div>
+    <a href="#">Return to top</a>
+  </footer>
+
+  <script>
+    function loadVisitorStats() {
+      const uniqueVisitors = document.querySelector("[data-unique-visitors]");
+      const totalVisits = document.querySelector("[data-total-visits]");
+
+      if (!uniqueVisitors || !totalVisits) return;
+
+      fetch("/api/visitor-stats")
+        .then(response => response.json())
+        .then(data => {
+          uniqueVisitors.textContent = data.uniqueVisitors;
+          totalVisits.textContent = data.totalVisits;
+        })
+        .catch(() => {
+          uniqueVisitors.textContent = "—";
+          totalVisits.textContent = "—";
+        });
+    }
+
+    loadVisitorStats();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

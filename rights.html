@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact and rights inquiries for The Caldera Throne by Mustafa M. El Ahwal.">
+  <title>Contact / Rights | The Caldera Throne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html" aria-label="The Caldera Throne home">
+      <span class="brand-mark"></span>
+      <span>The Caldera Throne</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="novels.html">Novels</a>
+      <a href="world.html">World</a>
+      <a href="characters.html">Characters</a>
+      <a href="adaptation.html">Adaptation</a>
+      <a href="author.html">Author</a>
+      <a href="rights.html">Rights</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section contact" id="contact">
+      <div class="section-heading">
+        <h1 class="page-title">CONTACT / RIGHTS INQUIRY</h1>
+        <h2>For literary representation, publishing, TV / film adaptation, and general contact.</h2>
+      </div>
+      <form class="contact-form" action="mailto:melahwal@hotmail.com?subject=The%20Caldera%20Throne%20%E2%80%94%20Rights%20Inquiry" method="post" enctype="text/plain">
+        <label>Name<input type="text" name="name" autocomplete="name" required></label>
+        <label>Email<input type="email" name="email" autocomplete="email" required></label>
+        <label>Organization<input type="text" name="organization" autocomplete="organization"></label>
+        <label>Inquiry Type<select name="inquiry-type" required>
+          <option value="">Select inquiry type</option>
+          <option>Literary representation</option>
+          <option>Publishing inquiry</option>
+          <option>TV / film adaptation inquiry</option>
+          <option>General contact</option>
+        </select></label>
+        <label class="full">Message<textarea name="message" rows="6" required></textarea></label>
+        <button class="button primary full" type="submit">Send Inquiry</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
+    <div class="footer-stats" aria-label="Visitor statistics">
+      Unique Visitors: <span data-unique-visitors>Loading...</span> | Total Visits: <span data-total-visits>Loading...</span>
+    </div>
+    <a href="#">Return to top</a>
+  </footer>
+
+  <script>
+    function loadVisitorStats() {
+      const uniqueVisitors = document.querySelector("[data-unique-visitors]");
+      const totalVisits = document.querySelector("[data-total-visits]");
+
+      if (!uniqueVisitors || !totalVisits) return;
+
+      fetch("/api/visitor-stats")
+        .then(response => response.json())
+        .then(data => {
+          uniqueVisitors.textContent = data.uniqueVisitors;
+          totalVisits.textContent = data.totalVisits;
+        })
+        .catch(() => {
+          uniqueVisitors.textContent = "—";
+          totalVisits.textContent = "—";
+        });
+    }
+
+    loadVisitorStats();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

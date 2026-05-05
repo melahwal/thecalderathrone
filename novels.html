@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The novels of The Caldera Throne by Mustafa M. El Ahwal.">
+  <title>Novels | The Caldera Throne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .novels {
+      --novels-rail: min(84vw, 1560px);
+      --novels-frame-bg: rgba(7, 6, 5, 0.42);
+      --novels-frame-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 22px 54px rgba(0, 0, 0, 0.28);
+      --novels-frame-padding: clamp(22px, 3vw, 36px);
+    }
+
+    .novels .section-heading,
+    .novels .book-grid {
+      width: var(--novels-rail);
+      max-width: none;
+    }
+
+    .novel-cover-strip {
+      width: var(--novels-rail);
+      max-width: none;
+      box-sizing: border-box;
+      margin: 0 auto clamp(46px, 6vw, 82px);
+      padding: clamp(18px, 3vw, 30px);
+      border: 1px solid var(--gold-frame);
+      background:
+        linear-gradient(135deg, rgba(216, 183, 102, 0.08), transparent 38%),
+        var(--novels-frame-bg);
+      box-shadow: var(--novels-frame-shadow);
+    }
+
+    .novel-cover-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(140px, 1fr));
+      gap: clamp(16px, 3vw, 34px);
+      align-items: end;
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .novel-cover-links a {
+      display: block;
+      border: 1px solid var(--gold-frame);
+      background: rgba(3, 3, 2, 0.5);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .novel-cover-links a:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 32px 78px rgba(0, 0, 0, 0.62), 0 0 30px rgba(216, 183, 102, 0.12);
+    }
+
+    .novel-cover-links img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+    }
+
+    .novels-hero-covers {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .novels-hero-covers a {
+      width: min(28vw, 320px);
+      flex: 0 1 320px;
+    }
+
+    .novels-hero-covers img {
+      width: 60%;
+      max-width: 320px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .book-panel-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(24px, 3.5vw, 48px);
+      align-items: stretch;
+    }
+
+    .book-copy,
+    .book-visual-pair {
+      height: 100%;
+      padding: var(--novels-frame-padding);
+      border: 1px solid var(--gold-frame);
+      background:
+        linear-gradient(135deg, rgba(216, 183, 102, 0.08), transparent 38%),
+        var(--novels-frame-bg);
+      box-shadow: var(--novels-frame-shadow);
+    }
+
+    .book-visual-pair {
+      grid-template-columns: 1fr;
+      align-self: stretch;
+      align-content: start;
+      justify-items: center;
+      gap: clamp(20px, 3vw, 34px);
+      margin-top: 0;
+    }
+
+    .book-copy + .book-visual-pair {
+      margin-top: 0;
+    }
+
+    .book-copy h3,
+    .book-copy .series-label,
+    .book-copy .word-count,
+    .book-copy .text-button {
+      text-align: left;
+    }
+
+    .book-copy p:not(.series-label):not(.word-count) {
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    .book-visual {
+      width: min(100%, 540px);
+    }
+
+    .book-cover-visual img,
+    .novel-map img {
+      width: 100%;
+      height: clamp(420px, 32vw, 620px);
+      margin-inline: auto;
+      object-fit: contain;
+    }
+
+    .book-cover-visual img {
+      aspect-ratio: 2 / 3;
+      height: auto;
+      max-height: none;
+      max-width: 480px;
+    }
+
+    .book-visual img {
+      cursor: zoom-in;
+    }
+
+    @media (max-width: 980px) {
+      .novels {
+        --novels-rail: min(100%, var(--content-rail));
+      }
+
+      .book-panel-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .book-copy,
+      .book-visual-pair {
+        height: auto;
+      }
+
+      .novel-cover-strip {
+        width: min(100%, var(--content-rail));
+      }
+
+      .novel-cover-links {
+        width: min(100%, 780px);
+      }
+
+      .novels-hero-covers {
+        gap: clamp(14px, 3vw, 28px);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .novel-cover-strip {
+        padding: 14px;
+      }
+
+      .novel-cover-links {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .novels-hero-covers a {
+        width: auto;
+        flex: 1 1 0;
+      }
+
+      .novels-hero-covers img {
+        width: 74%;
+      }
+
+      .book-cover-visual img,
+      .novel-map img {
+        width: 100%;
+        height: auto;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html" aria-label="The Caldera Throne home">
+      <span class="brand-mark"></span>
+      <span>The Caldera Throne</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="novels.html">Novels</a>
+      <a href="world.html">World</a>
+      <a href="characters.html">Characters</a>
+      <a href="adaptation.html">Adaptation</a>
+      <a href="author.html">Author</a>
+      <a href="rights.html">Rights</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section novels" id="novels">
+      <div class="section-heading">
+        <h1 class="page-title">THE NOVELS</h1>
+        <h2>Three books of pressure, inheritance, and institutional collapse.</h2>
+      </div>
+      <div class="novel-cover-strip">
+        <div class="novel-cover-links novels-hero-covers" aria-label="Jump to book sections">
+          <a href="#book-1" aria-label="Jump to The Still and the Burning">
+            <img src="assets/book-1-cover.png" alt="Cover for The Still and the Burning">
+          </a>
+          <a href="#book-2" aria-label="Jump to The Empire of Ledgers">
+            <img src="assets/book-2-cover.png" alt="Cover for The Empire of Ledgers">
+          </a>
+          <a href="#book-3" aria-label="Jump to What the Mountain Kept">
+            <img src="assets/book-3-cover.png" alt="Cover for What the Mountain Kept">
+          </a>
+        </div>
+      </div>
+      <div class="book-grid">
+        <article class="book-panel" id="book-1">
+          <div class="book-panel-inner">
+            <div class="book-copy">
+              <p class="series-label">Book One of The Caldera Throne</p>
+              <h3>THE STILL AND THE BURNING</h3>
+              <p>For thirty years, the volcanic island kingdom of Mor Vallas has survived on a managed lie: a controlled prophecy, an altered history of royal legitimacy, and the belief that the mainland powers across the sea will never return.</p>
+              <p>Adrian, a royal-blooded blacksmith, has spent years avoiding the palace and the inheritance attached to his name. In the coastal garrison town of Tyrellos, he chooses iron over politics, the forge over court intrigue, and work that tells the truth over institutions built to conceal it.</p>
+              <p>But the island is beginning to fail.</p>
+              <p>A minor market incident draws Adrian, Greger the baker, and Tomas the butcher into imprisonment and punishment, exposing how fragile order has become. In Mor Vallas, King Aurelius rules a system he knows is weakening. His authority depends on records altered in transit, history softened for public use, and a prophecy stripped of its most dangerous clause: the cost.</p>
+              <p>His son Marcus inherits power without restraint. Intelligent, insecure, and hungry for control, Marcus mistakes obedience for legitimacy. Around him, Ashbourne turns access and information into quiet leverage, shaping the palace from behind soft words and careful procedures.</p>
+              <p>Beyond the capital, the Varkans of the volcanic crags preserve their own version of the mountain&rsquo;s truth. Their control of the Corridor gives them more than territory; it gives them the island&rsquo;s throat.</p>
+              <p>When a Varkan operative reaches the king&rsquo;s study and Aurelius is assassinated, the illusion of control collapses. Marcus seizes the throne and tightens the island through surveillance, hunger, fear, and administrative command.</p>
+              <p>Adrian sees what others cannot: not chaos, but system failure. Food chains weaken. Competing authorities rise. The palace confuses force with governance. As the suppressed prophecy spreads through markets, villages, and garrisons, the version controlled by the throne loses its power.</p>
+              <p>Adrian does not seek leadership. But people begin to depend on his ability to read pressure, anticipate collapse, and act before structures break.</p>
+              <p>By the end, Marcus still holds Mor Vallas, but his rule is unstable. Adrian is no longer safely distant from power. The Corridor becomes a strategic fault line. The island&rsquo;s internal conflict can no longer be contained.</p>
+              <p>And across the sea, the old assumption fails.</p>
+              <p>The fleet is coming.</p>
+              <p>The novel ends with the collapse of illusion: the island is no longer isolated, the system that governed it is no longer stable, and Adrian stands at the threshold of the role he has spent his life avoiding.</p>
+              <p class="word-count">Word Count: 148,000 words</p>
+              <a class="text-button" href="rights.html">Read More</a>
+            </div>
+            <div class="book-visual-pair">
+              <figure class="book-visual book-cover-visual">
+                <img src="assets/book-1-cover.png" alt="Cover for The Still and the Burning">
+              </figure>
+              <figure class="book-visual novel-map">
+                <img src="assets/novel-map-book-1.png" alt="Operational map for The Still and the Burning">
+                <figcaption>Operational map &mdash; Book I</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="book-panel" id="book-2">
+          <div class="book-panel-inner">
+            <div class="book-copy">
+              <p class="series-label">Book Two of The Caldera Throne</p>
+              <h3>THE EMPIRE OF LEDGERS</h3>
+              <p>Across the sea, war begins before ships move.</p>
+              <p>In Kaish&#333;, the harbor city of Marya, King Shen has spent thirty years rebuilding the fleet that broke against the island&rsquo;s volcanic shore. The catastrophe took ships, soldiers, and his sister Elyanna, now living inside the world Marya failed to reach for a generation.</p>
+              <p>The fleet can finally sail &mdash; but only if Marya secures what it lacks: Daryan gold, material, and authorization.</p>
+              <p>Princess Mai is sent south to Mehrakan to negotiate the funding that will make the crossing possible. What awaits her is not a simple treaty, but a court where power moves through seals, records, clauses, controlled delays, and procedural traps. Every concession becomes dependency. Every delay becomes strategy.</p>
+              <p>Inside the delegation, Akira works to damage Mai&rsquo;s authority from within. She does not need to defeat Mai openly. She only needs to shape the version of events others will repeat.</p>
+              <p>At the same time, Princess Azadeh fights her own war inside Mehrakan&rsquo;s administrative machinery. The system that gives her authority also cages her. Around her, Arvand turns procedure into power, moving through documents, delays, reassigned orders, and disappearances. In a records state, what is processed becomes truth. What is delayed disappears.</p>
+              <p>Mai and Azadeh become two women fighting the same war from opposite sides of the ledger.</p>
+              <p>No swords cross in Book 2. The battles are fought through ink, timing, funding, reputation, and control of process. Yet the cost is real. Akira&rsquo;s campaign succeeds in damaging the fleet before it sails, costing the departure a command hull through sabotage disguised as caution.</p>
+              <p>Mai secures the treaty, but not without consequence.</p>
+              <p>The fleet launches with four royal command ships and more than a hundred supporting hulls. Across three months of open ocean, the crossing becomes a test of discipline, endurance, and purpose.</p>
+              <p>By the end, Mai, Jian, and the fleet arrive within sight of the island for the first time in thirty years.</p>
+              <p>The landing has not yet happened.</p>
+              <p>The island does not know they are coming.</p>
+              <p class="word-count">Word Count: 144,000 words</p>
+              <a class="text-button" href="rights.html">Read More</a>
+            </div>
+            <div class="book-visual-pair">
+              <figure class="book-visual book-cover-visual">
+                <img src="assets/book-2-cover.png" alt="Cover for The Empire of Ledgers">
+              </figure>
+              <figure class="book-visual novel-map">
+                <img src="assets/novel-map-book-2.png" alt="Strategic planning map for The Empire of Ledgers">
+                <figcaption>Strategic planning map &mdash; Book II</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="book-panel" id="book-3">
+          <div class="book-panel-inner">
+            <div class="book-copy">
+              <p class="series-label">Book Three of The Caldera Throne</p>
+              <h3>WHAT THE MOUNTAIN KEPT</h3>
+              <p>The sea no longer separates what has been delayed.</p>
+              <p>The Maryan fleet arrives at dawn.</p>
+              <p>After thirty years of absence, the mainland returns to the volcanic island not as memory, but as force. Yet the fleet&rsquo;s arrival does not solve the island&rsquo;s crisis. It exposes it.</p>
+              <p>Adrian holds Greyhook Fort with a small network built from necessity rather than allegiance. He controls critical coastal documents recovered by Rorik from the Winter Cells &mdash; evidence proving that Marcus fabricated the official account of King Aurelius&rsquo;s death. What began as survival has become structure: an operational base, a fragile resistance, and the first real point of contact between the island&rsquo;s internal collapse and the arriving fleet.</p>
+              <p>Inside Mor Vallas, Helena preserves a hidden archive that documents the altered history, false seals, and constructed legitimacy the palace has tried to bury. The truth exists, but truth alone cannot rule. It needs a forum, protection, and a political order strong enough to survive it.</p>
+              <p>Marcus tightens his control in response to everything he cannot understand. Checkpoints multiply. Food systems fracture. Administrative command replaces judgment. His regime begins to collapse not because an army defeats it, but because the structure beneath it can no longer carry the weight of its contradictions.</p>
+              <p>At the same time, Varric advances toward the sealed chamber within the mountain &mdash; the place tied to the suppressed cost-clause of the old prophecy. The section removed from the official verse named what the mountain required in exchange for what it kept. That debt can no longer be deferred.</p>
+              <p>When the fleet lands, island factions, mainland forces, hidden archives, broken supply chains, and buried prophecy converge. Alliances become provisional. Authority becomes contested. Every decision carries consequences beyond immediate control.</p>
+              <p>Marcus&rsquo;s rule ends through internal failure. The crowd outside Mor Vallas no longer behaves like a crowd waiting for command. It has become a direction.</p>
+              <p>Then the mountain moves.</p>
+              <p>What was managed instead of resolved returns as consequence. The buried history does not arrive as a gift. It arrives as a debt presented for payment.</p>
+              <p>By the end, Marcus&rsquo;s regime collapses, the island&rsquo;s political isolation ends permanently, and Adrian&rsquo;s position becomes impossible to deny. But collapse is not resolution. The island is not yet governed. The truth has surfaced, but the shape of authority remains unsettled.</p>
+              <p>The reckoning has begun.</p>
+              <p>It is not yet complete.</p>
+              <p class="word-count">Word Count: 159,000 words</p>
+              <a class="text-button" href="rights.html">Read More</a>
+            </div>
+            <div class="book-visual-pair">
+              <figure class="book-visual book-cover-visual">
+                <img src="assets/book-3-cover.png" alt="Cover for What the Mountain Kept">
+              </figure>
+              <figure class="book-visual novel-map">
+                <img src="assets/novel-map-book-3.png" alt="Active campaign map for What the Mountain Kept">
+                <figcaption>Active campaign map &mdash; Book III</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
+    <div class="footer-stats" aria-label="Visitor statistics">
+      Unique Visitors: <span data-unique-visitors>Loading...</span> | Total Visits: <span data-total-visits>Loading...</span>
+    </div>
+    <a href="#">Return to top</a>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".book-visual img").forEach((image) => {
+      image.setAttribute("data-lightbox-image", "");
+      image.setAttribute("tabindex", "0");
+      image.setAttribute("title", "Click to enlarge");
+      image.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          image.click();
+        }
+      });
+    });
+  </script>
+  <script>
+    function loadVisitorStats() {
+      const uniqueVisitors = document.querySelector("[data-unique-visitors]");
+      const totalVisits = document.querySelector("[data-total-visits]");
+
+      if (!uniqueVisitors || !totalVisits) return;
+
+      fetch("/api/visitor-stats")
+        .then(response => response.json())
+        .then(data => {
+          uniqueVisitors.textContent = data.uniqueVisitors;
+          totalVisits.textContent = data.totalVisits;
+        })
+        .catch(() => {
+          uniqueVisitors.textContent = "—";
+          totalVisits.textContent = "—";
+        });
+    }
+
+    loadVisitorStats();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
