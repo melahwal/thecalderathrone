@@ -3,9 +3,19 @@ const nav = document.querySelector("[data-nav]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
 
+function syncIllustrationsNavLabel() {
+  document.querySelectorAll('a[href="world.html"]').forEach((link) => {
+    if (link.textContent.trim().toLowerCase() === "world") {
+      link.textContent = "Illustrations";
+    }
+  });
+}
+
 function syncHeader() {
   header.classList.toggle("scrolled", window.scrollY > 20);
 }
+
+syncIllustrationsNavLabel();
 
 navToggle.addEventListener("click", () => {
   const isOpen = nav.classList.toggle("open");
