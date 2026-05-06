@@ -147,7 +147,7 @@ main > .section:first-child:not(.hero) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
   gap: clamp(30px, 5vw, 60px);
-  align-items: center;
+  align-items: start;
 }
 
 .author-container {
