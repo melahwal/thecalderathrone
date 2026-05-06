@@ -22,7 +22,8 @@ main > .section:first-child:not(.hero) {
 .book-grid,
 .character-grid,
 .expansion-copy,
-.contact-form {
+.contact-form,
+.illustration-book-stack {
   width: min(100%, var(--content-rail));
   max-width: var(--content-rail);
   margin-inline: auto;
@@ -38,7 +39,7 @@ main > .section:first-child:not(.hero) {
 .adaptation-layout > div > h2,
 .author-layout h2,
 .contact .section-heading h2,
-.characters-subtitle {
+.characters-subtitle { 
   margin-top: 14px !important;
 }
 
@@ -114,6 +115,76 @@ main > .section:first-child:not(.hero) {
   padding: clamp(14px, 2vw, 22px);
 }
 
+.illustrations .section-heading {
+  margin-bottom: clamp(18px, 2.4vw, 26px);
+}
+
+.illustration-book-stack {
+  display: grid;
+  gap: clamp(34px, 5vw, 58px);
+}
+
+.illustration-book {
+  padding: clamp(18px, 2.6vw, 30px);
+  border: 1px solid var(--gold-frame);
+  background:
+    linear-gradient(145deg, rgba(216, 183, 102, 0.07), transparent 44%),
+    rgba(7, 6, 5, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
+}
+
+.illustration-book-heading {
+  margin-bottom: clamp(14px, 2vw, 22px);
+}
+
+.illustration-book-heading h3 {
+  color: #f6e3bc;
+  font-size: clamp(1.14rem, 2vw, 1.75rem);
+}
+
+.illustration-main-stack {
+  display: grid;
+  gap: clamp(16px, 2.4vw, 26px);
+}
+
+.illustration-main-frame,
+.illustration-gallery figure {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--gold-frame);
+  background: rgba(3, 3, 2, 0.52);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.44);
+}
+
+.illustration-main-frame img,
+.illustration-gallery img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.illustration-main-frame img {
+  max-height: min(68vh, 720px);
+}
+
+.illustration-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 22px);
+  margin-top: clamp(18px, 2.8vw, 30px);
+}
+
+.illustration-gallery:empty {
+  display: none;
+}
+
+.illustration-gallery img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
 .character-grid + .character-grid {
   margin-top: clamp(26px, 4vw, 42px);
 }
@@ -178,6 +249,7 @@ main > .section:first-child:not(.hero) {
   .character-grid,
   .expansion-copy,
   .contact-form,
+  .illustration-book-stack,
   .novels .section-heading,
   .novels .book-grid,
   .novel-cover-strip {
@@ -202,10 +274,22 @@ main > .section:first-child:not(.hero) {
   .novels-hero-covers a {
     flex-basis: auto;
   }
+
+  .illustration-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 500px) {
   :root {
     --page-top-gap: 24px;
+  }
+
+  .illustration-book {
+    padding: 14px;
+  }
+
+  .illustration-gallery {
+    grid-template-columns: 1fr;
   }
 }
