@@ -100,6 +100,31 @@ main > .section:first-child:not(.hero) {
   gap: clamp(18px, 2.4vw, 28px);
 }
 
+.novels .book-visual-pair {
+  align-items: stretch;
+}
+
+.novels .book-visual {
+  width: min(100%, 480px);
+  min-height: 100%;
+}
+
+.novels .book-cover-visual img,
+.novels .novel-map img {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 2 / 3;
+  height: auto;
+  object-fit: contain;
+}
+
+.novels .book-cover-visual,
+.novels .novel-map {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+}
+
 .faction-grid {
   gap: clamp(30px, 4.5vw, 54px);
   margin-top: clamp(24px, 3.4vw, 36px);
@@ -225,8 +250,44 @@ main > .section:first-child:not(.hero) {
   justify-content: initial;
 }
 
+.author-text {
+  display: grid;
+  align-content: start;
+}
+
+.author-text .page-title {
+  margin: 0;
+}
+
+.author-text h2 {
+  margin-top: 14px !important;
+}
+
+.author-bio-frame {
+  margin-top: clamp(20px, 3vw, 30px);
+  padding: clamp(24px, 3.4vw, 40px);
+  border: 1px solid var(--gold-frame);
+  background:
+    linear-gradient(145deg, rgba(216, 183, 102, 0.07), transparent 44%),
+    rgba(7, 6, 5, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
+}
+
+.author-bio-frame p {
+  margin: 0;
+  color: rgba(255, 240, 215, 0.86);
+  font-family: var(--serif);
+  font-size: clamp(1.18rem, 1.55vw, 1.48rem);
+  font-weight: 600;
+  line-height: 1.62;
+}
+
 .author-image {
   justify-content: end;
+}
+
+.author-image img {
+  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
 }
 
 .contact-form {
@@ -280,12 +341,21 @@ main > .section:first-child:not(.hero) {
   }
 }
 
+@media (max-width: 620px) {
+  .novels .book-cover-visual img,
+  .novels .novel-map img {
+    max-width: 100%;
+    aspect-ratio: auto;
+  }
+}
+
 @media (max-width: 500px) {
   :root {
     --page-top-gap: 24px;
   }
 
-  .illustration-book {
+  .illustration-book,
+  .author-bio-frame {
     padding: 14px;
   }
 
