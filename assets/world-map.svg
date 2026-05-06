@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 950" role="img" aria-label="World map placeholder">
+  <defs><radialGradient id="r" cx=".5" cy=".45" r=".7"><stop stop-color="#2b241d"/><stop offset="1" stop-color="#080807"/></radialGradient></defs>
+  <rect width="1600" height="950" fill="url(#r)"/>
+  <g fill="none" stroke="#c7a35a" opacity=".18"><path d="M0 190h1600M0 380h1600M0 570h1600M0 760h1600"/><path d="M320 0v950M640 0v950M960 0v950M1280 0v950"/></g>
+  <path d="M255 530c110-220 310-250 420-60 55 95 130 110 198 68 60-38 124-34 184 8 92 65 201 70 332 5" fill="none" stroke="#7a512d" stroke-width="44" opacity=".5"/>
+  <path d="M286 505c92-175 270-203 365-48 72 117 168 131 252 78 50-31 103-22 153 13 88 61 188 54 309-3" fill="none" stroke="#c7a35a" stroke-width="5" opacity=".75"/>
+  <circle cx="478" cy="475" r="78" fill="#a64825" opacity=".35"/>
+  <path d="M1120 280l155 70 90 160-85 158-180 40-160-92-38-170 76-132z" fill="#151413" stroke="#c7a35a" stroke-width="6" opacity=".82"/>
+  <path d="M260 665l120-310 120 310z" fill="#151413" stroke="#c7a35a" stroke-width="6"/>
+  <text x="246" y="760" fill="#c7a35a" font-family="Georgia, serif" font-size="54">VOLCANIC ISLAND</text>
+  <text x="960" y="785" fill="#c7a35a" font-family="Georgia, serif" font-size="54">MAINLAND</text>
+</svg>

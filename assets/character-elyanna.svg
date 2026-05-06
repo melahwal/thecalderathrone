@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Elyanna placeholder">
+  <rect width="800" height="1000" fill="#11100f"/><rect x="42" y="42" width="716" height="916" fill="none" stroke="#c7a35a" stroke-width="4" opacity=".45"/>
+  <circle cx="400" cy="285" r="116" fill="#7a512d" opacity=".78"/><path d="M205 850c35-210 140-330 195-330s160 120 195 330z" fill="#24201d"/>
+  <path d="M310 185c20 180 160 180 180 0" fill="none" stroke="#c7a35a" stroke-width="8" opacity=".6"/><text x="400" y="930" text-anchor="middle" fill="#c7a35a" font-family="Georgia, serif" font-size="54">ELYANNA</text>
+</svg>

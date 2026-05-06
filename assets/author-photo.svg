@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-label="Author photo placeholder">
+  <rect width="900" height="1125" fill="#151413"/>
+  <rect x="45" y="45" width="810" height="1035" fill="none" stroke="#c7a35a" stroke-width="4" opacity=".55"/>
+  <circle cx="450" cy="360" r="145" fill="#7a512d" opacity=".72"/>
+  <path d="M190 930c55-220 178-330 260-330s205 110 260 330z" fill="#2c2722"/>
+  <text x="450" y="1015" text-anchor="middle" fill="#c7a35a" font-family="Georgia, serif" font-size="48">AUTHOR PHOTO</text>
+</svg>
