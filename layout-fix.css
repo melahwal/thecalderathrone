@@ -373,7 +373,7 @@ main > .section:first-child:not(.hero) {
   }
 
   .author-bio-frame p {
-    font-size: clamp(1.04rem, 4.8vw, 1.14rem);
+    font-size: clamp(0.98rem, 4.25vw, 1.06rem);
     line-height: 1.58;
   }
 
