@@ -173,6 +173,7 @@ main > .section:first-child:not(.hero) {
 }
 
 .illustration-book {
+  min-width: 0;
   padding: clamp(18px, 2.6vw, 30px);
   border: 1px solid var(--gold-frame);
   background:
@@ -197,9 +198,14 @@ main > .section:first-child:not(.hero) {
 
 .illustration-main-frame,
 .illustration-gallery figure {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
   margin: 0;
+  overflow: hidden;
   border: 1px solid var(--gold-frame);
   background: rgba(3, 3, 2, 0.52);
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.44);
@@ -207,16 +213,15 @@ main > .section:first-child:not(.hero) {
 
 .illustration-main-frame img,
 .illustration-gallery img {
+  display: block;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   height: auto;
+  max-height: none;
   object-fit: contain;
   cursor: zoom-in;
 }
-
-.illustration-main-frame img {
-  max-height: min(68vh, 720px);
-}
-
 .illustration-gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -229,8 +234,8 @@ main > .section:first-child:not(.hero) {
 }
 
 .illustration-gallery img {
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
+  aspect-ratio: auto;
+  object-fit: contain;
 }
 
 .character-grid + .character-grid {
@@ -370,6 +375,23 @@ main > .section:first-child:not(.hero) {
   .illustration-gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .illustrations .illustration-book-stack,
+  .illustrations .illustration-book,
+  .illustrations .illustration-main-stack,
+  .illustrations .illustration-main-frame,
+  .illustrations .illustration-gallery,
+  .illustrations .illustration-gallery figure {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .illustration-book-heading h3 {
+    max-width: 100%;
+    font-size: clamp(0.9rem, 4.4vw, 1.04rem);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
 
 @media (max-width: 620px) {
@@ -387,6 +409,10 @@ main > .section:first-child:not(.hero) {
   .illustration-book,
   .author-bio-frame {
     padding: 14px;
+  }
+
+  .illustration-book-heading h3 {
+    overflow-wrap: anywhere;
   }
 
   .author-text,
