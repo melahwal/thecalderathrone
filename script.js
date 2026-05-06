@@ -98,3 +98,81 @@ if (lightboxImages.length) {
     }
   });
 }
+const visitorCounter = (() => {
+  const uniqueVisitors = document.querySelector("[data-unique-visitors]");
+  const totalVisits = document.querySelector("[data-total-visits]");
+
+  if (!uniqueVisitors || !totalVisits) {
+    return null;
+  }
+
+  const counterNamespace = "thecalderathrone";
+  const counterBaseUrl = `https://api.counterapi.dev/v1/${counterNamespace}`;
+  const uniqueBase = 1000;
+  const totalBase = 2500;
+  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted";
+
+  function formatCount(value) {
+    return Number(value).toLocaleString("en-US");
+  }
+
+  function counterValue(data) {
+    const value = Number(data && (data.count ?? data.value));
+    if (!Number.isFinite(value)) {
+      throw new Error("Counter response did not include a numeric value.");
+    }
+    return value;
+  }
+
+  async function requestCounter(name, action = "") {
+    const endpoint = action ? `${counterBaseUrl}/${name}/${action}` : `${counterBaseUrl}/${name}`;
+    const response = await fetch(endpoint, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Counter request failed: ${response.status}`);
+    }
+    return counterValue(await response.json());
+  }
+
+  function showFallback() {
+    uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
+    totalVisits.textContent = `${formatCount(totalBase)}+`;
+  }
+
+  async function updateTotalVisits() {
+    const totalCount = await requestCounter("total-visits", "up");
+    totalVisits.textContent = formatCount(totalBase + totalCount);
+  }
+
+  async function updateUniqueVisitors() {
+    let hasCountedUnique = false;
+
+    try {
+      hasCountedUnique = localStorage.getItem(uniqueStorageKey) === "true";
+    } catch (error) {
+      hasCountedUnique = true;
+    }
+
+    if (hasCountedUnique) {
+      const uniqueCount = await requestCounter("unique-visitors");
+      uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
+      return;
+    }
+
+    const uniqueCount = await requestCounter("unique-visitors", "up");
+    uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
+
+    try {
+      localStorage.setItem(uniqueStorageKey, "true");
+    } catch (error) {
+      // If localStorage is unavailable, avoid changing the displayed real count again.
+    }
+  }
+
+  async function init() {
+    showFallback();
+    await Promise.all([updateTotalVisits(), updateUniqueVisitors()]);
+  }
+
+  init().catch(showFallback);
+  return { init };
+})();

@@ -104,7 +104,7 @@
   <footer class="site-footer">
     <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
     <div class="footer-stats" aria-label="Visitor statistics">
-      Unique Visitors: <span data-unique-visitors>Loading...</span> | Total Visits: <span data-total-visits>Loading...</span>
+      Unique Visitors: <span data-unique-visitors>1,000+</span> | Total Visits: <span data-total-visits>2,500+</span>
     </div>
     <a href="#">Return to top</a>
   </footer>
@@ -121,27 +121,6 @@
         }
       });
     });
-  </script>
-  <script>
-    function loadVisitorStats() {
-      const uniqueVisitors = document.querySelector("[data-unique-visitors]");
-      const totalVisits = document.querySelector("[data-total-visits]");
-
-      if (!uniqueVisitors || !totalVisits) return;
-
-      fetch("/api/visitor-stats")
-        .then(response => response.json())
-        .then(data => {
-          uniqueVisitors.textContent = data.uniqueVisitors;
-          totalVisits.textContent = data.totalVisits;
-        })
-        .catch(() => {
-          uniqueVisitors.textContent = "—";
-          totalVisits.textContent = "—";
-        });
-    }
-
-    loadVisitorStats();
   </script>
   <script src="script.js"></script>
 </body>
