@@ -11,11 +11,24 @@ function syncIllustrationsNavLabel() {
   });
 }
 
+function syncActiveNavLink() {
+  const currentPath = window.location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".site-nav a").forEach((link) => {
+    const linkPath = link.getAttribute("href");
+    if (linkPath === currentPath) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+}
+
 function syncHeader() {
   header.classList.toggle("scrolled", window.scrollY > 20);
 }
 
 syncIllustrationsNavLabel();
+syncActiveNavLink();
 
 navToggle.addEventListener("click", () => {
   const isOpen = nav.classList.toggle("open");
