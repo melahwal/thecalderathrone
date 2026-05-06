@@ -44,7 +44,7 @@ main > .section:first-child:not(.hero) {
 }
 
 .world-copy > p,
-author-text > p:not(.eyebrow),
+.author-text > p:not(.eyebrow),
 .adaptation-hero p {
   margin-top: 18px;
 }
