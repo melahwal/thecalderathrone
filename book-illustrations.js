@@ -214,7 +214,7 @@
       <button class="book-select-card" type="button" data-select-book="${index}">
         <span class="book-select-image"><img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async"></span>
         <span class="book-select-kicker">${escapeHtml(book.kicker)}</span>
-        <strong>${escapeHtml(book.title || "Illustrations")}</strong>
+        ${book.title ? `<strong>${escapeHtml(book.title)}</strong>` : ""}
       </button>
     `).join("");
   }
@@ -225,7 +225,7 @@
     spreadIndex = Math.max(0, Math.min(spreadIndex, spreads.length - 1));
     const [left, right] = spreads[spreadIndex];
 
-    els.kicker.textContent = book.kicker;
+    els.kicker.textContent = book.title ? `${book.kicker} —` : book.kicker;
     els.title.textContent = book.title;
     els.title.toggleAttribute("hidden", !book.title);
     els.left.innerHTML = renderPage(left, "left");
