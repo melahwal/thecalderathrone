@@ -3,13 +3,6 @@ const nav = document.querySelector("[data-nav]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
 
-function syncIllustrationsNavLabel() {
-  document.querySelectorAll('a[href="world.html"]').forEach((link) => {
-    if (link.textContent.trim().toLowerCase() === "world") {
-      link.textContent = "Illustrations";
-    }
-  });
-}
 
 function syncActiveNavLink() {
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
@@ -27,7 +20,6 @@ function syncHeader() {
   header.classList.toggle("scrolled", window.scrollY > 20);
 }
 
-syncIllustrationsNavLabel();
 syncActiveNavLink();
 
 navToggle.addEventListener("click", () => {
@@ -158,6 +150,13 @@ const visitorCounter = (() => {
   const uniqueBase = 1000;
   const totalBase = 2500;
   const uniqueStorageKey = "calderaThroneUniqueVisitorCounted";
+  const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+
+  if (isLocalPreview) {
+    uniqueVisitors.textContent = `${uniqueBase.toLocaleString("en-US")}+`;
+    totalVisits.textContent = `${totalBase.toLocaleString("en-US")}+`;
+    return { init: () => {} };
+  }
 
   function formatCount(value) {
     return Number(value).toLocaleString("en-US");
