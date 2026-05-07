@@ -127,10 +127,10 @@ if (contactForm) {
       }
 
       contactForm.reset();
-      contactStatus.textContent = "Thank you. Your inquiry has been sent.";
+      contactStatus.textContent = "Thank you. Your inquiry has been sent successfully.";
       contactStatus.classList.add("success");
     } catch (error) {
-      contactStatus.textContent = "Sorry, the message could not be sent. Please email melahwal@hotmail.com directly.";
+      contactStatus.textContent = "Sorry, your message could not be sent. Please try again later.";
       contactStatus.classList.add("error");
     } finally {
       submitButton.disabled = false;

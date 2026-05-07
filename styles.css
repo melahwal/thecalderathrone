@@ -1889,6 +1889,11 @@ textarea:focus {
   margin-inline: auto;
 }
 
+.book-selection-grid[hidden],
+.book-viewer[hidden] {
+  display: none !important;
+}
+
 .book-reader-status {
   position: absolute;
   width: 1px;
@@ -1993,6 +1998,13 @@ textarea:focus {
   background: linear-gradient(135deg, #8b5c2f 0%, #d8b766 56%, #f0d488 100%);
 }
 
+.book-control:disabled,
+.book-edge:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .open-book-wrap {
   position: relative;
   display: grid;
@@ -2085,6 +2097,7 @@ textarea:focus {
   position: relative;
   display: grid;
   min-width: 0;
+  overflow: hidden;
   padding: clamp(18px, 2.4vw, 32px);
   color: #25150a;
   background: linear-gradient(90deg, rgba(116, 68, 27, 0.13), transparent 16%, transparent 84%, rgba(116, 68, 27, 0.13)), radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.28), transparent 30rem), #eadbbf;
