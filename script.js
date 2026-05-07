@@ -111,6 +111,40 @@ if (lightboxImages.length) {
     }
   });
 }
+const contactForm = document.querySelector("[data-contact-form]");
+
+if (contactForm) {
+  const contactStatus = contactForm.querySelector("[data-contact-status]");
+  const submitButton = contactForm.querySelector('button[type="submit"]');
+
+  contactForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    contactStatus.textContent = "Sending your inquiry...";
+    contactStatus.className = "form-status full";
+    submitButton.disabled = true;
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: "POST",
+        body: new FormData(contactForm),
+        headers: { Accept: "application/json" }
+      });
+
+      if (!response.ok) {
+        throw new Error("Form submission failed.");
+      }
+
+      contactForm.reset();
+      contactStatus.textContent = "Thank you. Your inquiry has been sent.";
+      contactStatus.classList.add("success");
+    } catch (error) {
+      contactStatus.textContent = "Sorry, the message could not be sent. Please email melahwal@hotmail.com directly.";
+      contactStatus.classList.add("error");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
 const visitorCounter = (() => {
   const uniqueVisitors = document.querySelector("[data-unique-visitors]");
   const totalVisits = document.querySelector("[data-total-visits]");

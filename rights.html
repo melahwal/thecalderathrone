@@ -49,11 +49,14 @@
         <h1 class="page-title">CONTACT / RIGHTS INQUIRY</h1>
         <h2>For literary representation, publishing, TV / film adaptation, and general contact.</h2>
       </div>
-      <form class="contact-form" action="mailto:melahwal@hotmail.com?subject=The%20Caldera%20Throne%20%E2%80%94%20Rights%20Inquiry" method="post" enctype="text/plain">
+      <!-- Replace REPLACE_WITH_MY_FORMSPREE_ID with the live Formspree form ID before production. -->
+      <form class="contact-form" action="https://formspree.io/f/REPLACE_WITH_MY_FORMSPREE_ID" method="POST" data-contact-form>
+        <input type="hidden" name="_to" value="melahwal&#64;hotmail.com">
+        <input type="hidden" name="_subject" value="The Caldera Throne — Rights / Contact Inquiry">
         <label>Name<input type="text" name="name" autocomplete="name" required></label>
         <label>Email<input type="email" name="email" autocomplete="email" required></label>
         <label>Organization<input type="text" name="organization" autocomplete="organization"></label>
-        <label>Inquiry Type<select name="inquiry-type" required>
+        <label>Inquiry Type<select name="inquiryType" required>
           <option value="">Select inquiry type</option>
           <option>Literary representation</option>
           <option>Publishing inquiry</option>
@@ -61,6 +64,8 @@
           <option>General contact</option>
         </select></label>
         <label class="full">Message<textarea name="message" rows="6" required></textarea></label>
+        <p class="direct-inquiries full">For direct inquiries: melahwal&#64;hotmail.com</p>
+        <p class="form-status full" data-contact-status aria-live="polite"></p>
         <button class="button primary full" type="submit">Send Inquiry</button>
       </form>
     </section>
