@@ -90,7 +90,7 @@
     {
       id: "book-4",
       kicker: "Book IV",
-      title: "",
+      title: "The Imperial Capital",
       entryImage: "images/Book 4/b4_main_01.png",
       repeat: "Repeat Book 4",
       next: "Return to Book Selection",
