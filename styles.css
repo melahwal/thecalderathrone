@@ -2446,3 +2446,192 @@ html body.author-page-final main .author-final-row .author-final-bio p {
 html body.author-page-final main .author-final-row .author-final-bio p:last-child {
   margin-bottom: 0 !important;
 }
+
+/* =========================================================
+   BOOK ILLUSTRATIONS MOBILE FIX
+   Keeps desktop unchanged. Fixes mobile visibility/layout.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .book-illustrations-section {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    overflow: visible !important;
+  }
+
+  .book-illustrations-heading {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 18px !important;
+  }
+
+  .book-illustrations-heading .page-title,
+  #book-illustrations-title {
+    max-width: 100% !important;
+    font-size: clamp(2.05rem, 12vw, 3.4rem) !important;
+    line-height: 0.98 !important;
+    letter-spacing: 0 !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  .page-disclaimer {
+    max-width: 100% !important;
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .book-illustrations-shell {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .book-selection-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 18px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .book-selection-grid[hidden],
+  .book-viewer[hidden] {
+    display: none !important;
+  }
+
+  .book-select-card {
+    display: grid !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+  }
+
+  .book-select-image {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .book-select-image img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  .book-viewer {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .book-viewer-topbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .open-book-wrap {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    gap: 12px !important;
+  }
+
+  .open-book {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .book-pages {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .book-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .book-page-right {
+    margin-top: 14px !important;
+  }
+
+  .book-spine,
+  .turning-page {
+    display: none !important;
+  }
+
+  .book-edge {
+    position: static !important;
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .book-edge-left {
+    order: 2;
+  }
+
+  .open-book {
+    order: 1;
+  }
+
+  .book-edge-right {
+    order: 3;
+  }
+
+  .book-reader-controls {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .book-control {
+    width: 100% !important;
+  }
+
+  .book-illustration {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .book-illustration img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+}
