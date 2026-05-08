@@ -3,11 +3,12 @@ const nav = document.querySelector("[data-nav]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
 
-
 function syncActiveNavLink() {
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
+
   document.querySelectorAll(".site-nav a").forEach((link) => {
     const linkPath = link.getAttribute("href");
+
     if (linkPath === currentPath) {
       link.setAttribute("aria-current", "page");
     } else {
@@ -17,26 +18,37 @@ function syncActiveNavLink() {
 }
 
 function syncHeader() {
+  if (!header) {
+    return;
+  }
+
   header.classList.toggle("scrolled", window.scrollY > 20);
 }
 
 syncActiveNavLink();
 
-navToggle.addEventListener("click", () => {
-  const isOpen = nav.classList.toggle("open");
-  navToggle.setAttribute("aria-expanded", String(isOpen));
-});
+if (navToggle && nav) {
+  navToggle.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
 
-nav.addEventListener("click", (event) => {
-  if (event.target.matches("a")) {
-    nav.classList.remove("open");
-    navToggle.setAttribute("aria-expanded", "false");
-  }
-});
+  nav.addEventListener("click", (event) => {
+    if (event.target.matches("a")) {
+      nav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+  });
+}
 
-year.textContent = new Date().getFullYear();
+if (year) {
+  year.textContent = new Date().getFullYear();
+}
+
 syncHeader();
 window.addEventListener("scroll", syncHeader, { passive: true });
+
+/* === Image lightbox === */
 
 const lightboxImages = document.querySelectorAll("[data-lightbox-image]");
 
@@ -45,20 +57,28 @@ if (lightboxImages.length) {
   lightbox.className = "image-lightbox";
   lightbox.setAttribute("role", "dialog");
   lightbox.setAttribute("aria-modal", "true");
-  lightbox.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close image">&times;</button><button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous image">&#10094;</button><img alt=""><button class="lightbox-nav lightbox-next" type="button" aria-label="Next image">&#10095;</button>';
+  lightbox.innerHTML = `
+    <button class="lightbox-close" type="button" aria-label="Close image">&times;</button>
+    <button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous image">&#10094;</button>
+    <img alt="">
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="Next image">&#10095;</button>
+  `;
+
   document.body.appendChild(lightbox);
 
   const lightboxImage = lightbox.querySelector("img");
   const closeButton = lightbox.querySelector(".lightbox-close");
   const previousButton = lightbox.querySelector(".lightbox-prev");
   const nextButton = lightbox.querySelector(".lightbox-next");
+
   let activeImageIndex = 0;
 
   function showLightboxImage(index) {
     activeImageIndex = (index + lightboxImages.length) % lightboxImages.length;
     const image = lightboxImages[activeImageIndex];
+
     lightboxImage.src = image.currentSrc || image.src;
-    lightboxImage.alt = image.alt;
+    lightboxImage.alt = image.alt || "";
   }
 
   function closeLightbox() {
@@ -83,26 +103,34 @@ if (lightboxImages.length) {
   });
 
   closeButton.addEventListener("click", closeLightbox);
+
   lightbox.addEventListener("click", (event) => {
     if (event.target === lightbox) {
       closeLightbox();
     }
   });
+
   document.addEventListener("keydown", (event) => {
     if (!lightbox.classList.contains("open")) {
       return;
     }
+
     if (event.key === "Escape") {
       closeLightbox();
     }
+
     if (event.key === "ArrowLeft") {
       showLightboxImage(activeImageIndex - 1);
     }
+
     if (event.key === "ArrowRight") {
       showLightboxImage(activeImageIndex + 1);
     }
   });
 }
+
+/* === Contact form === */
+
 const contactForm = document.querySelector("[data-contact-form]");
 
 if (contactForm) {
@@ -111,6 +139,11 @@ if (contactForm) {
 
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (!contactStatus || !submitButton) {
+      return;
+    }
+
     contactStatus.textContent = "Sending your inquiry...";
     contactStatus.className = "form-status full";
     submitButton.disabled = true;
@@ -119,7 +152,9 @@ if (contactForm) {
       const response = await fetch(contactForm.action, {
         method: "POST",
         body: new FormData(contactForm),
-        headers: { Accept: "application/json" }
+        headers: {
+          Accept: "application/json"
+        }
       });
 
       if (!response.ok) {
@@ -130,13 +165,25 @@ if (contactForm) {
       contactStatus.textContent = "Thank you. Your inquiry has been sent successfully.";
       contactStatus.classList.add("success");
     } catch (error) {
-      contactStatus.textContent = "Sorry, your message could not be sent. Please try again later.";
+      contactStatus.textContent = "Sorry, your message could not be sent. Please email melahwal@hotmail.com directly.";
       contactStatus.classList.add("error");
     } finally {
       submitButton.disabled = false;
     }
   });
 }
+
+/* === Visitor counters === */
+/*
+  Total Visits:
+  - Increases on every page load.
+
+  Unique Visitors:
+  - Increases once per browser/device using localStorage.
+  - This is the best practical solution for a static website.
+  - It is not a perfect analytics system like Google Analytics or Plausible.
+*/
+
 const visitorCounter = (() => {
   const uniqueVisitors = document.querySelector("[data-unique-visitors]");
   const totalVisits = document.querySelector("[data-total-visits]");
@@ -147,78 +194,108 @@ const visitorCounter = (() => {
 
   const counterNamespace = "thecalderathrone";
   const counterBaseUrl = `https://api.counterapi.dev/v1/${counterNamespace}`;
+
   const uniqueBase = 1000;
   const totalBase = 2500;
-  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted";
-  const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
 
-  if (isLocalPreview) {
-    uniqueVisitors.textContent = `${uniqueBase.toLocaleString("en-US")}+`;
-    totalVisits.textContent = `${totalBase.toLocaleString("en-US")}+`;
-    return { init: () => {} };
-  }
+  /*
+    This new key forces browsers/devices to be counted once under the corrected counter version.
+    Do not keep changing this key after the issue is fixed, otherwise the same visitors may be counted again.
+  */
+  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted_v20260508c";
+
+  const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
 
   function formatCount(value) {
     return Number(value).toLocaleString("en-US");
   }
 
-  function counterValue(data) {
-    const value = Number(data && (data.count ?? data.value));
-    if (!Number.isFinite(value)) {
-      throw new Error("Counter response did not include a numeric value.");
-    }
-    return value;
-  }
-
-  async function requestCounter(name, action = "") {
-    const endpoint = action ? `${counterBaseUrl}/${name}/${action}` : `${counterBaseUrl}/${name}`;
-    const response = await fetch(endpoint, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Counter request failed: ${response.status}`);
-    }
-    return counterValue(await response.json());
-  }
-
-  function showFallback() {
+  function setFallbackValues() {
     uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
     totalVisits.textContent = `${formatCount(totalBase)}+`;
   }
 
+  function counterValue(data) {
+    const rawValue = data && (data.count ?? data.value);
+    const value = Number(rawValue);
+
+    if (!Number.isFinite(value)) {
+      throw new Error("Counter response did not include a numeric value.");
+    }
+
+    return value;
+  }
+
+  async function requestCounter(name, action = "") {
+    const endpoint = action
+      ? `${counterBaseUrl}/${name}/${action}`
+      : `${counterBaseUrl}/${name}`;
+
+    const response = await fetch(endpoint, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Counter request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return counterValue(data);
+  }
+
   async function updateTotalVisits() {
-    const totalCount = await requestCounter("total-visits", "up");
-    totalVisits.textContent = formatCount(totalBase + totalCount);
+    try {
+      const totalCount = await requestCounter("total-visits", "up");
+      totalVisits.textContent = formatCount(totalBase + totalCount);
+    } catch (error) {
+      totalVisits.textContent = `${formatCount(totalBase)}+`;
+    }
   }
 
   async function updateUniqueVisitors() {
-    let hasCountedUnique = false;
-
     try {
-      hasCountedUnique = localStorage.getItem(uniqueStorageKey) === "true";
-    } catch (error) {
-      hasCountedUnique = true;
-    }
+      let alreadyCounted = false;
 
-    if (hasCountedUnique) {
-      const uniqueCount = await requestCounter("unique-visitors");
+      try {
+        alreadyCounted = localStorage.getItem(uniqueStorageKey) === "true";
+      } catch (error) {
+        alreadyCounted = false;
+      }
+
+      let uniqueCount;
+
+      if (alreadyCounted) {
+        uniqueCount = await requestCounter("unique-visitors");
+      } else {
+        uniqueCount = await requestCounter("unique-visitors", "up");
+
+        try {
+          localStorage.setItem(uniqueStorageKey, "true");
+        } catch (error) {
+          /* localStorage unavailable; the displayed count is still updated. */
+        }
+      }
+
       uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
+    } catch (error) {
+      uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
+    }
+  }
+
+  function init() {
+    setFallbackValues();
+
+    if (isLocalPreview) {
       return;
     }
 
-    const uniqueCount = await requestCounter("unique-visitors", "up");
-    uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
-
-    try {
-      localStorage.setItem(uniqueStorageKey, "true");
-    } catch (error) {
-      // If localStorage is unavailable, avoid changing the displayed real count again.
-    }
+    updateTotalVisits();
+    updateUniqueVisitors();
   }
 
-  async function init() {
-    showFallback();
-    await Promise.all([updateTotalVisits(), updateUniqueVisitors()]);
-  }
+  init();
 
-  init().catch(showFallback);
-  return { init };
+  return {
+    init
+  };
 })();
