@@ -15,8 +15,20 @@
   function imageExists(src) {
     return new Promise((resolve) => {
       const image = new Image();
-      image.onload = () => resolve(true);
-      image.onerror = () => resolve(false);
+      let finished = false;
+
+      const done = (result) => {
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+        resolve(result);
+      };
+
+      image.onload = () => done(true);
+      image.onerror = () => done(false);
+      window.setTimeout(() => done(false), 1800);
       image.src = encodeURI(src);
     });
   }
@@ -45,134 +57,188 @@
     return pages;
   }
 
-  async function buildBooks() {
-    const book1Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => {
-          const n3 = String(number).padStart(3, "0");
-          const n2 = String(number).padStart(2, "0");
+  const book1CharacterSpread = characterSpread(
+    "images/characters/book1-spread/final/book1-characters-left-page.png",
+    "images/characters/book1-spread/final/book1-characters-right-page.png",
+    "Book 1 Character Spread"
+  );
 
-          if (number === 1) {
-            return [
-              "images/book 1/book1-001-title-page.png",
-              `images/book 1/book1-${n3}.png`
-            ];
-          }
+  const book2CharacterSpread = characterSpread(
+    "images/characters/book2-spread/final/book2-characters-left-page.png",
+    "images/characters/book2-spread/final/book2-characters-right-page.png",
+    "Book 2 Character Spread"
+  );
 
-          if (number === 2) {
-            return [
-              "images/book 1/book1-002-opening-scene.png",
-              `images/book 1/book1-${n3}.png`
-            ];
-          }
+  const book3CharacterSpread = characterSpread(
+    "images/characters/book3-spread/final/book3-characters-left-page.png",
+    "images/characters/book3-spread/final/book3-characters-right-page.png",
+    "Book 3 Character Spread"
+  );
 
-          return [
-            `images/book 1/book1-${n3}-scene-${n2}.png`,
-            `images/book 1/book1-${n3}-last-illustration.png`,
-            `images/book 1/book1-${n3}.png`
-          ];
-        },
-        makeCaption: (number) => {
-          if (number === 1) return "Title Page";
-          if (number === 2) return "Opening Scene";
-          return `Book 1 Illustration ${String(number).padStart(2, "0")}`;
-        }
-      })),
-      characterSpread(
-        "images/characters/book1-spread/final/book1-characters-left-page.png",
-        "images/characters/book1-spread/final/book1-characters-right-page.png",
-        "Book 1 Character Spread"
-      )
-    ];
-
-    const book2Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/book 2/b2_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 2 Illustration ${String(number).padStart(2, "0")}`
-      })),
-      characterSpread(
-        "images/characters/book2-spread/final/book2-characters-left-page.png",
-        "images/characters/book2-spread/final/book2-characters-right-page.png",
-        "Book 2 Character Spread"
-      )
-    ];
-
-    const book3Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/book 3/b3_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 3 Illustration ${String(number).padStart(2, "0")}`
-      })),
-      characterSpread(
-        "images/characters/book3-spread/final/book3-characters-left-page.png",
-        "images/characters/book3-spread/final/book3-characters-right-page.png",
-        "Book 3 Character Spread"
-      )
-    ];
-
-    const book4Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/Book 4/b4_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 4 Illustration ${String(number).padStart(2, "0")}`
-      }))
-    ];
-
+  function fallbackBook1Pages() {
     return [
-      {
-        id: "book-1",
-        kicker: "Book 1",
-        title: "The Still and the Burning",
-        entryImage: "images/book 1/book1-001-title-page.png",
-        repeat: "Repeat Book 1",
-        next: "Go to Book 2",
-        nextBook: "book-2",
-        pages: book1Pages
-      },
-      {
-        id: "book-2",
-        kicker: "Book 2",
-        title: "The Empire of Ledgers",
-        entryImage: "images/book 2/b2_main_01.png",
-        repeat: "Repeat Book 2",
-        next: "Go to Book 3",
-        nextBook: "book-3",
-        pages: book2Pages
-      },
-      {
-        id: "book-3",
-        kicker: "Book 3",
-        title: "What the Mountain Kept",
-        entryImage: "images/book 3/b3_main.png",
-        repeat: "Repeat Book 3",
-        next: "Go to Book 4",
-        nextBook: "book-4",
-        pages: book3Pages
-      },
-      {
-        id: "book-4",
-        kicker: "Book 4",
-        title: "The Imperial Capital",
-        entryImage: "images/Book 4/b4_main_01.png",
-        repeat: "Repeat Book 4",
-        next: "Return to Book Selection",
-        nextBook: null,
-        pages: book4Pages
-      }
+      imagePage("images/book 1/book1-001-title-page.png", "Title Page"),
+      imagePage("images/book 1/book1-002-opening-scene.png", "Opening Scene"),
+      ...range(3, 44, (number) => imagePage(
+        `images/book 1/book1-${String(number).padStart(3, "0")}-scene-${String(number).padStart(2, "0")}.png`,
+        `Book 1 Illustration ${String(number).padStart(2, "0")}`
+      )),
+      imagePage("images/book 1/book1-045-last-illustration.png", "Last Illustration"),
+      book1CharacterSpread
     ];
   }
+
+  function fallbackBook2Pages() {
+    return [
+      ...range(1, 35, (number) => imagePage(
+        `images/book 2/b2_${String(number).padStart(2, "0")}.png`,
+        `Book 2 Illustration ${String(number).padStart(2, "0")}`
+      )),
+      book2CharacterSpread
+    ];
+  }
+
+  function fallbackBook3Pages() {
+    return [
+      ...range(1, 15, (number) => imagePage(
+        `images/book 3/b3_${String(number).padStart(2, "0")}.png`,
+        `Book 3 Illustration ${String(number).padStart(2, "0")}`
+      )),
+      book3CharacterSpread
+    ];
+  }
+
+  function fallbackBook4Pages() {
+    return range(1, 10, (number) => imagePage(
+      `images/Book 4/b4_${String(number).padStart(2, "0")}.png`,
+      `Book 4 Illustration ${String(number).padStart(2, "0")}`
+    ));
+  }
+
+  async function discoverBook1Pages() {
+    const pages = await discoverSequentialPages({
+      start: 1,
+      max: 200,
+      makeSrcCandidates: (number) => {
+        const n3 = String(number).padStart(3, "0");
+        const n2 = String(number).padStart(2, "0");
+
+        if (number === 1) {
+          return [
+            "images/book 1/book1-001-title-page.png",
+            `images/book 1/book1-${n3}.png`
+          ];
+        }
+
+        if (number === 2) {
+          return [
+            "images/book 1/book1-002-opening-scene.png",
+            `images/book 1/book1-${n3}.png`
+          ];
+        }
+
+        return [
+          `images/book 1/book1-${n3}-scene-${n2}.png`,
+          `images/book 1/book1-${n3}-last-illustration.png`,
+          `images/book 1/book1-${n3}.png`
+        ];
+      },
+      makeCaption: (number) => {
+        if (number === 1) return "Title Page";
+        if (number === 2) return "Opening Scene";
+        if (number === 45) return "Last Illustration";
+        return `Book 1 Illustration ${String(number).padStart(2, "0")}`;
+      }
+    });
+
+    return pages.length ? [...pages, book1CharacterSpread] : fallbackBook1Pages();
+  }
+
+  async function discoverBook2Pages() {
+    const pages = await discoverSequentialPages({
+      start: 1,
+      max: 200,
+      makeSrcCandidates: (number) => [
+        `images/book 2/b2_${String(number).padStart(2, "0")}.png`
+      ],
+      makeCaption: (number) => `Book 2 Illustration ${String(number).padStart(2, "0")}`
+    });
+
+    return pages.length ? [...pages, book2CharacterSpread] : fallbackBook2Pages();
+  }
+
+  async function discoverBook3Pages() {
+    const pages = await discoverSequentialPages({
+      start: 1,
+      max: 200,
+      makeSrcCandidates: (number) => [
+        `images/book 3/b3_${String(number).padStart(2, "0")}.png`
+      ],
+      makeCaption: (number) => `Book 3 Illustration ${String(number).padStart(2, "0")}`
+    });
+
+    return pages.length ? [...pages, book3CharacterSpread] : fallbackBook3Pages();
+  }
+
+  async function discoverBook4Pages() {
+    const pages = await discoverSequentialPages({
+      start: 1,
+      max: 200,
+      makeSrcCandidates: (number) => [
+        `images/Book 4/b4_${String(number).padStart(2, "0")}.png`
+      ],
+      makeCaption: (number) => `Book 4 Illustration ${String(number).padStart(2, "0")}`
+    });
+
+    return pages.length ? pages : fallbackBook4Pages();
+  }
+
+  const books = [
+    {
+      id: "book-1",
+      kicker: "Book 1",
+      title: "The Still and the Burning",
+      entryImage: "images/book 1/book1-001-title-page.png",
+      repeat: "Repeat Book 1",
+      next: "Go to Book 2",
+      nextBook: "book-2",
+      pages: fallbackBook1Pages(),
+      discoverPages: discoverBook1Pages
+    },
+    {
+      id: "book-2",
+      kicker: "Book 2",
+      title: "The Empire of Ledgers",
+      entryImage: "images/book 2/b2_main_01.png",
+      repeat: "Repeat Book 2",
+      next: "Go to Book 3",
+      nextBook: "book-3",
+      pages: fallbackBook2Pages(),
+      discoverPages: discoverBook2Pages
+    },
+    {
+      id: "book-3",
+      kicker: "Book 3",
+      title: "What the Mountain Kept",
+      entryImage: "images/book 3/b3_main.png",
+      repeat: "Repeat Book 3",
+      next: "Go to Book 4",
+      nextBook: "book-4",
+      pages: fallbackBook3Pages(),
+      discoverPages: discoverBook3Pages
+    },
+    {
+      id: "book-4",
+      kicker: "Book 4",
+      title: "The Imperial Capital",
+      entryImage: "images/Book 4/b4_main_01.png",
+      repeat: "Repeat Book 4",
+      next: "Return to Book Selection",
+      nextBook: null,
+      pages: fallbackBook4Pages(),
+      discoverPages: discoverBook4Pages
+    }
+  ];
 
   const els = {
     selection: bookReader.querySelector("[data-book-selection]"),
@@ -189,7 +255,6 @@
     next: [...bookReader.querySelectorAll("[data-book-next], [data-book-next-button]")]
   };
 
-  let books = [];
   let bookIndex = 0;
   let spreadIndex = 0;
   let isTurning = false;
@@ -368,6 +433,31 @@
     });
   }
 
+  async function refreshBookPages(index) {
+    const book = books[index];
+
+    try {
+      const pages = await book.discoverPages();
+
+      if (pages && pages.length) {
+        book.pages = pages;
+        spreadCache.delete(book.id);
+
+        if (!els.viewer.hidden && bookIndex === index) {
+          renderSpread();
+        }
+      }
+    } catch (error) {
+      console.warn(`Could not refresh ${book.kicker} pages`, error);
+    }
+  }
+
+  function refreshAllBooksInBackground() {
+    books.forEach((book, index) => {
+      refreshBookPages(index);
+    });
+  }
+
   bookReader.addEventListener("click", (event) => {
     const select = event.target.closest("[data-select-book]");
 
@@ -419,19 +509,16 @@
     }
   });
 
-  async function init() {
-    books = await buildBooks();
+  window.calderaBookIllustrations = {
+    books,
+    spreadsFor,
+    openBook,
+    showSelection,
+    refreshBookPages,
+    refreshAllBooksInBackground
+  };
 
-    window.calderaBookIllustrations = {
-      books,
-      spreadsFor,
-      openBook,
-      showSelection
-    };
-
-    renderSelection();
-    showSelection();
-  }
-
-  init();
+  renderSelection();
+  showSelection();
+  refreshAllBooksInBackground();
 })();
