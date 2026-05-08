@@ -30,104 +30,115 @@
   <link rel="stylesheet" href="layout-fix.css">
 
   <style>
-    /* === Author page final override === */
-    #author .author-layout.author-container {
-      display: grid !important;
-      grid-template-columns: minmax(0, 1.14fr) minmax(260px, 420px) !important;
-      gap: clamp(30px, 5vw, 60px) !important;
-      align-items: start !important;
-      width: min(100%, var(--content-rail)) !important;
-      max-width: var(--content-rail) !important;
-      margin-inline: auto !important;
+    /* === Clean author page rebuild === */
+
+    .author-clean-shell {
+      width: min(100%, var(--content-rail));
+      max-width: var(--content-rail);
+      margin: 0 auto;
     }
 
-    #author .author-text {
-      display: grid !important;
-      align-content: start !important;
-      min-width: 0 !important;
-      max-width: 760px !important;
-      text-align: left !important;
+    .author-clean-heading {
+      margin-bottom: clamp(28px, 4vw, 42px);
     }
 
-    #author .author-text .page-title {
-      margin: 0 !important;
+    .author-clean-heading .page-title {
+      margin: 0;
+      max-width: 980px;
+      color: #fff4df;
+      font-family: var(--display);
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      font-weight: 700;
+      line-height: 1;
+      text-align: left;
+      text-shadow:
+        0 8px 34px rgba(0, 0, 0, 0.72),
+        0 0 38px rgba(216, 183, 102, 0.16);
     }
 
-    #author .author-text h2 {
-      margin-top: 14px !important;
-      max-width: 760px !important;
+    .author-clean-heading h2 {
+      margin: 18px 0 0;
+      color: rgba(255, 240, 215, 0.86);
+      font-family: var(--serif);
+      font-size: clamp(1.35rem, 2.4vw, 2rem);
+      font-weight: 600;
+      line-height: 1.22;
+      text-align: left;
     }
 
-    #author .author-bio-frame {
-      width: min(100%, 880px) !important;
-      height: 460px !important;
-      max-height: 460px !important;
-      margin-top: clamp(18px, 2.6vw, 28px) !important;
-      padding: clamp(22px, 3vw, 34px) !important;
-      overflow: hidden !important;
-      box-sizing: border-box !important;
-      border: 1px solid var(--gold-frame) !important;
+    .author-clean-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.22fr) minmax(300px, 420px);
+      gap: clamp(30px, 5vw, 60px);
+      align-items: stretch;
+    }
+
+    .author-clean-bio,
+    .author-clean-photo {
+      border: 1px solid var(--gold-frame);
       background:
         linear-gradient(145deg, rgba(216, 183, 102, 0.07), transparent 44%),
-        rgba(7, 6, 5, 0.42) !important;
+        rgba(7, 6, 5, 0.42);
       box-shadow:
         inset 0 0 0 1px rgba(240, 212, 136, 0.08),
-        0 24px 62px rgba(0, 0, 0, 0.28) !important;
+        0 24px 62px rgba(0, 0, 0, 0.28);
+      box-sizing: border-box;
     }
 
-    #author .author-bio-frame p {
-      margin: 0 0 18px !important;
-      color: rgba(255, 240, 215, 0.88) !important;
-      font-family: var(--serif) !important;
-      font-size: clamp(1.62rem, 2vw, 1.8rem) !important;
-      font-weight: 600 !important;
-      line-height: 1.58 !important;
-      text-align: justify !important;
-      hyphens: auto !important;
+    .author-clean-bio {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(24px, 3vw, 38px);
+      min-height: 440px;
     }
 
-    #author .author-bio-frame p:last-child {
-      margin-bottom: 0 !important;
+    .author-clean-bio p {
+      margin: 0 0 22px;
+      color: rgba(255, 240, 215, 0.9);
+      font-family: var(--serif);
+      font-size: clamp(1.34rem, 1.55vw, 1.58rem);
+      font-weight: 600;
+      line-height: 1.58;
+      text-align: justify;
+      hyphens: auto;
     }
 
-    #author .author-image {
-      display: flex !important;
-      justify-content: flex-end !important;
-      align-self: start !important;
-      margin-top: 110px !important;
+    .author-clean-bio p:last-child {
+      margin-bottom: 0;
     }
 
-    #author .author-image img {
-      display: block !important;
-      width: 100% !important;
-      max-width: 420px !important;
-      height: 460px !important;
-      max-height: 460px !important;
-      aspect-ratio: auto !important;
-      object-fit: cover !important;
-      object-position: center !important;
-      box-sizing: border-box !important;
-      border: 1px solid var(--gold-frame) !important;
-      background: var(--panel) !important;
-      box-shadow:
-        inset 0 0 0 1px rgba(240, 212, 136, 0.08),
-        0 24px 62px rgba(0, 0, 0, 0.28) !important;
+    .author-clean-photo {
+      overflow: hidden;
+      min-height: 440px;
+    }
+
+    .author-clean-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 440px;
+      object-fit: cover;
+      object-position: center;
+      border: 0;
+      box-shadow: none;
     }
 
     @media (max-width: 980px) {
-      #author .author-layout.author-container {
-        grid-template-columns: 1fr !important;
+      .author-clean-row {
+        grid-template-columns: 1fr;
       }
 
-      #author .author-image {
-        justify-content: center !important;
-        margin-top: 24px !important;
+      .author-clean-photo {
+        max-width: 420px;
+        margin: 0 auto;
       }
 
-      #author .author-bio-frame,
-      #author .author-image img {
-        height: auto !important;
-        max-height: none !important;
+      .author-clean-bio,
+      .author-clean-photo,
+      .author-clean-photo img {
+        min-height: auto;
+        height: auto;
       }
     }
   </style>
@@ -174,23 +185,27 @@
 
   <main>
     <section class="section author" id="author">
-      <div class="author-layout author-container">
-        <div class="author-text">
+      <div class="author-clean-shell">
+
+        <div class="author-clean-heading">
           <h1 class="page-title">ABOUT THE AUTHOR</h1>
           <h2>Mustafa M. El Ahwal</h2>
+        </div>
 
-          <div class="author-bio-frame">
+        <div class="author-clean-row">
+          <div class="author-clean-bio">
             <p>By day, Mustafa M. El Ahwal works in the intricate world of finance — a career that taught him how the quiet wheels of power and governance actually turn. But at his core, he is a builder.</p>
 
             <p>In his quiet hours, Mustafa crafts detailed miniature houses, finding peace in the patience required to weave small elements into a living world. That same care breathes life into <em>The Caldera Throne</em>. He builds his story layer by layer, from the vast sweep of kingdoms to the weight of a single private choice.</p>
 
             <p>Much of his work was born in the deep silence of the desert. A lover of solo camping, Mustafa often writes under the open night sky, where the vastness and solitude of the land help shape the atmospheric soul of his novels.</p>
           </div>
+
+          <div class="author-clean-photo">
+            <img src="/images/author.jpg" alt="Mustafa M. El Ahwal, author of The Caldera Throne">
+          </div>
         </div>
 
-        <div class="author-image">
-          <img src="/images/author.jpg" alt="Mustafa M. El Ahwal, author of The Caldera Throne">
-        </div>
       </div>
     </section>
   </main>
