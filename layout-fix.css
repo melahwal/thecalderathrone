@@ -39,7 +39,7 @@ main > .section:first-child:not(.hero) {
 .adaptation-layout > div > h2,
 .author-layout h2,
 .contact .section-heading h2,
-.characters-subtitle { 
+.characters-subtitle {
   margin-top: 14px !important;
 }
 
@@ -48,6 +48,8 @@ main > .section:first-child:not(.hero) {
 .adaptation-hero p {
   margin-top: 18px;
 }
+
+/* === Novels page refinements === */
 
 .novels {
   --novels-rail: var(--content-rail);
@@ -124,6 +126,7 @@ main > .section:first-child:not(.hero) {
   justify-items: center;
   align-content: start;
 }
+
 .novels .novel-media-frame {
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -148,6 +151,8 @@ main > .section:first-child:not(.hero) {
   box-shadow: none;
 }
 
+/* === World / faction layout === */
+
 .faction-grid {
   gap: clamp(30px, 4.5vw, 54px);
   margin-top: clamp(24px, 3.4vw, 36px);
@@ -162,6 +167,8 @@ main > .section:first-child:not(.hero) {
   margin-bottom: clamp(18px, 2.4vw, 26px);
   padding: clamp(14px, 2vw, 22px);
 }
+
+/* === Old illustrations layout support === */
 
 .illustrations .section-heading {
   margin-bottom: clamp(18px, 2.4vw, 26px);
@@ -185,7 +192,9 @@ main > .section:first-child:not(.hero) {
   background:
     linear-gradient(145deg, rgba(216, 183, 102, 0.07), transparent 44%),
     rgba(7, 6, 5, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 212, 136, 0.08),
+    0 24px 62px rgba(0, 0, 0, 0.28);
 }
 
 .illustration-book-heading {
@@ -228,6 +237,7 @@ main > .section:first-child:not(.hero) {
   object-fit: contain;
   cursor: zoom-in;
 }
+
 .illustration-gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -244,6 +254,8 @@ main > .section:first-child:not(.hero) {
   object-fit: contain;
 }
 
+/* === Characters === */
+
 .character-grid + .character-grid {
   margin-top: clamp(26px, 4vw, 42px);
 }
@@ -251,6 +263,8 @@ main > .section:first-child:not(.hero) {
 .character-grid-supporting {
   padding-top: clamp(22px, 3.2vw, 34px);
 }
+
+/* === Adaptation === */
 
 .adaptation-pitch {
   width: min(100%, var(--content-rail));
@@ -272,6 +286,9 @@ main > .section:first-child:not(.hero) {
 .season-timeline article {
   padding: clamp(22px, 3vw, 38px);
 }
+
+/* === Legacy author layout support === */
+/* The current author.html uses author-final classes, but these are kept harmlessly for older fallback structures. */
 
 .author-layout {
   display: grid;
@@ -311,7 +328,9 @@ main > .section:first-child:not(.hero) {
   background:
     linear-gradient(145deg, rgba(216, 183, 102, 0.07), transparent 44%),
     rgba(7, 6, 5, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 212, 136, 0.08),
+    0 24px 62px rgba(0, 0, 0, 0.28);
 }
 
 .author-bio-frame p {
@@ -331,12 +350,18 @@ main > .section:first-child:not(.hero) {
 }
 
 .author-image img {
-  box-shadow: inset 0 0 0 1px rgba(240, 212, 136, 0.08), 0 24px 62px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 212, 136, 0.08),
+    0 24px 62px rgba(0, 0, 0, 0.28);
 }
+
+/* === Contact === */
 
 .contact-form {
   margin-top: 0;
 }
+
+/* === Responsive === */
 
 @media (max-width: 980px) {
   :root {
@@ -383,6 +408,7 @@ main > .section:first-child:not(.hero) {
   .illustration-gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .illustrations .illustration-book-stack,
   .illustrations .illustration-book,
   .illustrations .illustration-main-stack,
@@ -444,64 +470,11 @@ main > .section:first-child:not(.hero) {
   }
 }
 
-/* === Final author page box matching === */
-.author-layout {
-  align-items: start !important;
-}
+/* =========================================================
+   FINAL GLOBAL NAVIGATION BUTTON FIX
+   Applies to all pages using layout-fix.css.
+   ========================================================= */
 
-.author-bio-frame {
-  height: 430px !important;
-  max-height: 430px !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-.author-image {
-  margin-top: 110px !important;
-  align-self: start !important;
-}
-
-.author-image img {
-  max-width: 420px !important;
-  width: 100% !important;
-  height: 430px !important;
-  max-height: 430px !important;
-  object-fit: cover !important;
-  object-position: center !important;
-  border: 1px solid var(--gold-frame) !important;
-  box-sizing: border-box !important;
-}
-
-
-/* === Final navigation button consistency === */
-.site-nav a {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 36px !important;
-  padding: 8px 14px !important;
-  border: 1px solid rgba(255, 232, 155, 0.72) !important;
-  border-radius: 999px !important;
-  background: linear-gradient(180deg, rgba(255, 238, 172, 0.95) 0%, rgba(216, 183, 102, 0.96) 45%, rgba(139, 92, 47, 0.98) 100%) !important;
-  color: #1c1208 !important;
-  font-weight: 800 !important;
-  line-height: 1 !important;
-  text-shadow: 0 1px 0 rgba(255, 246, 208, 0.36) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 251, 224, 0.72),
-    inset 0 -2px 0 rgba(73, 44, 16, 0.36),
-    0 10px 24px rgba(0, 0, 0, 0.24) !important;
-}
-
-.site-nav a:hover,
-.site-nav a:focus-visible,
-.site-nav a[aria-current="page"] {
-  background: linear-gradient(180deg, #fff0aa 0%, #e1bf69 48%, #9a672f 100%) !important;
-  color: #110b05 !important;
-  border-color: rgba(255, 245, 190, 0.92) !important;
-}
-
-/* === FINAL GLOBAL NAVIGATION BUTTON FIX === */
 .site-nav a {
   display: inline-flex !important;
   align-items: center !important;

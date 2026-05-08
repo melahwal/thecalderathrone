@@ -20,8 +20,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="layout-fix.css">
+  <link rel="stylesheet" href="styles.css?v=20260508b">
+  <link rel="stylesheet" href="layout-fix.css?v=20260508b">
 </head>
 <body>
   <header class="site-header" data-header>
@@ -40,7 +40,7 @@
       <a href="book-illustrations.html">Book Illustrations</a>
       <a href="adaptation.html">Adaptation</a>
       <a href="author.html">Author</a>
-      <a href="rights.html">Rights</a>
+      <a href="rights.html" aria-current="page">Rights</a>
     </nav>
   </header>
 
@@ -50,23 +50,46 @@
         <h1 class="page-title">CONTACT / RIGHTS INQUIRY</h1>
         <h2>For literary representation, publishing, TV / film adaptation, and general contact.</h2>
       </div>
+
       <!-- Replace REPLACE_WITH_MY_FORMSPREE_ID with the live Formspree form ID before production. -->
       <form class="contact-form" action="https://formspree.io/f/REPLACE_WITH_MY_FORMSPREE_ID" method="POST" data-contact-form>
         <input type="hidden" name="_to" value="melahwal&#64;hotmail.com">
         <input type="hidden" name="_subject" value="The Caldera Throne — Rights / Contact Inquiry">
-        <label>Name<input type="text" name="name" autocomplete="name" required></label>
-        <label>Email<input type="email" name="email" autocomplete="email" required></label>
-        <label>Organization<input type="text" name="organization" autocomplete="organization"></label>
-        <label>Inquiry Type<select name="inquiryType" required>
-          <option value="">Select inquiry type</option>
-          <option>Literary representation</option>
-          <option>Publishing inquiry</option>
-          <option>TV / film adaptation inquiry</option>
-          <option>General contact</option>
-        </select></label>
-        <label class="full">Message<textarea name="message" rows="6" required></textarea></label>
+
+        <label>
+          Name
+          <input type="text" name="name" autocomplete="name" required>
+        </label>
+
+        <label>
+          Email
+          <input type="email" name="email" autocomplete="email" required>
+        </label>
+
+        <label>
+          Organization
+          <input type="text" name="organization" autocomplete="organization">
+        </label>
+
+        <label>
+          Inquiry Type
+          <select name="inquiryType" required>
+            <option value="">Select inquiry type</option>
+            <option>Literary representation</option>
+            <option>Publishing inquiry</option>
+            <option>TV / film adaptation inquiry</option>
+            <option>General contact</option>
+          </select>
+        </label>
+
+        <label class="full">
+          Message
+          <textarea name="message" rows="6" required></textarea>
+        </label>
+
         <p class="direct-inquiries full">For direct inquiries: melahwal&#64;hotmail.com</p>
         <p class="form-status full" data-contact-status aria-live="polite"></p>
+
         <button class="button primary full" type="submit">Send Inquiry</button>
       </form>
     </section>
@@ -79,6 +102,7 @@
     </div>
     <a href="#">Return to top</a>
   </footer>
-  <script src="script.js"></script>
+
+  <script src="script.js?v=20260508b"></script>
 </body>
 </html>
