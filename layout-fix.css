@@ -443,3 +443,31 @@ main > .section:first-child:not(.hero) {
     grid-template-columns: 1fr;
   }
 }
+
+/* === Final author page box matching === */
+.author-layout {
+  align-items: start !important;
+}
+
+.author-bio-frame {
+  height: 430px !important;
+  max-height: 430px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.author-image {
+  margin-top: 110px !important;
+  align-self: start !important;
+}
+
+.author-image img {
+  max-width: 420px !important;
+  width: 100% !important;
+  height: 430px !important;
+  max-height: 430px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border: 1px solid var(--gold-frame) !important;
+  box-sizing: border-box !important;
+}
