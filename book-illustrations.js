@@ -18,10 +18,7 @@
       let finished = false;
 
       const done = (result) => {
-        if (finished) {
-          return;
-        }
-
+        if (finished) return;
         finished = true;
         resolve(result);
       };
@@ -257,8 +254,12 @@
 
   let bookIndex = 0;
   let spreadIndex = 0;
+  let mobilePageIndex = 0;
   let isTurning = false;
+  let lastMobileMode = window.matchMedia("(max-width: 768px)").matches;
+
   const spreadCache = new Map();
+  const mobilePageCache = new Map();
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, (character) => ({
@@ -282,7 +283,42 @@
     return { type: "blank" };
   }
 
-  function flatPages(book) {
+  function isMobileView() {
+    return window.matchMedia("(max-width: 768px)").matches;
+  }
+
+  function invalidateCaches(bookId) {
+    spreadCache.delete(bookId);
+    mobilePageCache.delete(bookId);
+  }
+
+  function mobilePagesFor(book) {
+    if (mobilePageCache.has(book.id)) {
+      return mobilePageCache.get(book.id);
+    }
+
+    const pages = [];
+
+    book.pages.forEach((page) => {
+      if (page.type !== "spread") {
+        pages.push(page);
+        return;
+      }
+
+      pages.push(imagePage(page.left, `${page.caption} Left Page`));
+      pages.push(imagePage(page.right, `${page.caption} Right Page`));
+    });
+
+    pages.push(endPage(book));
+    mobilePageCache.set(book.id, pages);
+    return pages;
+  }
+
+  function spreadsFor(book) {
+    if (spreadCache.has(book.id)) {
+      return spreadCache.get(book.id);
+    }
+
     const pages = [];
 
     book.pages.forEach((page) => {
@@ -304,17 +340,8 @@
     }
 
     pages.push(endPage(book), blankPage());
-    return pages;
-  }
 
-  function spreadsFor(book) {
-    if (spreadCache.has(book.id)) {
-      return spreadCache.get(book.id);
-    }
-
-    const pages = flatPages(book);
     const spreads = [];
-
     for (let index = 0; index < pages.length; index += 2) {
       spreads.push([pages[index], pages[index + 1] || blankPage()]);
     }
@@ -363,15 +390,62 @@
     `).join("");
   }
 
-  function renderSpread() {
+  function syncIndexesForModeChange() {
+    const mobile = isMobileView();
+
+    if (mobile === lastMobileMode) {
+      return;
+    }
+
     const book = books[bookIndex];
-    const spreads = spreadsFor(book);
-    spreadIndex = Math.max(0, Math.min(spreadIndex, spreads.length - 1));
-    const [left, right] = spreads[spreadIndex];
+    if (!book) {
+      lastMobileMode = mobile;
+      return;
+    }
+
+    if (mobile) {
+      const pages = mobilePagesFor(book);
+      mobilePageIndex = Math.min(spreadIndex * 2, pages.length - 1);
+    } else {
+      const spreads = spreadsFor(book);
+      spreadIndex = Math.min(Math.floor(mobilePageIndex / 2), spreads.length - 1);
+    }
+
+    lastMobileMode = mobile;
+  }
+
+  function renderCurrent() {
+    const book = books[bookIndex];
+    const mobile = isMobileView();
+
+    syncIndexesForModeChange();
 
     els.kicker.textContent = book.title ? `${book.kicker} —` : book.kicker;
     els.title.textContent = book.title;
     els.title.toggleAttribute("hidden", !book.title);
+
+    if (mobile) {
+      const pages = mobilePagesFor(book);
+      mobilePageIndex = Math.max(0, Math.min(mobilePageIndex, pages.length - 1));
+      const page = pages[mobilePageIndex];
+
+      els.left.innerHTML = renderPage(page, "left");
+      els.right.innerHTML = "";
+      els.right.hidden = true;
+
+      els.progress.textContent = `Page ${mobilePageIndex + 1} of ${pages.length}`;
+      els.status.textContent = `${titleLine(book)}, page ${mobilePageIndex + 1} of ${pages.length}`;
+      els.prev.forEach((button) => { button.disabled = mobilePageIndex === 0; });
+      els.next.forEach((button) => { button.disabled = mobilePageIndex === pages.length - 1; });
+      return;
+    }
+
+    els.right.hidden = false;
+
+    const spreads = spreadsFor(book);
+    spreadIndex = Math.max(0, Math.min(spreadIndex, spreads.length - 1));
+    const [left, right] = spreads[spreadIndex];
+
     els.left.innerHTML = renderPage(left, "left");
     els.right.innerHTML = renderPage(right, "right");
     els.progress.textContent = `Spread ${spreadIndex + 1} of ${spreads.length}`;
@@ -389,9 +463,12 @@
   function openBook(index) {
     bookIndex = index;
     spreadIndex = 0;
+    mobilePageIndex = 0;
+    lastMobileMode = isMobileView();
+
     els.selection.hidden = true;
     els.viewer.hidden = false;
-    renderSpread();
+    renderCurrent();
     els.viewer.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -405,14 +482,29 @@
 
     window.setTimeout(() => {
       afterTurn();
-      renderSpread();
+      renderCurrent();
       els.turning.className = "turning-page";
       isTurning = false;
-    }, 820);
+    }, isMobileView() ? 260 : 820);
   }
 
-  function nextSpread() {
-    const spreads = spreadsFor(books[bookIndex]);
+  function nextView() {
+    const book = books[bookIndex];
+
+    if (isMobileView()) {
+      const pages = mobilePagesFor(book);
+
+      if (mobilePageIndex >= pages.length - 1) {
+        return;
+      }
+
+      flip("forward", () => {
+        mobilePageIndex += 1;
+      });
+      return;
+    }
+
+    const spreads = spreadsFor(book);
 
     if (spreadIndex >= spreads.length - 1) {
       return;
@@ -423,7 +515,18 @@
     });
   }
 
-  function previousSpread() {
+  function previousView() {
+    if (isMobileView()) {
+      if (mobilePageIndex <= 0) {
+        return;
+      }
+
+      flip("backward", () => {
+        mobilePageIndex -= 1;
+      });
+      return;
+    }
+
     if (spreadIndex <= 0) {
       return;
     }
@@ -441,10 +544,10 @@
 
       if (pages && pages.length) {
         book.pages = pages;
-        spreadCache.delete(book.id);
+        invalidateCaches(book.id);
 
         if (!els.viewer.hidden && bookIndex === index) {
-          renderSpread();
+          renderCurrent();
         }
       }
     } catch (error) {
@@ -487,8 +590,8 @@
     }
   });
 
-  els.prev.forEach((button) => button.addEventListener("click", previousSpread));
-  els.next.forEach((button) => button.addEventListener("click", nextSpread));
+  els.prev.forEach((button) => button.addEventListener("click", previousView));
+  els.next.forEach((button) => button.addEventListener("click", nextView));
   els.returnButtons.forEach((button) => button.addEventListener("click", showSelection));
 
   document.addEventListener("keydown", (event) => {
@@ -497,11 +600,11 @@
     }
 
     if (event.key === "ArrowRight") {
-      nextSpread();
+      nextView();
     }
 
     if (event.key === "ArrowLeft") {
-      previousSpread();
+      previousView();
     }
 
     if (event.key === "Escape") {
@@ -509,9 +612,19 @@
     }
   });
 
+  window.addEventListener("resize", () => {
+    if (els.viewer.hidden) {
+      lastMobileMode = isMobileView();
+      return;
+    }
+
+    renderCurrent();
+  });
+
   window.calderaBookIllustrations = {
     books,
     spreadsFor,
+    mobilePagesFor,
     openBook,
     showSelection,
     refreshBookPages,
