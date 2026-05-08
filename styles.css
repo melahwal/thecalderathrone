@@ -1438,7 +1438,9 @@ img {
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  margin-top: 95px;
 }
+
 
 .author-image img {
   max-width: 420px;
