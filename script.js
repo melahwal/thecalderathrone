@@ -175,13 +175,11 @@ if (contactForm) {
 
 /* === Visitor counters === */
 /*
-  Total Visits:
-  - Increases on every page load.
-
-  Unique Visitors:
-  - Increases once per browser/device using localStorage.
-  - This is the best practical solution for a static website.
-  - It is not a perfect analytics system like Google Analytics or Plausible.
+  Static-site counter rules:
+  - Unique Visitors starts at 1,200 and counts a visitor once per browser/device.
+  - Total Visits uses the existing total counter, but it increases only on the home page.
+  - Moving between internal pages does not increase Total Visits.
+  - True IP-based unique counting requires a backend/analytics service; frontend JavaScript cannot securely count by IP address.
 */
 
 const visitorCounter = (() => {
@@ -195,16 +193,27 @@ const visitorCounter = (() => {
   const counterNamespace = "thecalderathrone";
   const counterBaseUrl = `https://api.counterapi.dev/v1/${counterNamespace}`;
 
-  const uniqueBase = 1000;
+  const uniqueBase = 1200;
   const totalBase = 2500;
 
-  /*
-    This new key forces browsers/devices to be counted once under the corrected counter version.
-    Do not keep changing this key after the issue is fixed, otherwise the same visitors may be counted again.
-  */
-  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted_v20260508c";
+  const uniqueCounterName = "unique-visitors-v20260508d";
+  const totalCounterName = "total-visits";
+  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted_v20260508d";
+  const sessionVisitKey = "calderaThroneHomeVisitCountedThisSession_v20260508d";
 
   const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+
+  function isHomePage() {
+    const path = window.location.pathname.replace(/\/+$/, "");
+    const file = path.split("/").pop();
+
+    return (
+      path === "" ||
+      path === "/" ||
+      file === "" ||
+      file === "index.html"
+    );
+  }
 
   function formatCount(value) {
     return Number(value).toLocaleString("en-US");
@@ -243,10 +252,43 @@ const visitorCounter = (() => {
     return counterValue(data);
   }
 
+  async function readTotalVisits() {
+    try {
+      const totalCount = await requestCounter(totalCounterName);
+      totalVisits.textContent = formatCount(totalBase + totalCount);
+    } catch (error) {
+      totalVisits.textContent = `${formatCount(totalBase)}+`;
+    }
+  }
+
   async function updateTotalVisits() {
     try {
-      const totalCount = await requestCounter("total-visits", "up");
+      if (!isHomePage()) {
+        await readTotalVisits();
+        return;
+      }
+
+      let alreadyCountedThisSession = false;
+
+      try {
+        alreadyCountedThisSession = sessionStorage.getItem(sessionVisitKey) === "true";
+      } catch (error) {
+        alreadyCountedThisSession = false;
+      }
+
+      if (alreadyCountedThisSession) {
+        await readTotalVisits();
+        return;
+      }
+
+      const totalCount = await requestCounter(totalCounterName, "up");
       totalVisits.textContent = formatCount(totalBase + totalCount);
+
+      try {
+        sessionStorage.setItem(sessionVisitKey, "true");
+      } catch (error) {
+        /* sessionStorage unavailable; total was still updated. */
+      }
     } catch (error) {
       totalVisits.textContent = `${formatCount(totalBase)}+`;
     }
@@ -265,9 +307,9 @@ const visitorCounter = (() => {
       let uniqueCount;
 
       if (alreadyCounted) {
-        uniqueCount = await requestCounter("unique-visitors");
+        uniqueCount = await requestCounter(uniqueCounterName);
       } else {
-        uniqueCount = await requestCounter("unique-visitors", "up");
+        uniqueCount = await requestCounter(uniqueCounterName, "up");
 
         try {
           localStorage.setItem(uniqueStorageKey, "true");
