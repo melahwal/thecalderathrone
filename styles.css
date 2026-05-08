@@ -1441,12 +1441,17 @@ img {
   margin-top: 110px !important;
 }
 
-
 .author-image img {
   max-width: 420px;
   width: 100%;
-  height: auto;
+  height: 430px !important;
+  object-fit: cover;
+  object-position: center;
   border: 1px solid var(--gold-frame);
+}
+.author-bio-frame {
+  height: 430px;
+  overflow: hidden;
 }
 
 .contact-form {
