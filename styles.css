@@ -2423,3 +2423,26 @@ textarea:focus {
   .book-illustration { gap: 8px; }
   .book-end-actions { flex-direction: column; width: 100%; }
 }
+
+
+
+/* === AUTHOR PAGE — ENLARGE BIOGRAPHY TEXT INSIDE GOLD BOX === */
+html body.author-page-final main .author-final-row .author-final-bio {
+  padding: 22px 34px !important;
+}
+
+html body.author-page-final main .author-final-row .author-final-bio p {
+  margin: 0 0 13px !important;
+  color: rgba(255, 240, 215, 0.94) !important;
+  font-family: var(--serif) !important;
+  font-size: clamp(1.20rem, 1.35vw, 1.34rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.43 !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  letter-spacing: 0.01em !important;
+}
+
+html body.author-page-final main .author-final-row .author-final-bio p:last-child {
+  margin-bottom: 0 !important;
+}
