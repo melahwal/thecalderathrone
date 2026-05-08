@@ -12,17 +12,13 @@
     return Array.from({ length: end - start + 1 }, (_, index) => formatter(start + index));
   }
 
-  async function imageExists(src) {
-    try {
-      const response = await fetch(encodeURI(src), {
-        method: "HEAD",
-        cache: "no-store"
-      });
-
-      return response.ok;
-    } catch (error) {
-      return false;
-    }
+  function imageExists(src) {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(true);
+      image.onerror = () => resolve(false);
+      image.src = encodeURI(src);
+    });
   }
 
   async function discoverSequentialPages({ start = 1, max = 200, makeSrcCandidates, makeCaption }) {
@@ -269,6 +265,7 @@
 
     if (page.type === "end") {
       const book = books[bookIndex];
+
       return `
         <div class="book-end-panel">
           <p class="book-end-kicker">End of Volume</p>
@@ -292,7 +289,9 @@
   function renderSelection() {
     els.selection.innerHTML = books.map((book, index) => `
       <button class="book-select-card" type="button" data-select-book="${index}">
-        <span class="book-select-image"><img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async"></span>
+        <span class="book-select-image">
+          <img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async">
+        </span>
         <span class="book-select-kicker">${escapeHtml(book.kicker)}</span>
         ${book.title ? `<strong>${escapeHtml(book.title)}</strong>` : ""}
       </button>
@@ -349,6 +348,7 @@
 
   function nextSpread() {
     const spreads = spreadsFor(books[bookIndex]);
+
     if (spreadIndex >= spreads.length - 1) {
       return;
     }
