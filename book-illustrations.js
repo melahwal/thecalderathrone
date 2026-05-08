@@ -12,92 +12,171 @@
     return Array.from({ length: end - start + 1 }, (_, index) => formatter(start + index));
   }
 
-  const book1Pages = [
-    imagePage("images/book 1/book1-001-title-page.png", "Title Page"),
-    imagePage("images/book 1/book1-002-opening-scene.png", "Opening Scene"),
-    ...range(3, 44, (number) => imagePage(
-      `images/book 1/book1-${String(number).padStart(3, "0")}-scene-${String(number).padStart(2, "0")}.png`,
-      `Scene ${String(number).padStart(2, "0")}`
-    )),
-    imagePage("images/book 1/book1-045-last-illustration.png", "Last Illustration"),
-    characterSpread(
-      "images/characters/book1-spread/final/book1-characters-left-page.png",
-      "images/characters/book1-spread/final/book1-characters-right-page.png",
-      "Book 1 Character Spread"
-    )
-  ];
+  async function imageExists(src) {
+    try {
+      const response = await fetch(encodeURI(src), {
+        method: "HEAD",
+        cache: "no-store"
+      });
 
-  const book2Pages = [
-    ...range(1, 28, (number) => imagePage(
-      `images/book 2/b2_${String(number).padStart(2, "0")}.png`,
-      `Book 2 Illustration ${String(number).padStart(2, "0")}`
-    )),
-    characterSpread(
-      "images/characters/book2-spread/final/book2-characters-left-page.png",
-      "images/characters/book2-spread/final/book2-characters-right-page.png",
-      "Book 2 Character Spread"
-    )
-  ];
-
-  const book3Pages = [
-    ...range(1, 15, (number) => imagePage(
-      `images/book 3/b3_${String(number).padStart(2, "0")}.png`,
-      `Book 3 Illustration ${String(number).padStart(2, "0")}`
-    )),
-    characterSpread(
-      "images/characters/book3-spread/final/book3-characters-left-page.png",
-      "images/characters/book3-spread/final/book3-characters-right-page.png",
-      "Book 3 Character Spread"
-    )
-  ];
-
-  const book4Pages = range(1, 10, (number) => imagePage(
-    `images/Book 4/b4_${String(number).padStart(2, "0")}.png`,
-    `Book 4 Illustration ${String(number).padStart(2, "0")}`
-  ));
-
-  const books = [
-    {
-      id: "book-1",
-      kicker: "Book 1",
-      title: "The Still and the Burning",
-      entryImage: "images/book 1/book1-001-title-page.png",
-      repeat: "Repeat Book 1",
-      next: "Go to Book 2",
-      nextBook: "book-2",
-      pages: book1Pages
-    },
-    {
-      id: "book-2",
-      kicker: "Book 2",
-      title: "The Empire of Ledgers",
-      entryImage: "images/book 2/b2_main_01.png",
-      repeat: "Repeat Book 2",
-      next: "Go to Book 3",
-      nextBook: "book-3",
-      pages: book2Pages
-    },
-    {
-      id: "book-3",
-      kicker: "Book 3",
-      title: "What the Mountain Kept",
-      entryImage: "images/book 3/b3_main.png",
-      repeat: "Repeat Book 3",
-      next: "Go to Book 4",
-      nextBook: "book-4",
-      pages: book3Pages
-    },
-    {
-      id: "book-4",
-      kicker: "Book 4",
-      title: "The Imperial Capital",
-      entryImage: "images/Book 4/b4_main_01.png",
-      repeat: "Repeat Book 4",
-      next: "Return to Book Selection",
-      nextBook: null,
-      pages: book4Pages
+      return response.ok;
+    } catch (error) {
+      return false;
     }
-  ];
+  }
+
+  async function discoverSequentialPages({ start = 1, max = 200, makeSrcCandidates, makeCaption }) {
+    const pages = [];
+
+    for (let number = start; number <= max; number += 1) {
+      const candidates = makeSrcCandidates(number);
+      let foundSrc = null;
+
+      for (const src of candidates) {
+        if (await imageExists(src)) {
+          foundSrc = src;
+          break;
+        }
+      }
+
+      if (!foundSrc) {
+        break;
+      }
+
+      pages.push(imagePage(foundSrc, makeCaption(number)));
+    }
+
+    return pages;
+  }
+
+  async function buildBooks() {
+    const book1Pages = [
+      ...(await discoverSequentialPages({
+        start: 1,
+        max: 200,
+        makeSrcCandidates: (number) => {
+          const n3 = String(number).padStart(3, "0");
+          const n2 = String(number).padStart(2, "0");
+
+          if (number === 1) {
+            return [
+              "images/book 1/book1-001-title-page.png",
+              `images/book 1/book1-${n3}.png`
+            ];
+          }
+
+          if (number === 2) {
+            return [
+              "images/book 1/book1-002-opening-scene.png",
+              `images/book 1/book1-${n3}.png`
+            ];
+          }
+
+          return [
+            `images/book 1/book1-${n3}-scene-${n2}.png`,
+            `images/book 1/book1-${n3}-last-illustration.png`,
+            `images/book 1/book1-${n3}.png`
+          ];
+        },
+        makeCaption: (number) => {
+          if (number === 1) return "Title Page";
+          if (number === 2) return "Opening Scene";
+          return `Book 1 Illustration ${String(number).padStart(2, "0")}`;
+        }
+      })),
+      characterSpread(
+        "images/characters/book1-spread/final/book1-characters-left-page.png",
+        "images/characters/book1-spread/final/book1-characters-right-page.png",
+        "Book 1 Character Spread"
+      )
+    ];
+
+    const book2Pages = [
+      ...(await discoverSequentialPages({
+        start: 1,
+        max: 200,
+        makeSrcCandidates: (number) => [
+          `images/book 2/b2_${String(number).padStart(2, "0")}.png`
+        ],
+        makeCaption: (number) => `Book 2 Illustration ${String(number).padStart(2, "0")}`
+      })),
+      characterSpread(
+        "images/characters/book2-spread/final/book2-characters-left-page.png",
+        "images/characters/book2-spread/final/book2-characters-right-page.png",
+        "Book 2 Character Spread"
+      )
+    ];
+
+    const book3Pages = [
+      ...(await discoverSequentialPages({
+        start: 1,
+        max: 200,
+        makeSrcCandidates: (number) => [
+          `images/book 3/b3_${String(number).padStart(2, "0")}.png`
+        ],
+        makeCaption: (number) => `Book 3 Illustration ${String(number).padStart(2, "0")}`
+      })),
+      characterSpread(
+        "images/characters/book3-spread/final/book3-characters-left-page.png",
+        "images/characters/book3-spread/final/book3-characters-right-page.png",
+        "Book 3 Character Spread"
+      )
+    ];
+
+    const book4Pages = [
+      ...(await discoverSequentialPages({
+        start: 1,
+        max: 200,
+        makeSrcCandidates: (number) => [
+          `images/Book 4/b4_${String(number).padStart(2, "0")}.png`
+        ],
+        makeCaption: (number) => `Book 4 Illustration ${String(number).padStart(2, "0")}`
+      }))
+    ];
+
+    return [
+      {
+        id: "book-1",
+        kicker: "Book 1",
+        title: "The Still and the Burning",
+        entryImage: "images/book 1/book1-001-title-page.png",
+        repeat: "Repeat Book 1",
+        next: "Go to Book 2",
+        nextBook: "book-2",
+        pages: book1Pages
+      },
+      {
+        id: "book-2",
+        kicker: "Book 2",
+        title: "The Empire of Ledgers",
+        entryImage: "images/book 2/b2_main_01.png",
+        repeat: "Repeat Book 2",
+        next: "Go to Book 3",
+        nextBook: "book-3",
+        pages: book2Pages
+      },
+      {
+        id: "book-3",
+        kicker: "Book 3",
+        title: "What the Mountain Kept",
+        entryImage: "images/book 3/b3_main.png",
+        repeat: "Repeat Book 3",
+        next: "Go to Book 4",
+        nextBook: "book-4",
+        pages: book3Pages
+      },
+      {
+        id: "book-4",
+        kicker: "Book 4",
+        title: "The Imperial Capital",
+        entryImage: "images/Book 4/b4_main_01.png",
+        repeat: "Repeat Book 4",
+        next: "Return to Book Selection",
+        nextBook: null,
+        pages: book4Pages
+      }
+    ];
+  }
 
   const els = {
     selection: bookReader.querySelector("[data-book-selection]"),
@@ -114,6 +193,7 @@
     next: [...bookReader.querySelectorAll("[data-book-next], [data-book-next-button]")]
   };
 
+  let books = [];
   let bookIndex = 0;
   let spreadIndex = 0;
   let isTurning = false;
@@ -339,13 +419,19 @@
     }
   });
 
-  window.calderaBookIllustrations = {
-    books,
-    spreadsFor,
-    openBook,
-    showSelection
-  };
+  async function init() {
+    books = await buildBooks();
 
-  renderSelection();
-  showSelection();
+    window.calderaBookIllustrations = {
+      books,
+      spreadsFor,
+      openBook,
+      showSelection
+    };
+
+    renderSelection();
+    showSelection();
+  }
+
+  init();
 })();

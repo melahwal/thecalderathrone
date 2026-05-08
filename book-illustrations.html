@@ -1,437 +1,103 @@
-(() => {
-  const bookReader = document.querySelector("[data-book-reader]");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Book Illustrations for The Caldera Throne: conceptual visual development presented as a premium open-book experience.">
+  <link rel="canonical" href="https://thecalderathrone.com/book-illustrations">
+  <meta property="og:site_name" content="The Caldera Throne">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Book Illustrations | The Caldera Throne">
+  <meta property="og:description" content="Conceptual visual development for The Caldera Throne in a premium open-book flip viewer.">
+  <meta property="og:url" content="https://thecalderathrone.com/book-illustrations">
+  <meta property="og:image" content="https://thecalderathrone.com/images/book%201/book1-001-title-page.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Book Illustrations | The Caldera Throne">
+  <meta name="twitter:description" content="Conceptual visual development for The Caldera Throne in a premium open-book flip viewer.">
+  <meta name="twitter:image" content="https://thecalderathrone.com/images/book%201/book1-001-title-page.png">
+  <title>Book Illustrations | The Caldera Throne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="layout-fix.css?v=20260508b">
+  <link rel="stylesheet" href="styles.css?v=20260508b">
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html" aria-label="The Caldera Throne home">
+      <span class="brand-mark"></span>
+      <span>The Caldera Throne</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="novels.html">Novels</a>
+      <a href="characters.html">Characters</a>
+      <a href="book-illustrations.html" aria-current="page">Book Illustrations</a>
+      <a href="adaptation.html">Adaptation</a>
+      <a href="author.html">Author</a>
+      <a href="rights.html">Rights</a>
+    </nav>
+  </header>
 
-  if (!bookReader) {
-    return;
-  }
+  <main>
+    <section class="section book-illustrations-section" aria-labelledby="book-illustrations-title">
+      <div class="section-heading book-illustrations-heading">
+        <h1 class="page-title" id="book-illustrations-title">CONCEPTUAL VISUAL DEVELOPMENT</h1>
+        <p class="page-disclaimer">This page presents conceptual visual development for The Caldera Throne. The novels are unpublished works in development, and no television or film adaptation has been produced or commissioned.</p>
+      </div>
 
-  const imagePage = (src, caption) => ({ type: "image", src, caption });
-  const characterSpread = (left, right, caption) => ({ type: "spread", left, right, caption });
+      <div class="book-illustrations-shell" data-book-reader>
+        <div class="book-reader-status" aria-live="polite" data-book-status></div>
+        <div class="book-selection-grid" data-book-selection aria-label="Select a book" tabindex="-1"></div>
 
-  function range(start, end, formatter) {
-    return Array.from({ length: end - start + 1 }, (_, index) => formatter(start + index));
-  }
+        <div class="book-viewer" data-book-viewer hidden>
+          <div class="book-viewer-topbar">
+            <div class="book-current-title" aria-live="polite">
+              <span data-book-kicker>Book 1</span>
+              <strong data-book-title>The Still and the Burning</strong>
+            </div>
+            <button class="book-control" type="button" data-return-selection>Return to Book Selection</button>
+          </div>
 
-  async function imageExists(src) {
-    try {
-      const response = await fetch(encodeURI(src), {
-        method: "HEAD",
-        cache: "no-store"
-      });
+          <div class="open-book-wrap">
+            <button class="book-edge book-edge-left" type="button" aria-label="Previous illustration" data-book-prev></button>
 
-      return response.ok;
-    } catch (error) {
-      return false;
-    }
-  }
+            <article class="open-book" aria-label="Open two-page illustration book">
+              <div class="book-spine" aria-hidden="true"></div>
+              <div class="book-pages" data-book-pages>
+                <section class="book-page book-page-left" aria-label="Left book page" data-book-left></section>
+                <section class="book-page book-page-right" aria-label="Right book page" data-book-right></section>
+                <div class="turning-page" aria-hidden="true" data-turning-page></div>
+              </div>
+            </article>
 
-  async function discoverSequentialPages({ start = 1, max = 200, makeSrcCandidates, makeCaption }) {
-    const pages = [];
+            <button class="book-edge book-edge-right" type="button" aria-label="Next illustration" data-book-next></button>
+          </div>
 
-    for (let number = start; number <= max; number += 1) {
-      const candidates = makeSrcCandidates(number);
-      let foundSrc = null;
-
-      for (const src of candidates) {
-        if (await imageExists(src)) {
-          foundSrc = src;
-          break;
-        }
-      }
-
-      if (!foundSrc) {
-        break;
-      }
-
-      pages.push(imagePage(foundSrc, makeCaption(number)));
-    }
-
-    return pages;
-  }
-
-  async function buildBooks() {
-    const book1Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => {
-          const n3 = String(number).padStart(3, "0");
-          const n2 = String(number).padStart(2, "0");
-
-          if (number === 1) {
-            return [
-              "images/book 1/book1-001-title-page.png",
-              `images/book 1/book1-${n3}.png`
-            ];
-          }
-
-          if (number === 2) {
-            return [
-              "images/book 1/book1-002-opening-scene.png",
-              `images/book 1/book1-${n3}.png`
-            ];
-          }
-
-          return [
-            `images/book 1/book1-${n3}-scene-${n2}.png`,
-            `images/book 1/book1-${n3}-last-illustration.png`,
-            `images/book 1/book1-${n3}.png`
-          ];
-        },
-        makeCaption: (number) => {
-          if (number === 1) return "Title Page";
-          if (number === 2) return "Opening Scene";
-          return `Book 1 Illustration ${String(number).padStart(2, "0")}`;
-        }
-      })),
-      characterSpread(
-        "images/characters/book1-spread/final/book1-characters-left-page.png",
-        "images/characters/book1-spread/final/book1-characters-right-page.png",
-        "Book 1 Character Spread"
-      )
-    ];
-
-    const book2Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/book 2/b2_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 2 Illustration ${String(number).padStart(2, "0")}`
-      })),
-      characterSpread(
-        "images/characters/book2-spread/final/book2-characters-left-page.png",
-        "images/characters/book2-spread/final/book2-characters-right-page.png",
-        "Book 2 Character Spread"
-      )
-    ];
-
-    const book3Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/book 3/b3_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 3 Illustration ${String(number).padStart(2, "0")}`
-      })),
-      characterSpread(
-        "images/characters/book3-spread/final/book3-characters-left-page.png",
-        "images/characters/book3-spread/final/book3-characters-right-page.png",
-        "Book 3 Character Spread"
-      )
-    ];
-
-    const book4Pages = [
-      ...(await discoverSequentialPages({
-        start: 1,
-        max: 200,
-        makeSrcCandidates: (number) => [
-          `images/Book 4/b4_${String(number).padStart(2, "0")}.png`
-        ],
-        makeCaption: (number) => `Book 4 Illustration ${String(number).padStart(2, "0")}`
-      }))
-    ];
-
-    return [
-      {
-        id: "book-1",
-        kicker: "Book 1",
-        title: "The Still and the Burning",
-        entryImage: "images/book 1/book1-001-title-page.png",
-        repeat: "Repeat Book 1",
-        next: "Go to Book 2",
-        nextBook: "book-2",
-        pages: book1Pages
-      },
-      {
-        id: "book-2",
-        kicker: "Book 2",
-        title: "The Empire of Ledgers",
-        entryImage: "images/book 2/b2_main_01.png",
-        repeat: "Repeat Book 2",
-        next: "Go to Book 3",
-        nextBook: "book-3",
-        pages: book2Pages
-      },
-      {
-        id: "book-3",
-        kicker: "Book 3",
-        title: "What the Mountain Kept",
-        entryImage: "images/book 3/b3_main.png",
-        repeat: "Repeat Book 3",
-        next: "Go to Book 4",
-        nextBook: "book-4",
-        pages: book3Pages
-      },
-      {
-        id: "book-4",
-        kicker: "Book 4",
-        title: "The Imperial Capital",
-        entryImage: "images/Book 4/b4_main_01.png",
-        repeat: "Repeat Book 4",
-        next: "Return to Book Selection",
-        nextBook: null,
-        pages: book4Pages
-      }
-    ];
-  }
-
-  const els = {
-    selection: bookReader.querySelector("[data-book-selection]"),
-    viewer: bookReader.querySelector("[data-book-viewer]"),
-    kicker: bookReader.querySelector("[data-book-kicker]"),
-    title: bookReader.querySelector("[data-book-title]"),
-    left: bookReader.querySelector("[data-book-left]"),
-    right: bookReader.querySelector("[data-book-right]"),
-    turning: bookReader.querySelector("[data-turning-page]"),
-    progress: bookReader.querySelector("[data-book-progress]"),
-    status: bookReader.querySelector("[data-book-status]"),
-    returnButtons: [...bookReader.querySelectorAll("[data-return-selection]")],
-    prev: [...bookReader.querySelectorAll("[data-book-prev], [data-book-prev-button]")],
-    next: [...bookReader.querySelectorAll("[data-book-next], [data-book-next-button]")]
-  };
-
-  let books = [];
-  let bookIndex = 0;
-  let spreadIndex = 0;
-  let isTurning = false;
-  const spreadCache = new Map();
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (character) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[character]);
-  }
-
-  function titleLine(book) {
-    return book.title ? `${book.kicker} - ${book.title}` : book.kicker;
-  }
-
-  function endPage(book) {
-    return { type: "end", repeat: book.repeat, next: book.next, nextBook: book.nextBook };
-  }
-
-  function blankPage() {
-    return { type: "blank" };
-  }
-
-  function flatPages(book) {
-    const pages = [];
-
-    book.pages.forEach((page) => {
-      if (page.type !== "spread") {
-        pages.push(page);
-        return;
-      }
-
-      if (pages.length % 2 !== 0) {
-        pages.push(blankPage());
-      }
-
-      pages.push(imagePage(page.left, `${page.caption} Left Page`));
-      pages.push(imagePage(page.right, `${page.caption} Right Page`));
-    });
-
-    if (pages.length % 2 !== 0) {
-      pages.push(blankPage());
-    }
-
-    pages.push(endPage(book), blankPage());
-    return pages;
-  }
-
-  function spreadsFor(book) {
-    if (spreadCache.has(book.id)) {
-      return spreadCache.get(book.id);
-    }
-
-    const pages = flatPages(book);
-    const spreads = [];
-
-    for (let index = 0; index < pages.length; index += 2) {
-      spreads.push([pages[index], pages[index + 1] || blankPage()]);
-    }
-
-    spreadCache.set(book.id, spreads);
-    return spreads;
-  }
-
-  function renderPage(page, side) {
-    if (!page || page.type === "blank") {
-      return '<div class="book-blank-page" aria-hidden="true"></div>';
-    }
-
-    if (page.type === "end") {
-      const book = books[bookIndex];
-      return `
-        <div class="book-end-panel">
-          <p class="book-end-kicker">End of Volume</p>
-          <h3>${escapeHtml(titleLine(book))}</h3>
-          <div class="book-end-actions">
-            <button type="button" class="book-control primary" data-repeat-book>${escapeHtml(page.repeat)}</button>
-            <button type="button" class="book-control" data-next-book>${escapeHtml(page.next)}</button>
+          <div class="book-reader-controls" aria-label="Book controls">
+            <button class="book-control" type="button" data-book-prev-button>Previous</button>
+            <span data-book-progress>Spread 1 of 1</span>
+            <button class="book-control" type="button" data-book-next-button>Next</button>
           </div>
         </div>
-      `;
-    }
+      </div>
+    </section>
+  </main>
 
-    return `
-      <figure class="book-illustration book-illustration-${side}">
-        <img src="${encodeURI(page.src)}" alt="${escapeHtml(page.caption)} illustration from The Caldera Throne." loading="eager" decoding="async">
-        <figcaption>${escapeHtml(page.caption)}</figcaption>
-      </figure>
-    `;
-  }
+  <footer class="site-footer">
+    <p>&copy; <span data-year></span> Mustafa M. El Ahwal. All rights reserved.</p>
+    <div class="footer-stats" aria-label="Visitor statistics">
+      Unique Visitors: <span data-unique-visitors>1,000+</span> | Total Visits: <span data-total-visits>2,500+</span>
+    </div>
+    <a href="#">Return to top</a>
+  </footer>
 
-  function renderSelection() {
-    els.selection.innerHTML = books.map((book, index) => `
-      <button class="book-select-card" type="button" data-select-book="${index}">
-        <span class="book-select-image"><img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async"></span>
-        <span class="book-select-kicker">${escapeHtml(book.kicker)}</span>
-        ${book.title ? `<strong>${escapeHtml(book.title)}</strong>` : ""}
-      </button>
-    `).join("");
-  }
-
-  function renderSpread() {
-    const book = books[bookIndex];
-    const spreads = spreadsFor(book);
-    spreadIndex = Math.max(0, Math.min(spreadIndex, spreads.length - 1));
-    const [left, right] = spreads[spreadIndex];
-
-    els.kicker.textContent = book.title ? `${book.kicker} —` : book.kicker;
-    els.title.textContent = book.title;
-    els.title.toggleAttribute("hidden", !book.title);
-    els.left.innerHTML = renderPage(left, "left");
-    els.right.innerHTML = renderPage(right, "right");
-    els.progress.textContent = `Spread ${spreadIndex + 1} of ${spreads.length}`;
-    els.status.textContent = `${titleLine(book)}, spread ${spreadIndex + 1} of ${spreads.length}`;
-    els.prev.forEach((button) => { button.disabled = spreadIndex === 0; });
-    els.next.forEach((button) => { button.disabled = spreadIndex === spreads.length - 1; });
-  }
-
-  function showSelection() {
-    els.viewer.hidden = true;
-    els.selection.hidden = false;
-    els.selection.focus({ preventScroll: true });
-  }
-
-  function openBook(index) {
-    bookIndex = index;
-    spreadIndex = 0;
-    els.selection.hidden = true;
-    els.viewer.hidden = false;
-    renderSpread();
-    els.viewer.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function flip(direction, afterTurn) {
-    if (isTurning || els.viewer.hidden) {
-      return;
-    }
-
-    isTurning = true;
-    els.turning.className = `turning-page turn-${direction}`;
-
-    window.setTimeout(() => {
-      afterTurn();
-      renderSpread();
-      els.turning.className = "turning-page";
-      isTurning = false;
-    }, 820);
-  }
-
-  function nextSpread() {
-    const spreads = spreadsFor(books[bookIndex]);
-    if (spreadIndex >= spreads.length - 1) {
-      return;
-    }
-
-    flip("forward", () => {
-      spreadIndex += 1;
-    });
-  }
-
-  function previousSpread() {
-    if (spreadIndex <= 0) {
-      return;
-    }
-
-    flip("backward", () => {
-      spreadIndex -= 1;
-    });
-  }
-
-  bookReader.addEventListener("click", (event) => {
-    const select = event.target.closest("[data-select-book]");
-
-    if (select) {
-      openBook(Number(select.dataset.selectBook));
-      return;
-    }
-
-    if (event.target.closest("[data-repeat-book]")) {
-      openBook(bookIndex);
-      return;
-    }
-
-    if (event.target.closest("[data-next-book]")) {
-      const nextBook = books[bookIndex].nextBook;
-
-      if (!nextBook) {
-        showSelection();
-        return;
-      }
-
-      const nextIndex = books.findIndex((book) => book.id === nextBook);
-
-      if (nextIndex >= 0) {
-        openBook(nextIndex);
-      }
-    }
-  });
-
-  els.prev.forEach((button) => button.addEventListener("click", previousSpread));
-  els.next.forEach((button) => button.addEventListener("click", nextSpread));
-  els.returnButtons.forEach((button) => button.addEventListener("click", showSelection));
-
-  document.addEventListener("keydown", (event) => {
-    if (els.viewer.hidden) {
-      return;
-    }
-
-    if (event.key === "ArrowRight") {
-      nextSpread();
-    }
-
-    if (event.key === "ArrowLeft") {
-      previousSpread();
-    }
-
-    if (event.key === "Escape") {
-      showSelection();
-    }
-  });
-
-  async function init() {
-    books = await buildBooks();
-
-    window.calderaBookIllustrations = {
-      books,
-      spreadsFor,
-      openBook,
-      showSelection
-    };
-
-    renderSelection();
-    showSelection();
-  }
-
-  init();
-})();
+  <script src="script.js?v=20260508c"></script>
+  <script src="book-illustrations.js?v=20260508g"></script>
+</body>
+</html>
