@@ -1,6 +1,7 @@
 /* =========================================================
    BOOK ILLUSTRATIONS MOBILE FIX
-   Mobile uses single-page display with arrows inside book.
+   Cleaner mobile display: one page at a time, fitted to screen,
+   with navigation arrows inside the book frame.
    Desktop remains unchanged.
    ========================================================= */
 
@@ -19,23 +20,24 @@
   .book-illustrations-section {
     width: 100% !important;
     max-width: 100% !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    padding-top: calc(var(--header-height) + 22px) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: calc(var(--header-height) + 18px) !important;
+    padding-bottom: 26px !important;
     overflow: visible !important;
   }
 
   .book-illustrations-heading {
     width: 100% !important;
     max-width: 100% !important;
-    margin-bottom: 14px !important;
+    margin-bottom: 12px !important;
   }
 
   .book-illustrations-heading .page-title,
   #book-illustrations-title {
     width: 100% !important;
     max-width: 100% !important;
-    font-size: clamp(1.9rem, 10vw, 3.1rem) !important;
+    font-size: clamp(1.75rem, 9vw, 2.85rem) !important;
     line-height: 1 !important;
     letter-spacing: 0 !important;
     word-break: normal !important;
@@ -45,9 +47,9 @@
   .page-disclaimer {
     width: 100% !important;
     max-width: 100% !important;
-    margin-top: 10px !important;
-    font-size: 0.98rem !important;
-    line-height: 1.35 !important;
+    margin-top: 8px !important;
+    font-size: 0.92rem !important;
+    line-height: 1.28 !important;
     white-space: normal !important;
   }
 
@@ -70,7 +72,7 @@
   .book-selection-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 16px !important;
+    gap: 14px !important;
     padding: 0 !important;
   }
 
@@ -79,7 +81,7 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    padding: 12px !important;
+    padding: 11px !important;
   }
 
   .book-select-image {
@@ -101,21 +103,30 @@
   .book-viewer-topbar {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
   }
 
   .book-current-title {
     width: 100% !important;
   }
 
+  .book-current-title span,
+  .book-current-title strong {
+    line-height: 1.15 !important;
+  }
+
+  .book-current-title strong {
+    font-size: 0.95rem !important;
+  }
+
   .open-book-wrap {
     position: relative !important;
     display: block !important;
-    width: 100% !important;
+    width: min(100%, 420px) !important;
     max-width: 100% !important;
     min-width: 0 !important;
     overflow: visible !important;
@@ -128,8 +139,9 @@
     max-width: 100% !important;
     min-width: 0 !important;
     min-height: 0 !important;
-    padding: 8px !important;
-    border-radius: 14px !important;
+    padding: 7px !important;
+    border-width: 1px !important;
+    border-radius: 12px !important;
     overflow: visible !important;
   }
 
@@ -141,6 +153,8 @@
     height: auto !important;
     min-height: 0 !important;
     overflow: visible !important;
+    border-width: 1px !important;
+    border-radius: 10px !important;
   }
 
   .book-page {
@@ -172,14 +186,14 @@
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    max-height: none !important;
+    max-height: calc(100vh - 230px) !important;
     object-fit: contain !important;
   }
 
   .book-illustration figcaption {
-    font-size: 0.92rem !important;
-    line-height: 1.2 !important;
-    padding-top: 8px !important;
+    font-size: 0.82rem !important;
+    line-height: 1.15 !important;
+    padding-top: 6px !important;
   }
 
   .book-spine,
@@ -194,8 +208,8 @@
     top: 50% !important;
     transform: translateY(-50%) !important;
     z-index: 50 !important;
-    width: 42px !important;
-    height: 68px !important;
+    width: 38px !important;
+    height: 58px !important;
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -203,20 +217,20 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: rgba(0, 0, 0, 0.78) !important;
+    background: rgba(0, 0, 0, 0.72) !important;
     border: 1px solid rgba(216, 183, 102, 0.95) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.42) !important;
   }
 
   .book-edge::before {
     font-family: var(--display), Georgia, serif !important;
-    font-size: 2rem !important;
+    font-size: 1.9rem !important;
     line-height: 1 !important;
     color: #d8b766 !important;
   }
 
   .book-edge-left {
-    left: 6px !important;
+    left: 7px !important;
     right: auto !important;
   }
 
@@ -225,7 +239,7 @@
   }
 
   .book-edge-right {
-    right: 6px !important;
+    right: 7px !important;
     left: auto !important;
   }
 
@@ -234,7 +248,7 @@
   }
 
   .book-edge:disabled {
-    opacity: 0.35 !important;
+    opacity: 0.28 !important;
   }
 
   .book-reader-controls {
@@ -244,16 +258,49 @@
   .book-control {
     width: 100% !important;
     min-width: 0 !important;
+    min-height: 38px !important;
+    padding: 9px 14px !important;
+    font-size: 0.68rem !important;
   }
 
   .book-end-panel {
     width: 100% !important;
     max-width: 100% !important;
+    padding: 18px 12px !important;
   }
 
   .book-end-actions {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 10px !important;
+    gap: 9px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .open-book-wrap {
+    width: min(100%, 390px) !important;
+  }
+
+  .book-illustration img {
+    max-height: calc(100vh - 220px) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .open-book-wrap {
+    width: min(100%, 355px) !important;
+  }
+
+  .book-edge {
+    width: 34px !important;
+    height: 52px !important;
+  }
+
+  .book-edge::before {
+    font-size: 1.65rem !important;
+  }
+
+  .book-illustration img {
+    max-height: calc(100vh - 210px) !important;
   }
 }
