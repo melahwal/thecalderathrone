@@ -23,43 +23,43 @@
     characterSpread(
       "images/characters/book1-spread/final/book1-characters-left-page.png",
       "images/characters/book1-spread/final/book1-characters-right-page.png",
-      "Book I Character Spread"
+      "Book 1 Character Spread"
     )
   ];
 
   const book2Pages = [
     ...range(1, 28, (number) => imagePage(
       `images/book 2/b2_${String(number).padStart(2, "0")}.png`,
-      `Book II Illustration ${String(number).padStart(2, "0")}`
+      `Book 2 Illustration ${String(number).padStart(2, "0")}`
     )),
     characterSpread(
       "images/characters/book2-spread/final/book2-characters-left-page.png",
       "images/characters/book2-spread/final/book2-characters-right-page.png",
-      "Book II Character Spread"
+      "Book 2 Character Spread"
     )
   ];
 
   const book3Pages = [
     ...range(1, 15, (number) => imagePage(
       `images/book 3/b3_${String(number).padStart(2, "0")}.png`,
-      `Book III Illustration ${String(number).padStart(2, "0")}`
+      `Book 3 Illustration ${String(number).padStart(2, "0")}`
     )),
     characterSpread(
       "images/characters/book3-spread/final/book3-characters-left-page.png",
       "images/characters/book3-spread/final/book3-characters-right-page.png",
-      "Book III Character Spread"
+      "Book 3 Character Spread"
     )
   ];
 
   const book4Pages = range(1, 10, (number) => imagePage(
     `images/Book 4/b4_${String(number).padStart(2, "0")}.png`,
-    `Book IV Illustration ${String(number).padStart(2, "0")}`
+    `Book 4 Illustration ${String(number).padStart(2, "0")}`
   ));
 
   const books = [
     {
       id: "book-1",
-      kicker: "Book I",
+      kicker: "Book 1",
       title: "The Still and the Burning",
       entryImage: "images/book 1/book1-001-title-page.png",
       repeat: "Repeat Book 1",
@@ -69,7 +69,7 @@
     },
     {
       id: "book-2",
-      kicker: "Book II",
+      kicker: "Book 2",
       title: "The Empire of Ledgers",
       entryImage: "images/book 2/b2_main_01.png",
       repeat: "Repeat Book 2",
@@ -79,7 +79,7 @@
     },
     {
       id: "book-3",
-      kicker: "Book III",
+      kicker: "Book 3",
       title: "What the Mountain Kept",
       entryImage: "images/book 3/b3_main.png",
       repeat: "Repeat Book 3",
@@ -89,7 +89,7 @@
     },
     {
       id: "book-4",
-      kicker: "Book IV",
+      kicker: "Book 4",
       title: "The Imperial Capital",
       entryImage: "images/Book 4/b4_main_01.png",
       repeat: "Repeat Book 4",
