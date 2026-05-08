@@ -1,7 +1,8 @@
 /* =========================================================
    BOOK ILLUSTRATIONS MOBILE FIX
-   Cleaner mobile display: one page at a time, fitted to screen,
-   with navigation arrows inside the book frame.
+   Fixed mobile reading mode: hides intro while reading,
+   keeps the book stage stable, centers all image sizes,
+   and keeps arrows inside the book frame.
    Desktop remains unchanged.
    ========================================================= */
 
@@ -53,6 +54,18 @@
     white-space: normal !important;
   }
 
+  .book-illustrations-section:has(.book-viewer:not([hidden])) {
+    padding-top: calc(var(--header-height) + 8px) !important;
+  }
+
+  .book-illustrations-section:has(.book-viewer:not([hidden])) .book-illustrations-heading {
+    display: none !important;
+  }
+
+  .book-illustrations-section:has(.book-viewer:not([hidden])) .book-selection-grid {
+    display: none !important;
+  }
+
   .book-illustrations-shell,
   .book-selection-grid,
   .book-viewer {
@@ -101,13 +114,18 @@
   }
 
   .book-viewer-topbar {
+    position: sticky !important;
+    top: var(--header-height) !important;
+    z-index: 60 !important;
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 8px !important;
     width: 100% !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding: 8px 0 8px !important;
     margin-bottom: 8px !important;
+    background:
+      linear-gradient(180deg, rgba(3, 3, 2, 0.98), rgba(3, 3, 2, 0.86)) !important;
+    backdrop-filter: blur(10px) !important;
   }
 
   .book-current-title {
@@ -146,28 +164,35 @@
   }
 
   .book-pages {
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
+    height: clamp(350px, 58vh, 560px) !important;
+    min-height: 350px !important;
+    overflow: hidden !important;
     border-width: 1px !important;
     border-radius: 10px !important;
+    background: rgba(3, 3, 2, 0.58) !important;
   }
 
   .book-page {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    height: auto !important;
+    height: 100% !important;
     min-height: 0 !important;
     padding: 0 !important;
+    overflow: hidden !important;
   }
 
   .book-page-left {
-    display: block !important;
+    display: flex !important;
   }
 
   .book-page-right {
@@ -175,25 +200,45 @@
   }
 
   .book-illustration {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
     margin: 0 !important;
+    overflow: hidden !important;
   }
 
   .book-illustration img {
     display: block !important;
+    flex: 1 1 auto !important;
     width: 100% !important;
     max-width: 100% !important;
-    height: auto !important;
-    max-height: calc(100vh - 230px) !important;
+    height: calc(100% - 34px) !important;
+    max-height: calc(100% - 34px) !important;
     object-fit: contain !important;
+    object-position: center center !important;
+    background: rgba(3, 3, 2, 0.55) !important;
   }
 
   .book-illustration figcaption {
-    font-size: 0.82rem !important;
-    line-height: 1.15 !important;
-    padding-top: 6px !important;
+    flex: 0 0 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 4px 8px !important;
+    overflow: hidden !important;
+    font-size: 0.8rem !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
   }
 
   .book-spine,
@@ -281,14 +326,20 @@
     width: min(100%, 390px) !important;
   }
 
-  .book-illustration img {
-    max-height: calc(100vh - 220px) !important;
+  .book-pages {
+    height: clamp(340px, 57vh, 540px) !important;
+    min-height: 340px !important;
   }
 }
 
 @media (max-width: 380px) {
   .open-book-wrap {
     width: min(100%, 355px) !important;
+  }
+
+  .book-pages {
+    height: clamp(320px, 55vh, 500px) !important;
+    min-height: 320px !important;
   }
 
   .book-edge {
@@ -298,9 +349,5 @@
 
   .book-edge::before {
     font-size: 1.65rem !important;
-  }
-
-  .book-illustration img {
-    max-height: calc(100vh - 210px) !important;
   }
 }
