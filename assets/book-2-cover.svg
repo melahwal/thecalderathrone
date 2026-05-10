@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" role="img" aria-label="Book cover placeholder">
-  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#090908"/><stop offset=".55" stop-color="#171512"/><stop offset="1" stop-color="#7a512d"/></linearGradient></defs>
-  <rect width="800" height="1200" fill="url(#g)"/>
-  <rect x="54" y="54" width="692" height="1092" fill="none" stroke="#c7a35a" stroke-width="4" opacity=".65"/>
-  <g opacity=".5" stroke="#c7a35a" stroke-width="5"><path d="M190 310h420M190 390h420M190 470h420M190 550h420M190 630h420"/><path d="M280 260v430M400 260v430M520 260v430"/></g>
-  <text x="400" y="165" text-anchor="middle" fill="#c7a35a" font-family="Georgia, serif" font-size="42">BOOK TWO</text>
-  <text x="400" y="970" text-anchor="middle" fill="#f0e6d3" font-family="Georgia, serif" font-size="58">THE EMPIRE</text>
-  <text x="400" y="1035" text-anchor="middle" fill="#f0e6d3" font-family="Georgia, serif" font-size="58">OF LEDGERS</text>
-</svg>
