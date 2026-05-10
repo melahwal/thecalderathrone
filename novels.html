@@ -32,6 +32,51 @@
     .book-visual img {
       cursor: zoom-in;
     }
+
+    .book-panel {
+      scroll-margin-top: 110px;
+    }
+
+    .novel-cover-shortcuts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(160px, 220px));
+      justify-content: center;
+      gap: 28px;
+      margin: 28px auto 44px;
+      max-width: 860px;
+    }
+
+    .novel-cover-shortcut {
+      display: block;
+      border: 1px solid rgba(216, 183, 102, 0.75);
+      padding: 8px;
+      background: rgba(7, 6, 5, 0.72);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .novel-cover-shortcut:hover {
+      transform: translateY(-4px);
+      border-color: rgba(240, 212, 136, 0.95);
+    }
+
+    .novel-cover-shortcut img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 760px) {
+      .novel-cover-shortcuts {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 20px auto 30px;
+      }
+
+      .novel-cover-shortcut {
+        padding: 4px;
+      }
+    }
   </style>
 </head>
 
@@ -65,9 +110,23 @@
         <h2>Three books of pressure, inheritance, and institutional collapse.</h2>
       </div>
 
+      <div class="novel-cover-shortcuts" aria-label="Book cover shortcuts">
+        <a class="novel-cover-shortcut" href="#book-one" aria-label="Go to The Still and the Burning">
+          <img src="assets/book-1-cover.png" alt="Cover for The Still and the Burning">
+        </a>
+
+        <a class="novel-cover-shortcut" href="#book-two" aria-label="Go to The Empire of Ledgers">
+          <img src="assets/book-2-cover.png?v=20260510e" alt="Cover for The Empire of Ledgers">
+        </a>
+
+        <a class="novel-cover-shortcut" href="#book-three" aria-label="Go to What the Mountain Kept">
+          <img src="assets/book-3-cover.png?v=20260510e" alt="Cover for What the Mountain Kept">
+        </a>
+      </div>
+
       <div class="book-grid">
 
-        <article class="book-panel">
+        <article class="book-panel" id="book-one">
           <div class="book-panel-inner">
             <div class="book-copy">
               <p class="series-label">Book One of The Caldera Throne</p>
@@ -130,7 +189,7 @@
           </div>
         </article>
 
-        <article class="book-panel">
+        <article class="book-panel" id="book-two">
           <div class="book-panel-inner">
             <div class="book-copy">
               <p class="series-label">Book Two of The Caldera Throne</p>
@@ -191,7 +250,7 @@
           </div>
         </article>
 
-        <article class="book-panel">
+        <article class="book-panel" id="book-three">
           <div class="book-panel-inner">
             <div class="book-copy">
               <p class="series-label">Book Three of The Caldera Throne</p>
