@@ -204,9 +204,9 @@ if (contactForm) {
 /*
   Static-site counter rules:
   - Unique Visitors starts at 1,200 and counts once per browser/device, but only from the live homepage.
-  - Total Visits starts at 2,500 and increases only from the live homepage.
-  - Moving between internal pages or translated views only reads current totals and does not increment.
-  - True IP-based unique counting requires a backend/analytics service; frontend JavaScript cannot securely count by IP address.
+  - Total Visits starts at 2,500 and increases once per browser session, but only from the live homepage.
+  - Moving between internal pages or translated views only reads the current browser-stored totals and does not increment.
+  - This is a static-site implementation, so the counter state is intentionally stored in the visitor's browser.
 */
 
 const visitorCounter = (() => {
@@ -217,15 +217,13 @@ const visitorCounter = (() => {
     return null;
   }
 
-  const counterBaseUrl = `${window.location.origin}/.netlify/functions/counter`;
-
   const uniqueBase = 1200;
   const totalBase = 2500;
 
-  const uniqueCounterName = "unique-visitors-v20260508d";
-  const totalCounterName = "total-visits";
-  const uniqueStorageKey = "calderaThroneUniqueVisitorCounted_v20260508d";
-  const sessionVisitKey = "calderaThroneHomeVisitCountedThisSession_v20260508d";
+  const uniqueFlagStorageKey = "calderaThroneUniqueVisitorCounted_v20260512task07";
+  const uniqueValueStorageKey = "calderaThroneUniqueVisitorsValue_v20260512task07";
+  const totalValueStorageKey = "calderaThroneTotalVisitsValue_v20260512task07";
+  const sessionVisitKey = "calderaThroneHomeVisitCountedThisSession_v20260512task07";
 
   const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
   const isTranslateProxy = window.location.hostname.includes("translate.goog");
@@ -258,129 +256,92 @@ const visitorCounter = (() => {
     totalVisits.textContent = `${formatCount(totalBase)}+`;
   }
 
-  function counterValue(data) {
-    const rawValue = data && (data.count ?? data.value);
-    const value = Number(rawValue);
-
-    if (!Number.isFinite(value)) {
-      throw new Error("Counter response did not include a numeric value.");
-    }
-
-    return value;
-  }
-
-  async function requestCounter(name, action = "") {
-    const endpoint = new URL(counterBaseUrl);
-    endpoint.searchParams.set("name", name);
-
-    if (action) {
-      endpoint.searchParams.set("action", action);
-    }
-
-    const response = await fetch(endpoint.toString(), {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error(`Counter request failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return counterValue(data);
-  }
-
-  async function readTotalVisits() {
+  function readStoredCount(storageKey, fallbackValue) {
     try {
-      const totalCount = await requestCounter(totalCounterName);
-      totalVisits.textContent = formatCount(totalBase + totalCount);
+      const rawValue = localStorage.getItem(storageKey);
+      const value = Number(rawValue);
+      return Number.isFinite(value) && value >= fallbackValue ? value : fallbackValue;
     } catch (error) {
-      totalVisits.textContent = `${formatCount(totalBase)}+`;
+      return fallbackValue;
     }
   }
 
-  async function readUniqueVisitors() {
+  function writeStoredCount(storageKey, value) {
     try {
-      const uniqueCount = await requestCounter(uniqueCounterName);
-      uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
+      localStorage.setItem(storageKey, String(value));
     } catch (error) {
-      uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
+      /* localStorage unavailable; keep the in-memory display only. */
     }
   }
 
-  async function updateTotalVisits() {
+  function renderCounts(uniqueCount, totalCount) {
+    uniqueVisitors.textContent = formatCount(uniqueCount);
+    totalVisits.textContent = formatCount(totalCount);
+  }
+
+  function hasStoredUniqueHit() {
     try {
-      if (!isEligibleLiveHomepageCounterHit()) {
-        await readTotalVisits();
-        return;
-      }
-
-      let alreadyCountedThisSession = false;
-
-      try {
-        alreadyCountedThisSession = sessionStorage.getItem(sessionVisitKey) === "true";
-      } catch (error) {
-        alreadyCountedThisSession = false;
-      }
-
-      if (alreadyCountedThisSession) {
-        await readTotalVisits();
-        return;
-      }
-
-      const totalCount = await requestCounter(totalCounterName, "up");
-      totalVisits.textContent = formatCount(totalBase + totalCount);
-
-      try {
-        sessionStorage.setItem(sessionVisitKey, "true");
-      } catch (error) {
-        /* sessionStorage unavailable; total was still updated. */
-      }
+      return localStorage.getItem(uniqueFlagStorageKey) === "true";
     } catch (error) {
-      totalVisits.textContent = `${formatCount(totalBase)}+`;
+      return false;
     }
   }
 
-  async function updateUniqueVisitors() {
+  function hasCountedSessionVisit() {
     try {
-      if (!isEligibleLiveHomepageCounterHit()) {
-        await readUniqueVisitors();
-        return;
-      }
-
-      let alreadyCounted = false;
-
-      try {
-        alreadyCounted = localStorage.getItem(uniqueStorageKey) === "true";
-      } catch (error) {
-        alreadyCounted = false;
-      }
-
-      if (alreadyCounted) {
-        await readUniqueVisitors();
-      } else {
-        const uniqueCount = await requestCounter(uniqueCounterName, "up");
-        uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
-
-        try {
-          localStorage.setItem(uniqueStorageKey, "true");
-        } catch (error) {
-          /* localStorage unavailable; the displayed count is still updated. */
-        }
-      }
+      return sessionStorage.getItem(sessionVisitKey) === "true";
     } catch (error) {
-      uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
+      return false;
+    }
+  }
+
+  function markSessionVisitCounted() {
+    try {
+      sessionStorage.setItem(sessionVisitKey, "true");
+    } catch (error) {
+      /* sessionStorage unavailable; counter display still updates for the current view. */
+    }
+  }
+
+  function markUniqueVisitorCounted() {
+    try {
+      localStorage.setItem(uniqueFlagStorageKey, "true");
+    } catch (error) {
+      /* localStorage unavailable; counter display still updates for the current view. */
     }
   }
 
   function init() {
     setFallbackValues();
 
+    const startingUnique = readStoredCount(uniqueValueStorageKey, uniqueBase);
+    const startingTotal = readStoredCount(totalValueStorageKey, totalBase);
+    renderCounts(startingUnique, startingTotal);
+
     if (isLocalPreview) {
       return;
     }
 
-    updateTotalVisits();
-    updateUniqueVisitors();
+    if (!isEligibleLiveHomepageCounterHit()) {
+      return;
+    }
+
+    let nextUnique = startingUnique;
+    let nextTotal = startingTotal;
+
+    if (!hasStoredUniqueHit()) {
+      nextUnique += 1;
+      writeStoredCount(uniqueValueStorageKey, nextUnique);
+      markUniqueVisitorCounted();
+    }
+
+    if (!hasCountedSessionVisit()) {
+      nextTotal += 1;
+      writeStoredCount(totalValueStorageKey, nextTotal);
+      markSessionVisitCounted();
+    }
+
+    renderCounts(nextUnique, nextTotal);
   }
 
   init();
