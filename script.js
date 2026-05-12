@@ -272,8 +272,8 @@ const visitorCounter = (() => {
 
   async function requestCounter(name, action = "") {
     const endpoint = action
-      ? `${counterBaseUrl}/${name}/${action}`
-      : `${counterBaseUrl}/${name}`;
+      ? `${counterBaseUrl}/${name}/${action}/`
+      : `${counterBaseUrl}/${name}/`;
 
     const response = await fetch(endpoint, {
       cache: "no-store"
