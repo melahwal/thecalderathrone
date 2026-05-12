@@ -1890,7 +1890,7 @@ textarea:focus {
 
 /* === Book Illustrations flip-book page === */
 .book-illustrations-section {
-  padding-top: calc(var(--header-height) + clamp(14px, 2vw, 24px)) !important;
+  padding-top: calc(var(--runtime-header-height) + var(--page-header-top-gap)) !important;
   padding-bottom: clamp(34px, 5vw, 62px) !important;
   min-height: auto;
   background:
@@ -1904,22 +1904,23 @@ textarea:focus {
 
 .book-illustrations-heading .page-title {
   margin: 0;
-  font-size: clamp(2.1rem, 4.4vw, 4.65rem);
-  line-height: 0.96;
+  font-size: var(--page-title-size);
+  line-height: var(--page-title-line-height);
+  letter-spacing: var(--page-title-letter-spacing);
 }
 
 .page-disclaimer {
-  max-width: 1240px;
-  margin: clamp(8px, 1vw, 12px) auto 0;
+  max-width: none;
+  margin: clamp(10px, 1.3vw, 16px) 0 0;
   padding: 0;
   border: 0;
   border-radius: 0;
   color: rgba(235, 225, 204, 0.84);
   background: transparent;
   font-family: var(--serif);
-  font-size: clamp(1.5rem, 1.85vw, 1.9rem);
+  font-size: var(--page-intro-size);
   font-weight: 600;
-  line-height: 1.18;
+  line-height: 1.32;
   white-space: normal;
   box-shadow: none;
 }
@@ -1927,7 +1928,8 @@ textarea:focus {
 .book-illustrations-shell,
 .book-selection-grid,
 .book-viewer {
-  width: min(100%, 1260px);
+  width: var(--page-header-width);
+  max-width: var(--page-header-width);
   margin-inline: auto;
 }
 
@@ -1957,30 +1959,53 @@ textarea:focus {
   gap: 11px;
   min-width: 0;
   padding: clamp(14px, 2vw, 20px);
-  border: 2px solid rgba(255, 224, 130, 0.86);
+  border: 1px solid var(--gold-frame);
   border-radius: 8px;
   color: #1b1107;
   background:
-    linear-gradient(180deg, rgba(255, 239, 173, 0.98) 0%, rgba(218, 181, 88, 0.98) 40%, rgba(133, 82, 34, 0.98) 100%);
+    linear-gradient(180deg, rgba(244, 218, 138, 0.98) 0%, rgba(214, 174, 86, 0.98) 44%, rgba(129, 81, 36, 0.98) 100%);
   box-shadow:
-    0 22px 54px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 250, 218, 0.8),
-    inset 0 -3px 0 rgba(70, 42, 16, 0.38);
+    0 18px 44px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 241, 189, 0.58),
+    inset 0 -2px 0 rgba(70, 42, 16, 0.34);
   cursor: pointer;
   text-align: center;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
-.book-select-card:hover,
-.book-select-card:focus-visible {
+.book-select-card:hover {
   border-color: var(--bright-gold);
   box-shadow:
-    0 30px 74px rgba(0, 0, 0, 0.5),
-    0 0 32px rgba(240, 212, 136, 0.26),
-    inset 0 1px 0 rgba(255, 250, 218, 0.9),
-    inset 0 -3px 0 rgba(70, 42, 16, 0.36);
-  filter: saturate(1.08) brightness(1.04);
-  transform: translateY(-3px);
+    0 24px 58px rgba(0, 0, 0, 0.42),
+    0 0 22px rgba(240, 212, 136, 0.18),
+    inset 0 1px 0 rgba(255, 244, 205, 0.68),
+    inset 0 -2px 0 rgba(70, 42, 16, 0.34);
+  filter: saturate(1.04) brightness(1.02);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.book-select-card:focus,
+.book-select-card:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 241, 189, 0.58),
+    inset 0 -2px 0 rgba(70, 42, 16, 0.34);
+}
+
+.book-select-card:focus-visible {
+  border-color: rgba(240, 212, 136, 0.96);
+  box-shadow:
+    0 24px 58px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(240, 212, 136, 0.42),
+    0 0 18px rgba(216, 183, 102, 0.16),
+    inset 0 1px 0 rgba(255, 244, 205, 0.72),
+    inset 0 -2px 0 rgba(70, 42, 16, 0.34);
+  filter: saturate(1.04) brightness(1.02);
+  transform: translateY(-2px);
   outline: none;
 }
 
@@ -2085,6 +2110,24 @@ textarea:focus {
   background: linear-gradient(180deg, #fff2ad 0%, #e0bf68 48%, #9a652e 100%);
   box-shadow: inset 0 1px 0 rgba(255, 251, 224, 0.82), 0 0 24px rgba(216, 183, 102, 0.24), 0 12px 26px rgba(0, 0, 0, 0.28);
   transform: translateY(-1px);
+}
+
+.book-control:focus,
+.book-control:focus:not(:focus-visible),
+.book-edge:focus,
+.book-edge:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.book-control:focus-visible {
+  outline: none;
+  border-color: rgba(240, 212, 136, 0.98);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 251, 224, 0.82),
+    0 0 0 1px rgba(240, 212, 136, 0.4),
+    0 0 18px rgba(216, 183, 102, 0.18),
+    0 12px 26px rgba(0, 0, 0, 0.28);
 }
 
 .book-control:disabled,
@@ -2397,6 +2440,15 @@ textarea:focus {
   border-color: var(--gold-frame);
   background: rgba(216, 183, 102, 0.14);
   transform: translateY(-2px);
+}
+
+.book-edge:focus-visible {
+  outline: none;
+  border-color: rgba(240, 212, 136, 0.98);
+  background: rgba(216, 183, 102, 0.14);
+  box-shadow:
+    0 0 0 1px rgba(240, 212, 136, 0.38),
+    0 0 18px rgba(216, 183, 102, 0.16);
 }
 
 .book-reader-controls {

@@ -455,9 +455,12 @@
   }
 
   function showSelection() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
     els.viewer.hidden = true;
     els.selection.hidden = false;
-    els.selection.focus({ preventScroll: true });
   }
 
   function openBook(index) {
