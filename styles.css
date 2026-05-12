@@ -2707,16 +2707,16 @@ textarea:focus {
 
 /* === AUTHOR PAGE — ENLARGE BIOGRAPHY TEXT INSIDE GOLD BOX === */
 html body.author-page-final main .author-final-row .author-final-bio {
-  padding: clamp(28px, 2.8vw, 40px) !important;
+  padding: clamp(24px, 2.4vw, 32px) !important;
 }
 
 html body.author-page-final main .author-final-row .author-final-bio p {
   margin: 0 0 13px !important;
   color: rgba(255, 240, 215, 0.94) !important;
   font-family: var(--serif) !important;
-  font-size: clamp(2.08rem, 2.44vw, 2.42rem) !important;
+  font-size: clamp(1.64rem, 1.72vw, 1.82rem) !important;
   font-weight: 600 !important;
-  line-height: 1.46 !important;
+  line-height: 1.38 !important;
   text-align: justify !important;
   text-justify: inter-word !important;
   letter-spacing: 0.01em !important;
@@ -3162,8 +3162,15 @@ body.lang-ar.author-page-final main .author-final-row .author-final-bio p,
 body.google-translated.translated-ar.author-page-final main .author-final-row .author-final-bio p {
   direction: rtl !important;
   text-align: right !important;
-  font-size: clamp(2rem, 2.3vw, 2.26rem) !important;
-  line-height: 1.64 !important;
+  font-size: clamp(1.42rem, 1.6vw, 1.58rem) !important;
+  line-height: 1.48 !important;
+}
+
+html.translated-ltr body.author-page-final main .author-final-row .author-final-bio p,
+body.translated-ltr.author-page-final main .author-final-row .author-final-bio p,
+body.google-translated:not(.translated-ar).author-page-final main .author-final-row .author-final-bio p {
+  font-size: clamp(1.42rem, 1.58vw, 1.58rem) !important;
+  line-height: 1.44 !important;
 }
 
 /* === TEXT MEASURE + TRANSLATED READING ALIGNMENT PASS === */

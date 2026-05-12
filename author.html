@@ -112,8 +112,8 @@
 
     body.author-page-final .author-final-row {
       display: grid !important;
-      grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.86fr) !important;
-      gap: clamp(26px, 4vw, 48px) !important;
+      grid-template-columns: minmax(0, 1.42fr) minmax(260px, 0.68fr) !important;
+      gap: clamp(28px, 4vw, 54px) !important;
       align-items: stretch !important;
       width: 100% !important;
       max-width: var(--page-header-width) !important;
@@ -136,33 +136,37 @@
       display: flex !important;
       flex-direction: column !important;
       justify-content: flex-start !important;
-      gap: clamp(22px, 2.2vw, 28px) !important;
+      gap: clamp(16px, 1.8vw, 22px) !important;
       height: 100% !important;
-      min-height: clamp(660px, 45vw, 820px) !important;
-      overflow: visible !important;
-      padding: clamp(28px, 2.8vw, 40px) !important;
+      min-height: clamp(460px, 34vw, 520px) !important;
+      max-height: clamp(460px, 34vw, 520px) !important;
+      overflow: hidden !important;
+      padding: clamp(24px, 2.4vw, 32px) !important;
     }
 
     body.author-page-final .author-final-bio p {
       margin: 0 !important;
       color: rgba(255, 240, 215, 0.92) !important;
       font-family: var(--serif) !important;
-      font-size: clamp(2.08rem, 2.44vw, 2.42rem) !important;
+      font-size: clamp(1.64rem, 1.72vw, 1.82rem) !important;
       font-weight: 600 !important;
-      line-height: 1.46 !important;
+      line-height: 1.38 !important;
       text-align: justify !important;
       text-justify: inter-word !important;
       hyphens: auto !important;
+      overflow-wrap: anywhere !important;
     }
 
     body.author-page-final .author-final-photo {
       display: flex !important;
       align-self: stretch !important;
       overflow: hidden !important;
-      width: 100% !important;
+      justify-self: end !important;
+      width: min(100%, 390px) !important;
       height: 100% !important;
-      min-height: clamp(660px, 45vw, 820px) !important;
-      max-width: none !important;
+      min-height: clamp(460px, 34vw, 520px) !important;
+      max-height: clamp(460px, 34vw, 520px) !important;
+      max-width: 390px !important;
       aspect-ratio: auto !important;
     }
 
@@ -172,7 +176,7 @@
       flex: 1 1 auto !important;
       height: 100% !important;
       object-fit: cover !important;
-      object-position: center 14% !important;
+      object-position: center 10% !important;
       border: 0 !important;
       box-shadow: none !important;
     }
@@ -250,19 +254,23 @@
     }
 
     html.is-arabic-translation body.author-page-final .author-final-bio,
+    html.translated-rtl body.author-page-final .author-final-bio,
     body.translated-rtl.author-page-final .author-final-bio {
       justify-content: flex-start !important;
-      padding-top: clamp(32px, 3.2vw, 46px) !important;
-      padding-bottom: clamp(28px, 2.8vw, 38px) !important;
+      overflow-y: auto !important;
+      scrollbar-width: thin !important;
+      padding-top: clamp(24px, 2.6vw, 30px) !important;
+      padding-bottom: clamp(24px, 2.4vw, 30px) !important;
     }
 
     html.is-arabic-translation body.author-page-final .author-final-bio p,
+    html.translated-rtl body.author-page-final .author-final-bio p,
     body.translated-rtl.author-page-final .author-final-bio p {
       direction: rtl !important;
       text-align: justify !important;
       text-align-last: right !important;
-      font-size: clamp(2rem, 2.3vw, 2.26rem) !important;
-      line-height: 1.64 !important;
+      font-size: clamp(1.42rem, 1.6vw, 1.58rem) !important;
+      line-height: 1.48 !important;
     }
 
     html.is-arabic-translation body.author-page-final .author-miniatures-copy,
@@ -278,6 +286,48 @@
     body.translated-ltr.author-page-final .author-miniatures-copy {
       text-align: justify !important;
       text-justify: inter-word !important;
+    }
+
+    html.translated-ltr body.author-page-final .author-final-bio,
+    body.translated-ltr.author-page-final .author-final-bio {
+      overflow-y: auto !important;
+      scrollbar-width: thin !important;
+    }
+
+    html.translated-ltr body.author-page-final .author-final-bio p,
+    body.translated-ltr.author-page-final .author-final-bio p {
+      font-size: clamp(1.42rem, 1.58vw, 1.58rem) !important;
+      line-height: 1.44 !important;
+    }
+
+    @media (min-width: 1100px) {
+      body.author-page-final .author-final-row {
+        grid-template-columns: minmax(0, 1.48fr) minmax(290px, 0.6fr) !important;
+      }
+
+      body.author-page-final .author-final-bio,
+      body.author-page-final .author-final-photo {
+        min-height: 500px !important;
+        max-height: 500px !important;
+      }
+
+      body.author-page-final .author-final-photo {
+        width: min(100%, 375px) !important;
+        max-width: 375px !important;
+      }
+    }
+
+    @media (min-width: 900px) and (max-width: 1099px) {
+      body.author-page-final .author-final-bio,
+      body.author-page-final .author-final-photo {
+        min-height: 460px !important;
+        max-height: 460px !important;
+      }
+
+      body.author-page-final .author-final-photo {
+        width: min(100%, 340px) !important;
+        max-width: 340px !important;
+      }
     }
 
     @media (max-width: 980px) {
@@ -299,7 +349,8 @@
 
       body.author-page-final .author-final-photo {
         margin: 0 auto !important;
-        width: min(100%, 560px) !important;
+        width: min(100%, 420px) !important;
+        max-width: 420px !important;
       }
 
       body.author-page-final .author-miniatures-grid {
@@ -310,11 +361,12 @@
     @media (max-width: 740px) {
       body.author-page-final .author-final-bio {
         padding: 22px !important;
+        overflow: visible !important;
       }
 
       body.author-page-final .author-final-bio p {
-        font-size: 1.62rem !important;
-        line-height: 1.54 !important;
+        font-size: 1.46rem !important;
+        line-height: 1.46 !important;
       }
 
       body.author-page-final .author-miniatures-grid {
