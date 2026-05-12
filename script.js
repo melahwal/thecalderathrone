@@ -251,9 +251,14 @@ const visitorCounter = (() => {
     return Number(value).toLocaleString("en-US");
   }
 
+  function formatDisplayCount(value, baseValue) {
+    const formatted = formatCount(value);
+    return value <= baseValue ? `${formatted}+` : formatted;
+  }
+
   function setFallbackValues() {
-    uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
-    totalVisits.textContent = `${formatCount(totalBase)}+`;
+    uniqueVisitors.textContent = formatDisplayCount(uniqueBase, uniqueBase);
+    totalVisits.textContent = formatDisplayCount(totalBase, totalBase);
   }
 
   function readStoredCount(storageKey, fallbackValue) {
@@ -275,8 +280,8 @@ const visitorCounter = (() => {
   }
 
   function renderCounts(uniqueCount, totalCount) {
-    uniqueVisitors.textContent = formatCount(uniqueCount);
-    totalVisits.textContent = formatCount(totalCount);
+    uniqueVisitors.textContent = formatDisplayCount(uniqueCount, uniqueBase);
+    totalVisits.textContent = formatDisplayCount(totalCount, totalBase);
   }
 
   function hasStoredUniqueHit() {
