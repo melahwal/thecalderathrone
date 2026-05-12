@@ -217,8 +217,7 @@ const visitorCounter = (() => {
     return null;
   }
 
-  const counterNamespace = "thecalderathrone";
-  const counterBaseUrl = `https://api.counterapi.dev/v1/${counterNamespace}`;
+  const counterBaseUrl = `${window.location.origin}/.netlify/functions/counter`;
 
   const uniqueBase = 1200;
   const totalBase = 2500;
@@ -271,11 +270,14 @@ const visitorCounter = (() => {
   }
 
   async function requestCounter(name, action = "") {
-    const endpoint = action
-      ? `${counterBaseUrl}/${name}/${action}/`
-      : `${counterBaseUrl}/${name}/`;
+    const endpoint = new URL(counterBaseUrl);
+    endpoint.searchParams.set("name", name);
 
-    const response = await fetch(endpoint, {
+    if (action) {
+      endpoint.searchParams.set("action", action);
+    }
+
+    const response = await fetch(endpoint.toString(), {
       cache: "no-store"
     });
 
