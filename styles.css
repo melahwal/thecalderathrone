@@ -3421,7 +3421,7 @@ main .home-hero .hero-hook {
 }
 
 main > .section:first-child:not(.hero) {
-  padding-top: calc(var(--runtime-header-height) + var(--page-top-gap));
+  padding-top: calc(var(--runtime-header-height) + var(--page-header-top-gap));
 }
 
 .home-frame-stack {
@@ -3478,13 +3478,9 @@ body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .
   display: grid;
   gap: var(--page-header-stack-gap);
   align-content: start;
-  margin-bottom: clamp(24px, 3vw, 36px);
+  width: min(100%, var(--page-header-width));
+  margin-bottom: clamp(28px, 3.3vw, 40px);
   text-align: left;
-}
-
-body.adaptation-page main .adaptation-hero.shared-page-header {
-  gap: clamp(12px, 1.5vw, 18px);
-  margin-bottom: clamp(14px, 1.8vw, 22px);
 }
 
 body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main :where(.page-title, .author-final-title) {
@@ -3496,7 +3492,10 @@ body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .
   text-align: left !important;
 }
 
-body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main :where(.shared-page-header > h2, .characters-subtitle, .page-disclaimer, .author-final-name) {
+body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main .shared-page-header > h2,
+body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main .characters-subtitle,
+body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main .page-disclaimer,
+body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main .author-final-name {
   max-width: var(--page-header-width) !important;
   margin: 0 !important;
   color: rgba(255, 240, 215, 0.86) !important;
