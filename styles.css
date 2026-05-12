@@ -3605,6 +3605,62 @@ body.adaptation-page main .adaptation-hero > p:first-of-type {
   text-justify: inter-word;
 }
 
+body.adaptation-page .adaptation-pitch {
+  margin-top: clamp(-10px, -0.8vw, -4px);
+}
+
+body.adaptation-page .adaptation-hero.shared-page-header {
+  gap: clamp(10px, 1.2vw, 16px);
+  margin-bottom: clamp(10px, 1.2vw, 16px);
+}
+
+body.adaptation-page .adaptation-hero .page-title {
+  max-width: 100%;
+  font-size: clamp(2.65rem, 4vw, 4.3rem);
+  line-height: 0.96;
+}
+
+body.adaptation-page .adaptation-hero h2 {
+  max-width: 100%;
+  margin-top: clamp(6px, 0.7vw, 10px);
+}
+
+body.adaptation-page .adaptation-hero > p:first-of-type {
+  max-width: 100% !important;
+  margin-top: clamp(2px, 0.45vw, 6px) !important;
+  line-height: 1.68;
+}
+
+body.adaptation-page .screen-grid {
+  margin-top: clamp(8px, 0.9vw, 14px);
+  gap: clamp(12px, 1.25vw, 18px);
+  align-items: stretch;
+}
+
+body.adaptation-page .pitch-card {
+  min-height: clamp(142px, 11vw, 164px);
+  padding: clamp(14px, 1.4vw, 18px) clamp(16px, 1.6vw, 20px) !important;
+  gap: clamp(6px, 0.65vw, 10px);
+  justify-content: flex-start;
+}
+
+body.adaptation-page .pitch-card h3 {
+  margin: 0 0 2px;
+  line-height: 1.08;
+}
+
+body.adaptation-page .pitch-card p {
+  margin: 0;
+  font-size: clamp(0.92rem, 0.92vw, 0.98rem);
+  line-height: 1.46;
+}
+
+@media (min-width: 900px) {
+  body.adaptation-page .screen-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 :where(.book-copy, .pitch-card, .saga-overview, .season-structure-box, .rights-positioning, .author-final-bio) {
   padding: var(--frame-copy-padding) !important;
 }
