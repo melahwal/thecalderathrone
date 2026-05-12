@@ -1044,7 +1044,7 @@ img {
 .image-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 1000500;
   display: none;
   align-items: center;
   justify-content: center;
@@ -1064,6 +1064,7 @@ img {
   height: auto;
   object-fit: contain;
   border: 1px solid var(--gold-frame);
+  border-radius: 18px;
   box-shadow: 0 36px 120px rgba(0, 0, 0, 0.72);
 }
 
@@ -1096,6 +1097,15 @@ img {
   font-size: 2.2rem;
   line-height: 1;
   transform: translateY(-50%);
+}
+
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible {
+  outline: none;
+  border-color: rgba(255, 238, 172, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(216, 183, 102, 0.7),
+    0 0 24px rgba(216, 183, 102, 0.24);
 }
 
 .lightbox-prev {
@@ -2613,16 +2623,16 @@ textarea:focus {
 
 /* === AUTHOR PAGE — ENLARGE BIOGRAPHY TEXT INSIDE GOLD BOX === */
 html body.author-page-final main .author-final-row .author-final-bio {
-  padding: 22px 34px !important;
+  padding: clamp(28px, 2.8vw, 40px) !important;
 }
 
 html body.author-page-final main .author-final-row .author-final-bio p {
   margin: 0 0 13px !important;
   color: rgba(255, 240, 215, 0.94) !important;
   font-family: var(--serif) !important;
-  font-size: clamp(1.20rem, 1.35vw, 1.34rem) !important;
+  font-size: clamp(2.08rem, 2.44vw, 2.42rem) !important;
   font-weight: 600 !important;
-  line-height: 1.43 !important;
+  line-height: 1.46 !important;
   text-align: justify !important;
   text-justify: inter-word !important;
   letter-spacing: 0.01em !important;
@@ -3080,8 +3090,8 @@ body.lang-ar.author-page-final main .author-final-row .author-final-bio p,
 body.google-translated.translated-ar.author-page-final main .author-final-row .author-final-bio p {
   direction: rtl !important;
   text-align: right !important;
-  font-size: 150% !important;
-  line-height: 1.9 !important;
+  font-size: clamp(2rem, 2.3vw, 2.26rem) !important;
+  line-height: 1.64 !important;
 }
 
 /* === TEXT MEASURE + TRANSLATED READING ALIGNMENT PASS === */
