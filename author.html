@@ -26,8 +26,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=20260512d">
   <link rel="stylesheet" href="layout-fix.css?v=20260508b">
+  <link rel="stylesheet" href="styles.css?v=20260512f">
 
   <style>
     /* =========================================================
@@ -69,45 +69,49 @@
     }
 
     body.author-page-final .author-final-section {
-      padding-top: calc(var(--header-height) + 44px) !important;
+      padding-top: calc(var(--runtime-header-height) + var(--page-header-top-gap)) !important;
       padding-bottom: 72px !important;
       padding-left: var(--page-edge) !important;
       padding-right: var(--page-edge) !important;
     }
 
     body.author-page-final .author-final-shell {
-      width: min(100%, var(--content-rail)) !important;
-      max-width: var(--content-rail) !important;
+      width: var(--page-header-width) !important;
+      max-width: var(--page-header-width) !important;
       margin: 0 auto !important;
     }
 
     body.author-page-final .author-final-heading {
+      display: grid !important;
+      gap: var(--page-header-stack-gap) !important;
+      width: var(--page-header-width) !important;
+      max-width: var(--page-header-width) !important;
       margin: 0 0 30px !important;
     }
 
     body.author-page-final .author-final-title {
       margin: 0 !important;
-      max-width: 980px !important;
+      max-width: var(--page-header-width) !important;
       color: #fff4df !important;
       font-family: var(--display) !important;
-      font-size: clamp(2.6rem, 5vw, 4.35rem) !important;
+      font-size: var(--page-title-size) !important;
       font-weight: 700 !important;
-      line-height: 0.96 !important;
+      line-height: var(--page-title-line-height) !important;
       text-align: left !important;
-      letter-spacing: 0 !important;
+      letter-spacing: var(--page-title-letter-spacing) !important;
       text-shadow:
         0 8px 34px rgba(0, 0, 0, 0.72),
         0 0 38px rgba(216, 183, 102, 0.16) !important;
     }
 
     body.author-page-final .author-final-name {
-      margin: 18px 0 0 !important;
-      max-width: 760px !important;
+      margin: 0 !important;
+      max-width: var(--page-header-width) !important;
       color: rgba(255, 240, 215, 0.86) !important;
       font-family: var(--serif) !important;
-      font-size: clamp(1.45rem, 2.4vw, 2rem) !important;
+      font-size: var(--page-intro-size) !important;
       font-weight: 600 !important;
-      line-height: 1.22 !important;
+      line-height: var(--page-intro-line-height) !important;
       text-align: left !important;
     }
 
@@ -117,7 +121,7 @@
       gap: clamp(30px, 5vw, 60px) !important;
       align-items: stretch !important;
       width: 100% !important;
-      max-width: var(--content-rail) !important;
+      max-width: var(--page-header-width) !important;
       margin: 0 auto !important;
     }
 
@@ -141,7 +145,7 @@
       flex-direction: column !important;
       justify-content: center !important;
       overflow: hidden !important;
-      padding: 22px 34px !important;
+      padding: var(--frame-copy-padding) !important;
     }
 
     body.author-page-final .author-final-bio p {
@@ -180,7 +184,7 @@
 
     @media (max-width: 980px) {
       body.author-page-final .author-final-section {
-        padding-top: calc(var(--header-height) + 34px) !important;
+        padding-top: calc(var(--runtime-header-height) + 34px) !important;
       }
 
       body.author-page-final .author-final-row {
@@ -230,7 +234,7 @@
   </script>
 </head>
 
-<body class="author-page-final">
+<body class="author-page author-page-final">
   <header class="site-header" data-header>
     <a class="brand notranslate skiptranslate" translate="no" href="index.html" aria-label="The Caldera Throne home">
       <span class="brand-mark"></span>
@@ -257,14 +261,14 @@
     <section class="section author author-final-section" id="author">
       <div class="author-final-shell">
 
-        <div class="author-final-heading">
+        <div class="author-final-heading shared-page-header">
           <h1 class="author-final-title">ABOUT THE AUTHOR</h1>
-          <h2 class="author-final-name"><span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa El Ahwal</span></h2>
+          <h2 class="author-final-name"><span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa EL Ahwal</span></h2>
         </div>
 
         <div class="author-final-row">
           <div class="author-final-bio">
-            <p>By day, <span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa El Ahwal</span> works in the intricate world of finance — a career that taught him how the quiet wheels of power and governance actually turn. But at his core, he is a builder.</p>
+            <p>By day, <span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa EL Ahwal</span> works in the intricate world of finance — a career that taught him how the quiet wheels of power and governance actually turn. But at his core, he is a builder.</p>
 
             <p>In his quiet hours, Mustafa crafts detailed miniature houses, finding peace in the patience required to weave small elements into a living world. That same care breathes life into <em>The Caldera Throne</em>. He builds his story layer by layer, from the vast sweep of kingdoms to the weight of a single private choice.</p>
 
@@ -281,7 +285,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <span data-year></span> <span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa El Ahwal</span>. All rights reserved.</p>
+    <p>&copy; <span data-year></span> <span class="notranslate protected-author-name" translate="no" data-author-name="true">Mustafa EL Ahwal</span>. All rights reserved.</p>
 
     <div class="footer-stats" aria-label="Visitor statistics">
       Unique Visitors: <span data-unique-visitors>1,000+</span> | Total Visits: <span data-total-visits>2,500+</span>
@@ -290,5 +294,5 @@
     <a href="#">Return to top</a>
   </footer>
 
-<script src="script.js?v=20260512a"></script></body>
+<script src="script.js?v=20260512b"></script></body>
 </html>

@@ -17,6 +17,15 @@ function syncActiveNavLink() {
   });
 }
 
+function syncHeaderMetrics() {
+  if (!header) {
+    return;
+  }
+
+  const measuredHeight = Math.max(header.offsetHeight, Math.ceil(header.getBoundingClientRect().height));
+  document.documentElement.style.setProperty("--runtime-header-height", `${measuredHeight}px`);
+}
+
 function syncHeader() {
   if (!header) {
     return;
@@ -31,12 +40,14 @@ if (navToggle && nav) {
   navToggle.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
+    window.requestAnimationFrame(syncHeaderMetrics);
   });
 
   nav.addEventListener("click", (event) => {
     if (event.target.matches("a")) {
       nav.classList.remove("open");
       navToggle.setAttribute("aria-expanded", "false");
+      window.requestAnimationFrame(syncHeaderMetrics);
     }
   });
 }
@@ -45,7 +56,10 @@ if (year) {
   year.textContent = new Date().getFullYear();
 }
 
+syncHeaderMetrics();
 syncHeader();
+window.addEventListener("load", syncHeaderMetrics);
+window.addEventListener("resize", syncHeaderMetrics, { passive: true });
 window.addEventListener("scroll", syncHeader, { passive: true });
 
 /* === Image lightbox === */
@@ -370,7 +384,8 @@ const visitorCounter = (() => {
     rights: { local: "/rights.html", public: "/rights" },
   };
   const arabicAuthorName = "\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644";
-  const latinAuthorName = "Mustafa El Ahwal";
+  const latinAuthorName = "Mustafa EL Ahwal";
+  const authorNamePattern = /Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g;
   const incorrectArabicAuthorVariants = [
     "\u0645\u0635\u0637\u0641\u0649 \u0645. \u0627\u0644\u0623\u0647\u0648\u0627\u0644",
     "\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u0647\u0648\u0627\u0644",
@@ -462,6 +477,21 @@ const visitorCounter = (() => {
   };
 
   let repairQueued = false;
+
+  function setProtectedLanguageAttributes(element, languageCode = "en") {
+    if (!element) {
+      return;
+    }
+
+    if (languageCode === "ar") {
+      element.setAttribute("lang", "ar");
+      element.setAttribute("dir", "rtl");
+      return;
+    }
+
+    element.setAttribute("lang", "en");
+    element.setAttribute("dir", "ltr");
+  }
 
   function normalizeLanguageCode(languageCode) {
     if (!languageCode) {
@@ -651,12 +681,13 @@ const visitorCounter = (() => {
   }
 
   function protectVisibleAuthorNames() {
-    wrapTextMatches(document.body, /Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g, () => {
+    wrapTextMatches(document.body, authorNamePattern, () => {
       const span = document.createElement("span");
       span.className = "notranslate protected-author-name";
       span.setAttribute("translate", "no");
       span.setAttribute("data-author-name", "true");
       span.textContent = latinAuthorName;
+      setProtectedLanguageAttributes(span, "en");
       return span;
     });
   }
@@ -668,6 +699,7 @@ const visitorCounter = (() => {
       heading.classList.add("notranslate");
       heading.setAttribute("translate", "no");
       heading.setAttribute("data-protected-name", protectedName);
+      setProtectedLanguageAttributes(heading, "en");
     });
   }
 
@@ -685,6 +717,7 @@ const visitorCounter = (() => {
           span.setAttribute("translate", "no");
           span.setAttribute("data-protected-name", term);
           span.textContent = term;
+          setProtectedLanguageAttributes(span, "en");
           return span;
         });
       });
@@ -703,9 +736,7 @@ const visitorCounter = (() => {
 
     nextText = nextText.replace(/\u0627\u0639\u0637/g, "Giv");
 
-    if (!isArabic) {
-      nextText = nextText.replace(/Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g, latinAuthorName);
-    }
+    nextText = nextText.replace(authorNamePattern, isArabic ? arabicAuthorName : latinAuthorName);
 
     if (nextText !== node.nodeValue) {
       node.nodeValue = nextText;
@@ -734,6 +765,7 @@ const visitorCounter = (() => {
       markNoTranslate(element);
       element.classList.add("protected-author-name");
       element.setAttribute("data-author-name", "true");
+      setProtectedLanguageAttributes(element, isArabic ? "ar" : "en");
     });
 
     document.querySelectorAll("[data-protected-name]:not([data-author-name])").forEach((element) => {
@@ -744,6 +776,7 @@ const visitorCounter = (() => {
       }
 
       markNoTranslate(element);
+      setProtectedLanguageAttributes(element, "en");
     });
   }
 
@@ -770,6 +803,8 @@ const visitorCounter = (() => {
     document.documentElement.classList.toggle("translated-ltr", translated && !isArabic);
     document.documentElement.classList.toggle("translated-rtl", translated && isArabic);
     document.documentElement.classList.toggle("is-arabic-translation", isArabic);
+    document.body.classList.toggle("translated-ltr", translated && !isArabic);
+    document.body.classList.toggle("translated-rtl", translated && isArabic);
     document.body.classList.toggle("google-translated", translated);
     document.body.classList.toggle("translated-ar", isArabic);
     document.body.classList.toggle("rtl-lang", isArabic);
@@ -798,11 +833,26 @@ const visitorCounter = (() => {
     });
   }
 
+  function decorateLanguageButton(button) {
+    if (!button) {
+      return;
+    }
+
+    button.innerHTML = `
+      <span class="translate-floating-globe" aria-hidden="true">\uD83C\uDF10</span>
+      <span class="translate-floating-label">LANG</span>
+    `;
+    button.setAttribute("aria-label", "Choose site language");
+  }
+
   function createFloatingLanguageSwitcher() {
     const existingSwitcher = document.getElementById("persistent-language-switcher");
 
     if (existingSwitcher) {
       const currentLanguage = getCurrentLanguage();
+      const existingButton = existingSwitcher.querySelector(".translate-floating-button");
+
+      decorateLanguageButton(existingButton);
 
       existingSwitcher.querySelectorAll("[data-translate-lang]").forEach((link) => {
         const languageCode = normalizeLanguageCode(link.getAttribute("data-translate-lang"));
@@ -826,7 +876,7 @@ const visitorCounter = (() => {
     button.type = "button";
     button.setAttribute("aria-expanded", "false");
     button.setAttribute("aria-haspopup", "true");
-    button.textContent = "\uD83C\uDF10 LANG";
+    decorateLanguageButton(button);
 
     menu.className = "translate-floating-menu";
 
@@ -855,6 +905,7 @@ const visitorCounter = (() => {
 
     switcher.append(button, menu);
     document.body.append(switcher);
+    syncHeaderMetrics();
   }
 
   function applyTranslationRepairs() {
@@ -870,6 +921,7 @@ const visitorCounter = (() => {
     applyArabicNavLabels(isArabic);
     updateExistingLanguageLinks();
     createFloatingLanguageSwitcher();
+    syncHeaderMetrics();
   }
 
   function queueTranslationRepairs() {
