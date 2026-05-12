@@ -370,7 +370,7 @@ const visitorCounter = (() => {
     rights: { local: "/rights.html", public: "/rights" },
   };
   const arabicAuthorName = "\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644";
-  const latinAuthorName = "Mustafa M. EL Ahwal";
+  const latinAuthorName = "Mustafa El Ahwal";
   const incorrectArabicAuthorVariants = [
     "\u0645\u0635\u0637\u0641\u0649 \u0645. \u0627\u0644\u0623\u0647\u0648\u0627\u0644",
     "\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u0647\u0648\u0627\u0644",
@@ -651,7 +651,7 @@ const visitorCounter = (() => {
   }
 
   function protectVisibleAuthorNames() {
-    wrapTextMatches(document.body, /Mustafa M\. (?:El|EL) Ahwal/g, () => {
+    wrapTextMatches(document.body, /Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g, () => {
       const span = document.createElement("span");
       span.className = "notranslate protected-author-name";
       span.setAttribute("translate", "no");
@@ -704,7 +704,7 @@ const visitorCounter = (() => {
     nextText = nextText.replace(/\u0627\u0639\u0637/g, "Giv");
 
     if (!isArabic) {
-      nextText = nextText.replace(/Mustafa M\. El Ahwal/g, latinAuthorName);
+      nextText = nextText.replace(/Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g, latinAuthorName);
     }
 
     if (nextText !== node.nodeValue) {

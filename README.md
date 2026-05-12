@@ -1,6 +1,6 @@
 # The Caldera Throne Website
 
-Premium static author and intellectual-property website for Mustafa M. El Ahwal and the adult political war fantasy series **The Caldera Throne**.
+Premium static author and intellectual-property website for Mustafa El Ahwal and the adult political war fantasy series **The Caldera Throne**.
 
 ## Project Structure
 
