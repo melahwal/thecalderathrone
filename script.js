@@ -477,6 +477,66 @@ const visitorCounter = (() => {
   };
 
   let repairQueued = false;
+  let languageSwitcherEventsInstalled = false;
+
+  function getFloatingLanguageSwitcher() {
+    return document.getElementById("persistent-language-switcher");
+  }
+
+  function syncFloatingLanguageSwitcherState(isOpen) {
+    const switcher = getFloatingLanguageSwitcher();
+
+    if (!switcher) {
+      return;
+    }
+
+    const button = switcher.querySelector(".translate-floating-button");
+    switcher.classList.toggle("open", Boolean(isOpen));
+
+    if (button) {
+      button.setAttribute("aria-expanded", String(Boolean(isOpen)));
+    }
+  }
+
+  function installFloatingLanguageSwitcherEvents() {
+    if (languageSwitcherEventsInstalled) {
+      return;
+    }
+
+    languageSwitcherEventsInstalled = true;
+
+    document.addEventListener("click", (event) => {
+      const switcher = getFloatingLanguageSwitcher();
+
+      if (!switcher || !(event.target instanceof Element)) {
+        return;
+      }
+
+      const toggle = event.target.closest("[data-language-toggle], .translate-floating-button");
+      const menu = switcher.querySelector("[data-language-menu], .translate-floating-menu");
+
+      if (toggle && switcher.contains(toggle)) {
+        event.preventDefault();
+        event.stopPropagation();
+        syncFloatingLanguageSwitcherState(!switcher.classList.contains("open"));
+        return;
+      }
+
+      if (menu && menu.contains(event.target)) {
+        return;
+      }
+
+      syncFloatingLanguageSwitcherState(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      syncFloatingLanguageSwitcherState(false);
+    });
+  }
 
   function setProtectedLanguageAttributes(element, languageCode = "en") {
     if (!element) {
@@ -843,16 +903,22 @@ const visitorCounter = (() => {
       <span class="translate-floating-label">LANG</span>
     `;
     button.setAttribute("aria-label", "Choose site language");
+    button.setAttribute("data-language-toggle", "true");
+    button.setAttribute("aria-haspopup", "true");
+    button.type = "button";
   }
 
   function createFloatingLanguageSwitcher() {
     const existingSwitcher = document.getElementById("persistent-language-switcher");
+    installFloatingLanguageSwitcherEvents();
 
     if (existingSwitcher) {
       const currentLanguage = getCurrentLanguage();
       const existingButton = existingSwitcher.querySelector(".translate-floating-button");
+      const existingMenu = existingSwitcher.querySelector(".translate-floating-menu");
 
       decorateLanguageButton(existingButton);
+      existingMenu?.setAttribute("data-language-menu", "true");
 
       existingSwitcher.querySelectorAll("[data-translate-lang]").forEach((link) => {
         const languageCode = normalizeLanguageCode(link.getAttribute("data-translate-lang"));
@@ -860,6 +926,7 @@ const visitorCounter = (() => {
         link.classList.toggle("current", languageCode === currentLanguage);
       });
 
+      syncFloatingLanguageSwitcherState(existingSwitcher.classList.contains("open"));
       return;
     }
 
@@ -873,12 +940,11 @@ const visitorCounter = (() => {
     switcher.setAttribute("translate", "no");
 
     button.className = "translate-floating-button";
-    button.type = "button";
     button.setAttribute("aria-expanded", "false");
-    button.setAttribute("aria-haspopup", "true");
     decorateLanguageButton(button);
 
     menu.className = "translate-floating-menu";
+    menu.setAttribute("data-language-menu", "true");
 
     languageChoices.forEach((language) => {
       const link = document.createElement("a");
@@ -890,21 +956,9 @@ const visitorCounter = (() => {
       menu.append(link);
     });
 
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const isOpen = switcher.classList.toggle("open");
-      button.setAttribute("aria-expanded", String(isOpen));
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!switcher.contains(event.target)) {
-        switcher.classList.remove("open");
-        button.setAttribute("aria-expanded", "false");
-      }
-    });
-
     switcher.append(button, menu);
     document.body.append(switcher);
+    syncFloatingLanguageSwitcherState(false);
     syncHeaderMetrics();
   }
 
