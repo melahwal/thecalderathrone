@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 110" role="img" aria-labelledby="footerOrnamentTitle footerOrnamentDesc">
+  <title id="footerOrnamentTitle">Footer ornament</title>
+  <desc id="footerOrnamentDesc">An ornamental gold divider with mirrored flourishes and a central crest.</desc>
+  <defs>
+    <linearGradient id="footerGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7d5627"/>
+      <stop offset="18%" stop-color="#c89a4d"/>
+      <stop offset="50%" stop-color="#f3dd98"/>
+      <stop offset="82%" stop-color="#c89a4d"/>
+      <stop offset="100%" stop-color="#7d5627"/>
+    </linearGradient>
+    <filter id="softGlow" x="-10%" y="-50%" width="120%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="url(#footerGold)" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)">
+    <path d="M24 55h216"/>
+    <path d="M720 55h216"/>
+    <path d="M240 55c28 0 40-18 52-18 12 0 20 18 36 18"/>
+    <path d="M632 55c16 0 24-18 36-18 12 0 24 18 52 18"/>
+    <path d="M292 55c28 0 32 18 52 18 20 0 28-18 48-18"/>
+    <path d="M568 55c20 0 28 18 48 18 20 0 24-18 52-18"/>
+    <path d="M48 55c18 0 22-14 34-14 12 0 14 14 26 14"/>
+    <path d="M852 55c12 0 14-14 26-14 12 0 16 14 34 14"/>
+    <path d="M110 55c0-13 10-23 24-23"/>
+    <path d="M850 55c0-13-10-23-24-23"/>
+    <path d="M134 32c10 0 16 6 20 14"/>
+    <path d="M806 46c4-8 10-14 20-14"/>
+    <path d="M402 55h156"/>
+    <path d="M448 55l32-31 32 31-32 31-32-31z"/>
+    <path d="M480 14v82"/>
+    <path d="M448 55h64"/>
+    <path d="M465 40h30"/>
+    <path d="M465 70h30"/>
+    <circle cx="480" cy="55" r="8" fill="#f3dd98" stroke="none"/>
+  </g>
+</svg>

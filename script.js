@@ -2,6 +2,7 @@ const header = document.querySelector("[data-header]");
 const nav = document.querySelector("[data-nav]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
+const footerTopLinks = document.querySelectorAll(".site-footer-top");
 
 function syncActiveNavLink() {
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
@@ -54,6 +55,18 @@ if (navToggle && nav) {
 
 if (year) {
   year.textContent = new Date().getFullYear();
+}
+
+if (footerTopLinks.length) {
+  footerTopLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  });
 }
 
 syncHeaderMetrics();
@@ -190,9 +203,9 @@ if (contactForm) {
 /* === Visitor counters === */
 /*
   Static-site counter rules:
-  - Unique Visitors starts at 1,200 and counts a visitor once per browser/device.
-  - Total Visits uses the existing total counter, but it increases only on the home page.
-  - Moving between internal pages does not increase Total Visits.
+  - Unique Visitors starts at 1,200 and counts once per browser/device, but only from the live homepage.
+  - Total Visits starts at 2,500 and increases only from the live homepage.
+  - Moving between internal pages or translated views only reads current totals and does not increment.
   - True IP-based unique counting requires a backend/analytics service; frontend JavaScript cannot securely count by IP address.
 */
 
@@ -216,6 +229,10 @@ const visitorCounter = (() => {
   const sessionVisitKey = "calderaThroneHomeVisitCountedThisSession_v20260508d";
 
   const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+  const isTranslateProxy = window.location.hostname.includes("translate.goog");
+  const searchParams = new URLSearchParams(window.location.search);
+  const hasTranslateQuery = [...searchParams.keys()].some((key) => key.startsWith("_x_tr_"));
+  const isLivePrimaryOrigin = window.location.origin === "https://thecalderathrone.com";
 
   function isHomePage() {
     const path = window.location.pathname.replace(/\/+$/, "");
@@ -227,6 +244,10 @@ const visitorCounter = (() => {
       file === "" ||
       file === "index.html"
     );
+  }
+
+  function isEligibleLiveHomepageCounterHit() {
+    return isLivePrimaryOrigin && isHomePage() && !isTranslateProxy && !hasTranslateQuery;
   }
 
   function formatCount(value) {
@@ -275,9 +296,18 @@ const visitorCounter = (() => {
     }
   }
 
+  async function readUniqueVisitors() {
+    try {
+      const uniqueCount = await requestCounter(uniqueCounterName);
+      uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
+    } catch (error) {
+      uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
+    }
+  }
+
   async function updateTotalVisits() {
     try {
-      if (!isHomePage()) {
+      if (!isEligibleLiveHomepageCounterHit()) {
         await readTotalVisits();
         return;
       }
@@ -310,6 +340,11 @@ const visitorCounter = (() => {
 
   async function updateUniqueVisitors() {
     try {
+      if (!isEligibleLiveHomepageCounterHit()) {
+        await readUniqueVisitors();
+        return;
+      }
+
       let alreadyCounted = false;
 
       try {
@@ -318,12 +353,11 @@ const visitorCounter = (() => {
         alreadyCounted = false;
       }
 
-      let uniqueCount;
-
       if (alreadyCounted) {
-        uniqueCount = await requestCounter(uniqueCounterName);
+        await readUniqueVisitors();
       } else {
-        uniqueCount = await requestCounter(uniqueCounterName, "up");
+        const uniqueCount = await requestCounter(uniqueCounterName, "up");
+        uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
 
         try {
           localStorage.setItem(uniqueStorageKey, "true");
@@ -331,8 +365,6 @@ const visitorCounter = (() => {
           /* localStorage unavailable; the displayed count is still updated. */
         }
       }
-
-      uniqueVisitors.textContent = formatCount(uniqueBase + uniqueCount);
     } catch (error) {
       uniqueVisitors.textContent = `${formatCount(uniqueBase)}+`;
     }
