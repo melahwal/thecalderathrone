@@ -240,16 +240,17 @@
   const els = {
     selection: bookReader.querySelector("[data-book-selection]"),
     viewer: bookReader.querySelector("[data-book-viewer]"),
-    kicker: bookReader.querySelector("[data-book-kicker]"),
-    title: bookReader.querySelector("[data-book-title]"),
+    displayTitle: bookReader.querySelector("[data-book-display-title]"),
     left: bookReader.querySelector("[data-book-left]"),
     right: bookReader.querySelector("[data-book-right]"),
     turning: bookReader.querySelector("[data-turning-page]"),
     progress: bookReader.querySelector("[data-book-progress]"),
     status: bookReader.querySelector("[data-book-status]"),
     returnButtons: [...bookReader.querySelectorAll("[data-return-selection]")],
-    prev: [...bookReader.querySelectorAll("[data-book-prev], [data-book-prev-button]")],
-    next: [...bookReader.querySelectorAll("[data-book-next], [data-book-next-button]")]
+    first: [...bookReader.querySelectorAll("[data-book-first]")],
+    prev: [...bookReader.querySelectorAll("[data-book-prev-button]")],
+    next: [...bookReader.querySelectorAll("[data-book-next-button]")],
+    last: [...bookReader.querySelectorAll("[data-book-last]")]
   };
 
   let bookIndex = 0;
@@ -272,7 +273,7 @@
   }
 
   function titleLine(book) {
-    return book.title ? `${book.kicker} - ${book.title}` : book.kicker;
+    return book.title ? `${book.kicker} — ${book.title}` : book.kicker;
   }
 
   function endPage(book) {
@@ -420,9 +421,7 @@
 
     syncIndexesForModeChange();
 
-    els.kicker.textContent = book.title ? `${book.kicker} —` : book.kicker;
-    els.title.textContent = book.title;
-    els.title.toggleAttribute("hidden", !book.title);
+    els.displayTitle.textContent = titleLine(book);
 
     if (mobile) {
       const pages = mobilePagesFor(book);
@@ -433,10 +432,12 @@
       els.right.innerHTML = "";
       els.right.hidden = true;
 
-      els.progress.textContent = `Page ${mobilePageIndex + 1} of ${pages.length}`;
+      els.progress.textContent = `${mobilePageIndex + 1} of ${pages.length}`;
       els.status.textContent = `${titleLine(book)}, page ${mobilePageIndex + 1} of ${pages.length}`;
+      els.first.forEach((button) => { button.disabled = mobilePageIndex === 0; });
       els.prev.forEach((button) => { button.disabled = mobilePageIndex === 0; });
       els.next.forEach((button) => { button.disabled = mobilePageIndex === pages.length - 1; });
+      els.last.forEach((button) => { button.disabled = mobilePageIndex === pages.length - 1; });
       return;
     }
 
@@ -448,10 +449,12 @@
 
     els.left.innerHTML = renderPage(left, "left");
     els.right.innerHTML = renderPage(right, "right");
-    els.progress.textContent = `Spread ${spreadIndex + 1} of ${spreads.length}`;
-    els.status.textContent = `${titleLine(book)}, spread ${spreadIndex + 1} of ${spreads.length}`;
+    els.progress.textContent = `${spreadIndex + 1} of ${spreads.length}`;
+    els.status.textContent = `${titleLine(book)}, page ${spreadIndex + 1} of ${spreads.length}`;
+    els.first.forEach((button) => { button.disabled = spreadIndex === 0; });
     els.prev.forEach((button) => { button.disabled = spreadIndex === 0; });
     els.next.forEach((button) => { button.disabled = spreadIndex === spreads.length - 1; });
+    els.last.forEach((button) => { button.disabled = spreadIndex === spreads.length - 1; });
   }
 
   function showSelection() {
@@ -472,7 +475,7 @@
     els.selection.hidden = true;
     els.viewer.hidden = false;
     renderCurrent();
-    els.viewer.scrollIntoView({ behavior: "smooth", block: "start" });
+    els.viewer.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function flip(direction, afterTurn) {
@@ -539,6 +542,54 @@
     });
   }
 
+  function firstView() {
+    if (isMobileView()) {
+      if (mobilePageIndex <= 0) {
+        return;
+      }
+
+      flip("backward", () => {
+        mobilePageIndex = 0;
+      });
+      return;
+    }
+
+    if (spreadIndex <= 0) {
+      return;
+    }
+
+    flip("backward", () => {
+      spreadIndex = 0;
+    });
+  }
+
+  function lastView() {
+    const book = books[bookIndex];
+
+    if (isMobileView()) {
+      const pages = mobilePagesFor(book);
+
+      if (mobilePageIndex >= pages.length - 1) {
+        return;
+      }
+
+      flip("forward", () => {
+        mobilePageIndex = pages.length - 1;
+      });
+      return;
+    }
+
+    const spreads = spreadsFor(book);
+
+    if (spreadIndex >= spreads.length - 1) {
+      return;
+    }
+
+    flip("forward", () => {
+      spreadIndex = spreads.length - 1;
+    });
+  }
+
   async function refreshBookPages(index) {
     const book = books[index];
 
@@ -593,8 +644,10 @@
     }
   });
 
+  els.first.forEach((button) => button.addEventListener("click", firstView));
   els.prev.forEach((button) => button.addEventListener("click", previousView));
   els.next.forEach((button) => button.addEventListener("click", nextView));
+  els.last.forEach((button) => button.addEventListener("click", lastView));
   els.returnButtons.forEach((button) => button.addEventListener("click", showSelection));
 
   document.addEventListener("keydown", (event) => {
@@ -612,6 +665,14 @@
 
     if (event.key === "Escape") {
       showSelection();
+    }
+
+    if (event.key === "Home") {
+      firstView();
+    }
+
+    if (event.key === "End") {
+      lastView();
     }
   });
 
