@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="layout-fix.css?v=20260509a">
-  <link rel="stylesheet" href="styles.css?v=20260512f">
+  <link rel="stylesheet" href="styles.css?v=20260512i">
 
   <style>
     .book-visual img {
@@ -39,18 +39,23 @@
 
     .novel-cover-shortcuts {
       display: grid;
-      grid-template-columns: repeat(3, minmax(160px, 220px));
-      justify-content: center;
-      gap: 28px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      direction: ltr;
+      gap: clamp(16px, 2vw, 26px);
+      width: min(92vw, 1040px);
       margin: 28px auto 44px;
-      max-width: 860px;
     }
 
     .novel-cover-shortcut {
       display: block;
+      min-width: 0;
+      aspect-ratio: 2 / 3;
       border: 1px solid rgba(216, 183, 102, 0.75);
-      padding: 8px;
-      background: rgba(7, 6, 5, 0.72);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(10, 9, 8, 0.16), rgba(10, 9, 8, 0.16)),
+        var(--novel-frame-image) center / cover no-repeat;
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
@@ -63,18 +68,29 @@
     .novel-cover-shortcut img {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;
+      background: transparent;
+    }
+
+    @media (max-width: 900px) {
+      .novel-cover-shortcuts {
+        width: min(92vw, 860px);
+      }
     }
 
     @media (max-width: 760px) {
       .novel-cover-shortcuts {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
         margin: 20px auto 30px;
       }
+    }
 
-      .novel-cover-shortcut {
-        padding: 4px;
+    @media (max-width: 520px) {
+      .novel-cover-shortcuts {
+        grid-template-columns: 1fr;
+        width: min(92vw, 360px);
       }
     }
   </style>
@@ -111,15 +127,15 @@
       </div>
 
       <div class="novel-cover-shortcuts" aria-label="Book cover shortcuts">
-        <a class="novel-cover-shortcut" href="#book-one" aria-label="Go to The Still and the Burning">
+        <a class="novel-cover-shortcut" href="#book-one" aria-label="Go to The Still and the Burning" style="--novel-frame-image: url('assets/book-1-cover.png');">
           <img src="assets/book-1-cover.png" alt="Cover for The Still and the Burning">
         </a>
 
-        <a class="novel-cover-shortcut" href="#book-two" aria-label="Go to The Empire of Ledgers">
+        <a class="novel-cover-shortcut" href="#book-two" aria-label="Go to The Empire of Ledgers" style="--novel-frame-image: url('assets/book-2-cover.png?v=20260510e');">
           <img src="assets/book-2-cover.png?v=20260510e" alt="Cover for The Empire of Ledgers">
         </a>
 
-        <a class="novel-cover-shortcut" href="#book-three" aria-label="Go to What the Mountain Kept">
+        <a class="novel-cover-shortcut" href="#book-three" aria-label="Go to What the Mountain Kept" style="--novel-frame-image: url('assets/book-3-cover.png?v=20260510e');">
           <img src="assets/book-3-cover.png?v=20260510e" alt="Cover for What the Mountain Kept">
         </a>
       </div>
@@ -177,11 +193,11 @@
             </div>
 
             <div class="book-visual-pair">
-              <figure class="book-visual book-cover-visual">
+              <figure class="book-visual book-cover-visual" style="--novel-frame-image: url('assets/book-1-cover.png');">
                 <img src="assets/book-1-cover.png" alt="Cover for The Still and the Burning">
               </figure>
 
-              <figure class="book-visual novel-map">
+              <figure class="book-visual novel-map" style="--novel-frame-image: url('assets/novel-map-book-1.png');">
                 <img src="assets/novel-map-book-1.png" alt="Operational map for The Still and the Burning">
                 <figcaption>Operational map &mdash; Book I</figcaption>
               </figure>
@@ -238,11 +254,11 @@
             </div>
 
             <div class="book-visual-pair">
-              <figure class="book-visual book-cover-visual">
+              <figure class="book-visual book-cover-visual" style="--novel-frame-image: url('assets/book-2-cover.png?v=20260510e');">
                 <img src="assets/book-2-cover.png?v=20260510e" alt="Cover for The Empire of Ledgers">
               </figure>
 
-              <figure class="book-visual novel-map">
+              <figure class="book-visual novel-map" style="--novel-frame-image: url('assets/novel-map-book-2.png');">
                 <img src="assets/novel-map-book-2.png" alt="Strategic planning map for The Empire of Ledgers">
                 <figcaption>Strategic planning map &mdash; Book II</figcaption>
               </figure>
@@ -303,11 +319,11 @@
             </div>
 
             <div class="book-visual-pair">
-              <figure class="book-visual book-cover-visual">
+              <figure class="book-visual book-cover-visual" style="--novel-frame-image: url('assets/book-3-cover.png?v=20260510e');">
                 <img src="assets/book-3-cover.png?v=20260510e" alt="Cover for What the Mountain Kept">
               </figure>
 
-              <figure class="book-visual novel-map">
+              <figure class="book-visual novel-map" style="--novel-frame-image: url('assets/novel-map-book-3.png');">
                 <img src="assets/novel-map-book-3.png" alt="Active campaign map for What the Mountain Kept">
                 <figcaption>Active campaign map &mdash; Book III</figcaption>
               </figure>
