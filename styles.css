@@ -3165,3 +3165,37 @@ html.translated-ltr main :where(h1, h2, h3, h4, .page-title) {
   text-align: left !important;
   text-align-last: left !important;
 }
+
+/* Older page-specific rules use stronger selectors; this keeps the wider text measure active. */
+main .section-heading,
+main .book-grid,
+main .adaptation-pitch,
+main .adaptation-hero,
+main .book-illustrations-heading,
+main .page-disclaimer {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+}
+
+main .page-title,
+main .section-heading h2,
+main .adaptation-hero h2,
+main .adaptation-hero p,
+main .rights-positioning p,
+main .saga-overview p,
+main .season-format,
+main .expansion-copy p:not(.eyebrow) {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+}
+
+html body.author-page-final main .author-final-shell,
+html body.author-page-final main .author-final-row {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+}
+
+html body.author-page-final main .author-final-title,
+html body.author-page-final main .author-final-name {
+  max-width: min(1500px, 92vw) !important;
+}
