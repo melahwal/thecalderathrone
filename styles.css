@@ -2898,3 +2898,270 @@ body.google-translated.translated-ar.author-page-final main .author-final-row .a
   font-size: 150% !important;
   line-height: 1.9 !important;
 }
+
+/* === TEXT MEASURE + TRANSLATED READING ALIGNMENT PASS === */
+main :where(
+  .section-heading,
+  .book-grid,
+  .book-panel,
+  .book-panel-inner,
+  .book-copy,
+  .adaptation-pitch,
+  .adaptation-hero,
+  .rights-positioning,
+  .saga-overview,
+  .season-structure-box,
+  .series-status,
+  .author-final-shell,
+  .author-final-row,
+  .author-final-bio,
+  .book-illustrations-heading,
+  .page-disclaimer,
+  .hero-content,
+  .hero-copy
+) {
+  width: 100%;
+  max-width: min(1500px, 92vw);
+}
+
+main :where(.book-copy, .author-final-bio, .rights-positioning, .saga-overview, .season-structure-box, .series-status) {
+  max-width: none;
+}
+
+main :where(
+  p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+  li,
+  .lead,
+  .subtitle,
+  .intro,
+  .synopsis,
+  .book-description,
+  .page-disclaimer,
+  .characters-subtitle,
+  .season-format,
+  .hero-hook,
+  .adaptation-closing
+) {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+main :where(.section-heading h2, .adaptation-hero h2) {
+  max-width: min(1500px, 92vw);
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+}
+
+main :where(
+  figcaption,
+  .eyebrow,
+  .series-label,
+  .word-count,
+  .book-current-title,
+  .spread-counter,
+  .book-select-title,
+  .character-card h3,
+  .text-button,
+  .button,
+  .book-control
+) {
+  text-align-last: auto;
+}
+
+.site-header *,
+.main-header *,
+.site-nav *,
+.main-nav *,
+.nav *,
+.language-switcher *,
+#persistent-language-switcher *,
+button,
+.nav-button,
+.gold-button,
+.translate-floating-button,
+.translate-floating-menu * {
+  text-align: center !important;
+  text-align-last: auto !important;
+}
+
+.brand,
+.brand * {
+  text-align: left !important;
+  text-align-last: auto !important;
+}
+
+html.is-arabic-translation main :where(
+  .section-heading,
+  .page-title,
+  .book-grid,
+  .book-panel,
+  .book-panel-inner,
+  .book-copy,
+  .adaptation-pitch,
+  .adaptation-hero,
+  .rights-positioning,
+  .saga-overview,
+  .season-structure-box,
+  .series-status,
+  .author-final-shell,
+  .author-final-row,
+  .author-final-bio,
+  .book-illustrations-heading,
+  .page-disclaimer,
+  .hero,
+  .page-hero,
+  .hero-content,
+  .hero-copy,
+  .content,
+  .copy,
+  .text-frame,
+  .panel,
+  .card
+),
+body.google-translated.translated-ar main :where(
+  .section-heading,
+  .page-title,
+  .book-grid,
+  .book-panel,
+  .book-panel-inner,
+  .book-copy,
+  .adaptation-pitch,
+  .adaptation-hero,
+  .rights-positioning,
+  .saga-overview,
+  .season-structure-box,
+  .series-status,
+  .author-final-shell,
+  .author-final-row,
+  .author-final-bio,
+  .book-illustrations-heading,
+  .page-disclaimer,
+  .hero,
+  .page-hero,
+  .hero-content,
+  .hero-copy,
+  .content,
+  .copy,
+  .text-frame,
+  .panel,
+  .card
+) {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html.is-arabic-translation main :where(
+  p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+  li,
+  .lead,
+  .subtitle,
+  .intro,
+  .synopsis,
+  .book-description,
+  .page-disclaimer,
+  .characters-subtitle,
+  .season-format,
+  .hero-hook,
+  .adaptation-closing
+),
+body.google-translated.translated-ar main :where(
+  p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+  li,
+  .lead,
+  .subtitle,
+  .intro,
+  .synopsis,
+  .book-description,
+  .page-disclaimer,
+  .characters-subtitle,
+  .season-format,
+  .hero-hook,
+  .adaptation-closing
+) {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+  direction: rtl !important;
+  text-align: justify !important;
+  text-align-last: right !important;
+  text-justify: inter-word;
+}
+
+html.is-arabic-translation main :where(h1, h2, h3, h4, .page-title),
+body.google-translated.translated-ar main :where(h1, h2, h3, h4, .page-title) {
+  max-width: min(1500px, 92vw) !important;
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+html.is-arabic-translation body.author-page-final main .author-final-row .author-final-bio p,
+body.lang-ar.author-page-final main .author-final-row .author-final-bio p,
+body.google-translated.translated-ar.author-page-final main .author-final-row .author-final-bio p {
+  text-align: justify !important;
+  text-align-last: right !important;
+}
+
+html.translated-ltr main :where(
+  .section-heading,
+  .page-title,
+  .book-grid,
+  .book-panel,
+  .book-panel-inner,
+  .book-copy,
+  .adaptation-pitch,
+  .adaptation-hero,
+  .rights-positioning,
+  .saga-overview,
+  .season-structure-box,
+  .series-status,
+  .author-final-shell,
+  .author-final-row,
+  .author-final-bio,
+  .book-illustrations-heading,
+  .page-disclaimer,
+  .hero,
+  .page-hero,
+  .hero-content,
+  .hero-copy,
+  .content,
+  .copy,
+  .text-frame,
+  .panel,
+  .card
+) {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+  direction: ltr !important;
+}
+
+html.translated-ltr main :where(
+  p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+  li,
+  .lead,
+  .subtitle,
+  .intro,
+  .synopsis,
+  .book-description,
+  .page-disclaimer,
+  .characters-subtitle,
+  .season-format,
+  .hero-hook,
+  .adaptation-closing
+) {
+  width: 100% !important;
+  max-width: min(1500px, 92vw) !important;
+  direction: ltr !important;
+  text-align: justify !important;
+  text-align-last: left !important;
+  text-justify: inter-word;
+}
+
+html.translated-ltr main :where(h1, h2, h3, h4, .page-title) {
+  max-width: min(1500px, 92vw) !important;
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+}
