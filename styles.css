@@ -2635,3 +2635,266 @@ html body.author-page-final main .author-final-row .author-final-bio p:last-chil
     object-fit: contain !important;
   }
 }
+
+/* Translation UX, RTL, and protected-name safety */
+
+:root {
+  --translate-toolbar-offset: 0px;
+}
+
+.site-header {
+  z-index: 99999;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.96);
+}
+
+body.google-proxy-page {
+  --translate-toolbar-offset: 56px;
+}
+
+body.google-proxy-page .site-header {
+  top: var(--translate-toolbar-offset);
+}
+
+.brand {
+  flex: 0 0 auto;
+  min-width: max-content;
+  position: relative;
+  z-index: 20;
+}
+
+.site-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  max-width: 210px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+html.translated-ltr .site-nav a,
+html.translated-rtl .site-nav a,
+html.is-arabic-translation .site-nav a,
+body.google-translated .site-nav a {
+  max-width: 220px;
+  padding-inline: 14px;
+  font-size: clamp(0.72rem, 0.85vw, 0.92rem);
+}
+
+html[dir="rtl"],
+body.rtl-lang {
+  direction: rtl;
+}
+
+html.is-arabic-translation body,
+html.is-arabic-translation main,
+html.is-arabic-translation section,
+html.is-arabic-translation article,
+html.is-arabic-translation .hero,
+html.is-arabic-translation .page-hero,
+html.is-arabic-translation .content,
+html.is-arabic-translation .copy,
+html.is-arabic-translation .text-frame,
+html.is-arabic-translation .panel,
+html.is-arabic-translation .card,
+html.is-arabic-translation .book-copy,
+html.is-arabic-translation .author-copy,
+html.is-arabic-translation .character-card,
+html.is-arabic-translation .character-card p,
+html.is-arabic-translation .novel-card,
+html.is-arabic-translation .adaptation-card,
+html.is-arabic-translation p,
+html.is-arabic-translation h1,
+html.is-arabic-translation h2,
+html.is-arabic-translation h3,
+html.is-arabic-translation h4,
+html.is-arabic-translation li,
+body.google-translated.translated-ar main,
+body.google-translated.translated-ar section,
+body.google-translated.translated-ar article,
+body.google-translated.translated-ar .page-content,
+body.google-translated.translated-ar .hero,
+body.google-translated.translated-ar .hero-copy,
+body.google-translated.translated-ar .content-block,
+body.google-translated.translated-ar .novel-content,
+body.google-translated.translated-ar .synopsis,
+body.google-translated.translated-ar .book-description,
+body.google-translated.translated-ar .adaptation-copy,
+body.google-translated.translated-ar .author-copy,
+body.google-translated.translated-ar .rights-copy {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html.is-arabic-translation .site-header,
+html.is-arabic-translation .site-header *,
+html.is-arabic-translation #persistent-language-switcher,
+html.is-arabic-translation #persistent-language-switcher *,
+body.is-arabic-translation .site-header,
+body.is-arabic-translation .site-header *,
+body.is-arabic-translation #persistent-language-switcher,
+body.is-arabic-translation #persistent-language-switcher * {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+html[lang="ar"] main p,
+html[lang="ar"] main li,
+body.lang-ar main p,
+body.lang-ar main li,
+body.lang-ar .page-content,
+body.lang-ar .novel-content,
+body.lang-ar .synopsis,
+body.lang-ar .book-description,
+body.lang-ar .novel-text-frame p,
+body.lang-ar .author-final-bio p,
+body.lang-ar .adaptation-card p,
+body.lang-ar .rights-copy p,
+body.lang-ar .character-card p,
+body.google-translated.translated-ar main p,
+body.google-translated.translated-ar main li,
+body.google-translated.translated-ar .page-content p,
+body.google-translated.translated-ar .content-block p,
+body.google-translated.translated-ar .synopsis,
+body.google-translated.translated-ar .book-description {
+  font-size: 150% !important;
+  line-height: 1.9 !important;
+}
+
+html[lang="ar"] .site-header,
+html[lang="ar"] .site-header *,
+body.lang-ar .site-header,
+body.lang-ar .site-header *,
+body.lang-ar #persistent-language-switcher,
+body.lang-ar #persistent-language-switcher * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+body.google-translated.translated-ar main,
+body.google-translated.translated-ar main p,
+body.google-translated.translated-ar main li,
+body.google-translated.translated-ar main h1,
+body.google-translated.translated-ar main h2,
+body.google-translated.translated-ar main h3,
+body.google-translated.translated-ar main h4,
+body.google-translated.translated-ar .page-title,
+body.google-translated.translated-ar .page-disclaimer,
+body.google-translated.translated-ar .author-final-name,
+body.google-translated.translated-ar .hero-copy,
+body.google-translated.translated-ar .content-block,
+body.google-translated.translated-ar .synopsis,
+body.google-translated.translated-ar .book-description,
+body.google-translated.translated-ar .adaptation-copy,
+body.google-translated.translated-ar .author-copy,
+body.google-translated.translated-ar .rights-copy {
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif !important;
+}
+
+#persistent-language-switcher,
+.translate-floating-control {
+  position: fixed;
+  top: calc(var(--translate-toolbar-offset) + var(--header-height) + 10px);
+  right: 24px;
+  z-index: 1000000;
+  display: inline-flex;
+  color: #d8c071;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  direction: ltr !important;
+}
+
+.translate-floating-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid #c8a94f;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.94);
+  color: #d8c071;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+.translate-floating-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  display: none;
+  min-width: 184px;
+  overflow: hidden;
+  border: 1px solid #c8a94f;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f0d488, #b98c3a);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.42);
+}
+
+#persistent-language-switcher.open .translate-floating-menu {
+  display: block;
+}
+
+.translate-floating-menu a {
+  display: block;
+  padding: 10px 14px;
+  color: #16110b;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.translate-floating-menu a:hover,
+.translate-floating-menu a.current {
+  color: #130d05;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+body.translated-ar #persistent-language-switcher,
+body.translated-ar .translate-floating-control {
+  right: auto;
+  left: 24px;
+}
+
+body.translated-ar .translate-floating-menu {
+  right: auto;
+  left: 0;
+}
+
+@media (max-width: 760px) {
+  .site-nav a {
+    width: 100%;
+    max-width: none;
+  }
+
+  #persistent-language-switcher,
+  .translate-floating-control {
+    top: calc(var(--translate-toolbar-offset) + var(--header-height) + 8px);
+    right: 14px;
+  }
+
+  body.translated-ar #persistent-language-switcher,
+  body.translated-ar .translate-floating-control {
+    right: auto;
+    left: 14px;
+  }
+}
+
+html.is-arabic-translation body.author-page-final main .author-final-row .author-final-bio p,
+body.lang-ar.author-page-final main .author-final-row .author-final-bio p,
+body.google-translated.translated-ar.author-page-final main .author-final-row .author-final-bio p {
+  direction: rtl !important;
+  text-align: right !important;
+  font-size: 150% !important;
+  line-height: 1.9 !important;
+}
