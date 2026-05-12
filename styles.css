@@ -1234,15 +1234,15 @@ img {
 }
 
 .adaptation-pitch {
-  width: min(84vw, 1500px);
+  width: min(92vw, 1500px);
   margin: 0 auto;
 }
 
 .adaptation-hero {
   display: grid;
-  gap: clamp(20px, 2.6vw, 34px);
-  max-width: 1120px;
-  margin-bottom: clamp(42px, 5vw, 76px);
+  gap: clamp(12px, 1.8vw, 20px);
+  max-width: var(--page-header-width);
+  margin-bottom: clamp(18px, 2.3vw, 28px);
 }
 
 .adaptation-hero .page-title {
@@ -1290,7 +1290,8 @@ img {
 .screen-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(20px, 2.4vw, 34px);
+  gap: clamp(12px, 1.5vw, 18px);
+  grid-auto-rows: 1fr;
   align-items: stretch;
 }
 
@@ -1310,24 +1311,25 @@ img {
 .pitch-card {
   display: grid;
   align-content: start;
-  gap: 14px;
-  min-height: 100%;
-  padding: clamp(26px, 3vw, 40px);
+  gap: clamp(8px, 0.9vw, 12px);
+  min-height: clamp(172px, 13.5vw, 194px);
+  height: 100%;
+  padding: clamp(18px, 1.8vw, 24px);
 }
 
 .pitch-card h3 {
   margin: 0;
   color: var(--bright-gold);
   font-family: var(--serif);
-  font-size: clamp(1.22rem, 1.5vw, 1.55rem);
-  line-height: 1.18;
+  font-size: clamp(1.12rem, 1.26vw, 1.38rem);
+  line-height: 1.14;
 }
 
 .pitch-card p {
   margin: 0;
   color: var(--ash);
-  font-size: clamp(0.96rem, 1vw, 1.05rem);
-  line-height: 1.75;
+  font-size: clamp(0.94rem, 0.96vw, 1rem);
+  line-height: 1.62;
   text-align: justify;
   text-justify: inter-word;
 }
@@ -3360,6 +3362,11 @@ body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .
   align-content: start;
   margin-bottom: clamp(24px, 3vw, 36px);
   text-align: left;
+}
+
+body.adaptation-page main .adaptation-hero.shared-page-header {
+  gap: clamp(12px, 1.5vw, 18px);
+  margin-bottom: clamp(14px, 1.8vw, 22px);
 }
 
 body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page) main :where(.page-title, .author-final-title) {
