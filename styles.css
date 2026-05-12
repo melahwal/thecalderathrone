@@ -3199,3 +3199,9 @@ html body.author-page-final main .author-final-title,
 html body.author-page-final main .author-final-name {
   max-width: min(1500px, 92vw) !important;
 }
+
+main .home-hero .hero-content,
+main .home-hero .hero-hook {
+  width: 100% !important;
+  max-width: min(1100px, 92vw) !important;
+}
