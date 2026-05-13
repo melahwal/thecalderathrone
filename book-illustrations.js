@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const bookReader = document.querySelector("[data-book-reader]");
 
   if (!bookReader) {
@@ -110,21 +110,20 @@
   }
 
   function titleLine(book) {
-    return `${book.kicker} � ${book.title}`;
+    return `${book.kicker} — ${book.title}`;
   }
 
   function isMobileView() {
     return window.matchMedia("(max-width: 740px)").matches;
   }
 
-  function renderPage(page, side) {
+  function renderPage(page, side, pageNumber) {
     if (!page) {
       return '<div class="book-blank-page" aria-hidden="true"></div>';
     }
 
     return `
-      <figure class="book-illustration book-illustration-${side}">
-        <img src="${encodeURI(page.src)}" alt="${escapeHtml(page.caption)} illustration from The Caldera Throne." loading="eager" decoding="async">
+      <figure class="book-illustration book-illustration-${side}">`r`n        <span class="book-image-number book-image-number-${side}" aria-label="Illustration number ${pageNumber}">${pageNumber}</span>`r`n        <img src="${encodeURI(page.src)}" alt="${escapeHtml(page.caption)} illustration from The Caldera Throne." loading="eager" decoding="async">
         <figcaption>${escapeHtml(page.caption)}</figcaption>
       </figure>
     `;
@@ -150,11 +149,10 @@
 
     els.displayTitle.textContent = titleLine(book);
 
-    const left = book.pages[pageIndex];
-    const right = isMobileView() ? null : book.pages[pageIndex + 1] || null;
+    const left = book.pages[pageIndex];`r`n    const right = isMobileView() ? null : book.pages[pageIndex + 1] || null;`r`n    const leftNumber = pageIndex + 1;`r`n    const rightNumber = pageIndex + 2;
 
-    els.left.innerHTML = renderPage(left, "left");
-    els.right.innerHTML = right ? renderPage(right, "right") : '<div class="book-blank-page" aria-hidden="true"></div>';
+    els.left.innerHTML = renderPage(left, "left", leftNumber);
+    els.right.innerHTML = right ? renderPage(right, "right", rightNumber) : '<div class="book-blank-page" aria-hidden="true"></div>';
     els.right.hidden = isMobileView();
 
     els.progress.textContent = `${pageIndex + 1} OF ${total}`;
