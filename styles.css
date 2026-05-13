@@ -3975,3 +3975,71 @@ body.translated-rtl .translate-floating-menu {
     left: auto !important;
   }
 }
+
+/* Viewer final alignment fix (illustrations page) */
+body.illustrations-page .open-book-header {
+  min-height: auto;
+  padding: 0 clamp(12px, 2vw, 24px);
+}
+
+body.illustrations-page .open-book-title {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+body.illustrations-page .book-reader-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 clamp(10px, 1.2vw, 16px) clamp(2px, 0.4vw, 6px);
+}
+
+body.illustrations-page .book-progress {
+  min-height: 34px;
+  min-width: 102px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+}
+
+body.illustrations-page .book-control-return {
+  position: static;
+  margin-left: auto;
+  max-width: 230px;
+  min-height: 36px;
+  font-size: 0.62rem;
+}
+
+body.illustrations-page .open-book {
+  min-height: clamp(520px, 64vh, 720px);
+}
+
+body.illustrations-page .book-pages {
+  min-height: clamp(390px, 46vh, 560px);
+}
+
+body.illustrations-page .book-page {
+  padding: clamp(10px, 1.2vw, 16px);
+}
+
+body.illustrations-page .book-illustration img {
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 740px) {
+  body.illustrations-page .book-control-return {
+    margin-left: 0;
+    width: 100%;
+    max-width: none;
+    order: 6;
+  }
+
+  body.illustrations-page .book-progress {
+    order: 0;
+    width: auto;
+  }
+}
