@@ -439,7 +439,7 @@ const visitorCounter = (() => {
 
 (() => {
   const publicSiteOrigin = "https://thecalderathrone.com";
-  const translateProxyOrigin = "https://thecalderathrone-com.translate.goog";
+  const translateEntryUrl = "https://translate.google.com/translate";
   const languageChoices = [
     { code: "en", label: "English" },
     { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629" },
@@ -707,6 +707,31 @@ const visitorCounter = (() => {
     return Boolean(urlObject && urlObject.hostname.includes("translate.goog"));
   }
 
+  function isTranslateEntryUrl(urlObject) {
+    return Boolean(urlObject && urlObject.hostname === "translate.google.com" && urlObject.pathname.includes("/translate"));
+  }
+
+  function normalizePublicPath(pathName = "/") {
+    const path = pathName || "/";
+
+    if (path === "/" || path.endsWith("/index") || path.endsWith("/index.html")) return "/";
+    if (path.endsWith("/novels") || path.endsWith("/novels.html")) return "/novels";
+    if (path.endsWith("/characters") || path.endsWith("/characters.html")) return "/characters";
+    if (
+      path.endsWith("/illustrations") ||
+      path.endsWith("/illustrations.html") ||
+      path.endsWith("/book-illustrations") ||
+      path.endsWith("/book-illustrations.html")
+    ) {
+      return "/illustrations";
+    }
+    if (path.endsWith("/adaptation") || path.endsWith("/adaptation.html")) return "/adaptation";
+    if (path.endsWith("/author") || path.endsWith("/author.html")) return "/author";
+    if (path.endsWith("/rights") || path.endsWith("/rights.html")) return "/rights";
+
+    return path.startsWith("/") ? path : `/${path}`;
+  }
+
   function getSourcePageUrl(urlValue = window.location.href) {
     const parsedUrl = getUrl(urlValue);
 
@@ -716,8 +741,12 @@ const visitorCounter = (() => {
 
     const sourceUrl = parsedUrl.searchParams.get("u") || parsedUrl.searchParams.get("_x_tr_url");
 
-    if (sourceUrl) {
+    if (sourceUrl && (isTranslateEntryUrl(parsedUrl) || isTranslateProxyUrl(parsedUrl) || parsedUrl.searchParams.has("_x_tr_url"))) {
       return getSourcePageUrl(sourceUrl);
+    }
+
+    if (isTranslateProxyUrl(parsedUrl)) {
+      return getUrl(`${publicSiteOrigin}${normalizePublicPath(parsedUrl.pathname)}`);
     }
 
     return parsedUrl;
@@ -743,6 +772,23 @@ const visitorCounter = (() => {
     if (path.endsWith("/rights") || path.endsWith("/rights.html")) return "rights";
 
     return "index";
+  }
+
+  function getCleanOriginalPageUrl() {
+    const sourceUrl = getSourcePageUrl();
+
+    if (!sourceUrl) {
+      return `${publicSiteOrigin}/`;
+    }
+
+    if (isLocalHostName(sourceUrl.hostname) && !isTranslateProxyUrl(getUrl(window.location.href))) {
+      const pageKey = getCurrentPageKey();
+      const mapping = pagePathMappings[pageKey] || pagePathMappings.index;
+
+      return `${sourceUrl.origin}${mapping.local}`;
+    }
+
+    return `${publicSiteOrigin}${normalizePublicPath(sourceUrl.pathname)}`;
   }
 
   function getCurrentLanguage() {
@@ -774,14 +820,17 @@ const visitorCounter = (() => {
       return `${sourceUrl.origin}${mapping.local}`;
     }
 
-    return `${publicSiteOrigin}${mapping.public}`;
+    return getCleanOriginalPageUrl();
   }
 
-  function getTranslatedPageUrl(languageCode, pageKey = getCurrentPageKey()) {
-    const mapping = pagePathMappings[pageKey] || pagePathMappings.index;
-    const targetPath = mapping.public === "/" ? "/" : mapping.public;
+  function getTranslatedPageUrl(languageCode) {
+    const translateUrl = new URL(translateEntryUrl);
 
-    return `${translateProxyOrigin}${targetPath}?_x_tr_sl=auto&_x_tr_tl=${encodeURIComponent(languageCode)}&_x_tr_hl=en-US`;
+    translateUrl.searchParams.set("sl", "auto");
+    translateUrl.searchParams.set("tl", languageCode);
+    translateUrl.searchParams.set("u", getCleanOriginalPageUrl());
+
+    return translateUrl.toString();
   }
 
   function getLanguageUrl(languageCode) {
