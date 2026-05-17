@@ -113,6 +113,28 @@
   const titleLine = (book) => `${book.kicker} \u2014 ${book.title}`;
 
   const isMobileView = () => window.matchMedia("(max-width: 740px)").matches;
+  const currentSpreadSize = () => (isMobileView() ? 1 : 2);
+
+  const lastSpreadIndex = (total) => {
+    if (total <= 1) return 0;
+    if (isMobileView()) return total - 1;
+    return total % 2 === 0 ? total - 2 : total - 1;
+  };
+
+  const normalizePageIndex = (index, total) => {
+    const safeIndex = Math.max(0, Math.min(index, total - 1));
+
+    if (isMobileView()) {
+      return safeIndex;
+    }
+
+    const lastIndex = lastSpreadIndex(total);
+    if (safeIndex >= lastIndex) {
+      return lastIndex;
+    }
+
+    return safeIndex - (safeIndex % 2);
+  };
 
   const renderPage = (page, side) => {
     if (!page) {
@@ -143,7 +165,7 @@
     const book = books[bookIndex];
     const total = book.pages.length;
 
-    pageIndex = Math.max(0, Math.min(pageIndex, total - 1));
+    pageIndex = normalizePageIndex(pageIndex, total);
 
     els.displayTitle.textContent = titleLine(book);
 
@@ -154,13 +176,18 @@
     els.right.hidden = isMobileView();
     els.right.innerHTML = right ? renderPage(right, "right") : '<div class="book-blank-page" aria-hidden="true"></div>';
 
-    els.progress.textContent = `${pageIndex + 1} OF ${total}`;
+    const leftNumber = pageIndex + 1;
+    const rightNumber = right ? pageIndex + 2 : null;
+
+    els.progress.textContent = rightNumber ? `${leftNumber}\u2013${rightNumber} of ${total}` : `${leftNumber} of ${total}`;
     if (els.status) {
-      els.status.textContent = `${titleLine(book)}, image ${pageIndex + 1} of ${total}`;
+      els.status.textContent = rightNumber
+        ? `${titleLine(book)}, images ${leftNumber} to ${rightNumber} of ${total}`
+        : `${titleLine(book)}, image ${leftNumber} of ${total}`;
     }
 
     const atStart = pageIndex === 0;
-    const atEnd = pageIndex >= total - 1;
+    const atEnd = pageIndex >= lastSpreadIndex(total);
 
     els.first.forEach((button) => { button.disabled = atStart; });
     els.prev.forEach((button) => { button.disabled = atStart; });
@@ -206,17 +233,22 @@
 
   const previousView = () => {
     if (pageIndex <= 0) return;
-    flip("backward", () => { pageIndex -= 1; });
+    flip("backward", () => {
+      pageIndex = Math.max(0, pageIndex - currentSpreadSize());
+    });
   };
 
   const nextView = () => {
-    const last = books[bookIndex].pages.length - 1;
+    const total = books[bookIndex].pages.length;
+    const last = lastSpreadIndex(total);
     if (pageIndex >= last) return;
-    flip("forward", () => { pageIndex += 1; });
+    flip("forward", () => {
+      pageIndex = Math.min(last, pageIndex + currentSpreadSize());
+    });
   };
 
   const lastView = () => {
-    const last = books[bookIndex].pages.length - 1;
+    const last = lastSpreadIndex(books[bookIndex].pages.length);
     if (pageIndex >= last) return;
     flip("forward", () => { pageIndex = last; });
   };
