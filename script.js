@@ -202,11 +202,11 @@ if (contactForm) {
 
 /* === Visitor counters === */
 /*
-  Static-site counter rules:
+  Counter rules:
   - Unique Visitors starts at 1,200 and counts once per browser/device, but only from the live homepage.
-  - Total Visits starts at 2,500 and increases once per browser session, but only from the live homepage.
-  - Moving between internal pages or translated views only reads the current browser-stored totals and does not increment.
-  - This is a static-site implementation, so the counter state is intentionally stored in the visitor's browser.
+  - Total Visits starts from the last visible live total and increases once per browser session, but only from the live homepage.
+  - Internal pages only read and display the latest saved totals.
+  - No raw visitor identifiers are stored by this script.
 */
 
 const visitorCounter = (() => {
@@ -218,18 +218,23 @@ const visitorCounter = (() => {
   }
 
   const uniqueBase = 1200;
-  const totalBase = 2500;
+  const totalBase = 2634;
+  const productionCounterApiBaseUrl = "https://api.counterapi.dev/v1/thecalderathrone.com";
+  const uniqueCounterKey = "unique-homepage-visitors";
+  const totalCounterKey = "homepage-session-visits";
 
-  const uniqueFlagStorageKey = "calderaThroneUniqueVisitorCounted_v20260512task07";
-  const uniqueValueStorageKey = "calderaThroneUniqueVisitorsValue_v20260512task07";
-  const totalValueStorageKey = "calderaThroneTotalVisitsValue_v20260512task07";
-  const sessionVisitKey = "calderaThroneHomeVisitCountedThisSession_v20260512task07";
+  const uniqueFlagStorageKey = "calderaThroneRemoteUniqueVisitorCounted_v20260517";
+  const uniqueValueStorageKey = "calderaThroneRemoteUniqueVisitorsValue_v20260517";
+  const totalValueStorageKey = "calderaThroneRemoteTotalVisitsValue_v20260517";
+  const sessionVisitKey = "calderaThroneRemoteHomeVisitCountedThisSession_v20260517";
 
   const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
   const isTranslateProxy = window.location.hostname.includes("translate.goog");
   const searchParams = new URLSearchParams(window.location.search);
   const hasTranslateQuery = [...searchParams.keys()].some((key) => key.startsWith("_x_tr_"));
   const isLivePrimaryOrigin = window.location.origin === "https://thecalderathrone.com";
+  const localCounterApiBaseUrl = isLocalPreview ? searchParams.get("counterApiBaseUrl") : "";
+  const counterApiBaseUrl = localCounterApiBaseUrl || productionCounterApiBaseUrl;
 
   function isHomePage() {
     const path = window.location.pathname.replace(/\/+$/, "");
@@ -247,6 +252,10 @@ const visitorCounter = (() => {
     return isLivePrimaryOrigin && isHomePage() && !isTranslateProxy && !hasTranslateQuery;
   }
 
+  function canReadRemoteCounter() {
+    return (isLivePrimaryOrigin || Boolean(localCounterApiBaseUrl)) && !isTranslateProxy && !hasTranslateQuery;
+  }
+
   function formatCount(value) {
     return Number(value).toLocaleString("en-US");
   }
@@ -256,32 +265,30 @@ const visitorCounter = (() => {
     return value <= baseValue ? `${formatted}+` : formatted;
   }
 
-  function setFallbackValues() {
-    uniqueVisitors.textContent = formatDisplayCount(uniqueBase, uniqueBase);
-    totalVisits.textContent = formatDisplayCount(totalBase, totalBase);
+  function renderCounts(uniqueCounterValue, totalCounterValue) {
+    const uniqueCount = uniqueBase + uniqueCounterValue;
+    const totalCount = totalBase + totalCounterValue;
+
+    uniqueVisitors.textContent = formatDisplayCount(uniqueCount, uniqueBase);
+    totalVisits.textContent = formatDisplayCount(totalCount, totalBase);
   }
 
-  function readStoredCount(storageKey, fallbackValue) {
+  function readStoredCounter(storageKey) {
     try {
       const rawValue = localStorage.getItem(storageKey);
       const value = Number(rawValue);
-      return Number.isFinite(value) && value >= fallbackValue ? value : fallbackValue;
+      return Number.isFinite(value) && value >= 0 ? value : 0;
     } catch (error) {
-      return fallbackValue;
+      return 0;
     }
   }
 
-  function writeStoredCount(storageKey, value) {
+  function writeStoredCounter(storageKey, value) {
     try {
       localStorage.setItem(storageKey, String(value));
     } catch (error) {
       /* localStorage unavailable; keep the in-memory display only. */
     }
-  }
-
-  function renderCounts(uniqueCount, totalCount) {
-    uniqueVisitors.textContent = formatDisplayCount(uniqueCount, uniqueBase);
-    totalVisits.textContent = formatDisplayCount(totalCount, totalBase);
   }
 
   function hasStoredUniqueHit() {
@@ -316,37 +323,109 @@ const visitorCounter = (() => {
     }
   }
 
-  function init() {
-    setFallbackValues();
+  function hasLocalStorage() {
+    try {
+      const testKey = "calderaThroneStorageTest";
+      localStorage.setItem(testKey, "1");
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
-    const startingUnique = readStoredCount(uniqueValueStorageKey, uniqueBase);
-    const startingTotal = readStoredCount(totalValueStorageKey, totalBase);
+  function hasSessionStorage() {
+    try {
+      const testKey = "calderaThroneSessionStorageTest";
+      sessionStorage.setItem(testKey, "1");
+      sessionStorage.removeItem(testKey);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async function fetchCounter(counterName, shouldIncrement = false) {
+    const encodedName = encodeURIComponent(counterName);
+    const action = shouldIncrement ? "/up" : "/";
+    let response = await fetch(`${counterApiBaseUrl}/${encodedName}${action}`, {
+      cache: "no-store"
+    });
+
+    if (shouldIncrement && (response.status === 400 || response.status === 404)) {
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, 200);
+      });
+
+      response = await fetch(`${counterApiBaseUrl}/${encodedName}${action}`, {
+        cache: "no-store"
+      });
+    }
+
+    if (response.status === 400 || response.status === 404) {
+      return 0;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Counter request failed with ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const value = Number(payload && payload.count);
+
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  }
+
+  function rememberRemoteCounts(uniqueCounterValue, totalCounterValue) {
+    writeStoredCounter(uniqueValueStorageKey, uniqueCounterValue);
+    writeStoredCounter(totalValueStorageKey, totalCounterValue);
+  }
+
+  async function syncRemoteCounts() {
+    if (!canReadRemoteCounter()) {
+      return;
+    }
+
+    const shouldIncrementCounters = isEligibleLiveHomepageCounterHit() || Boolean(localCounterApiBaseUrl && isHomePage());
+    const shouldIncrementUnique = shouldIncrementCounters && hasLocalStorage() && !hasStoredUniqueHit();
+    const shouldIncrementTotal = shouldIncrementCounters && hasSessionStorage() && !hasCountedSessionVisit();
+
+    try {
+      const [remoteUnique, remoteTotal] = await Promise.all([
+        fetchCounter(uniqueCounterKey, shouldIncrementUnique),
+        fetchCounter(totalCounterKey, shouldIncrementTotal)
+      ]);
+
+      if (shouldIncrementUnique && remoteUnique > 0) {
+        markUniqueVisitorCounted();
+      }
+
+      if (shouldIncrementTotal && remoteTotal > 0) {
+        markSessionVisitCounted();
+      }
+
+      rememberRemoteCounts(remoteUnique, remoteTotal);
+      renderCounts(remoteUnique, remoteTotal);
+    } catch (error) {
+      renderCounts(readStoredCounter(uniqueValueStorageKey), readStoredCounter(totalValueStorageKey));
+    }
+  }
+
+  function init() {
+    const startingUnique = readStoredCounter(uniqueValueStorageKey);
+    const startingTotal = readStoredCounter(totalValueStorageKey);
     renderCounts(startingUnique, startingTotal);
 
     if (isLocalPreview) {
+      syncRemoteCounts();
       return;
     }
 
-    if (!isEligibleLiveHomepageCounterHit()) {
+    if (!canReadRemoteCounter()) {
       return;
     }
 
-    let nextUnique = startingUnique;
-    let nextTotal = startingTotal;
-
-    if (!hasStoredUniqueHit()) {
-      nextUnique += 1;
-      writeStoredCount(uniqueValueStorageKey, nextUnique);
-      markUniqueVisitorCounted();
-    }
-
-    if (!hasCountedSessionVisit()) {
-      nextTotal += 1;
-      writeStoredCount(totalValueStorageKey, nextTotal);
-      markSessionVisitCounted();
-    }
-
-    renderCounts(nextUnique, nextTotal);
+    syncRemoteCounts();
   }
 
   init();
