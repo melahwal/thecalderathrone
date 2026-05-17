@@ -3930,7 +3930,12 @@ body.translated-ltr .site-footer :where(.site-footer-copy, .site-footer-top, .fo
     0 16px 36px rgba(0, 0, 0, 0.42),
     0 0 0 1px rgba(105, 72, 28, 0.52);
   pointer-events: auto;
+  touch-action: manipulation;
   user-select: none;
+}
+
+.translate-floating-button > * {
+  pointer-events: none;
 }
 
 .translate-floating-button:hover,

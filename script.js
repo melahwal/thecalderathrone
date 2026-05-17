@@ -577,6 +577,45 @@ const visitorCounter = (() => {
     }
   }
 
+  function getEventElement(event) {
+    if (event.target instanceof Element) {
+      return event.target;
+    }
+
+    const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+    return path.find((entry) => entry instanceof Element) || null;
+  }
+
+  function getLanguageToggleFromEvent(event, switcher = getFloatingLanguageSwitcher()) {
+    if (!switcher) {
+      return null;
+    }
+
+    const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+    const pathToggle = path.find((entry) => entry instanceof Element && entry.matches?.("[data-language-toggle], .translate-floating-button"));
+
+    if (pathToggle && switcher.contains(pathToggle)) {
+      return pathToggle;
+    }
+
+    const target = getEventElement(event);
+    const toggle = target?.closest?.("[data-language-toggle], .translate-floating-button");
+
+    return toggle && switcher.contains(toggle) ? toggle : null;
+  }
+
+  function toggleFloatingLanguageSwitcher(event) {
+    const switcher = getFloatingLanguageSwitcher();
+
+    if (!switcher) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    syncFloatingLanguageSwitcherState(!switcher.classList.contains("open"));
+  }
+
   function installFloatingLanguageSwitcherEvents() {
     if (languageSwitcherEventsInstalled) {
       return;
@@ -587,26 +626,25 @@ const visitorCounter = (() => {
     document.addEventListener("click", (event) => {
       const switcher = getFloatingLanguageSwitcher();
 
-      if (!switcher || !(event.target instanceof Element)) {
+      if (!switcher) {
         return;
       }
 
-      const toggle = event.target.closest("[data-language-toggle], .translate-floating-button");
+      const target = getEventElement(event);
+      const toggle = getLanguageToggleFromEvent(event, switcher);
       const menu = switcher.querySelector("[data-language-menu], .translate-floating-menu");
 
-      if (toggle && switcher.contains(toggle)) {
-        event.preventDefault();
-        event.stopPropagation();
-        syncFloatingLanguageSwitcherState(!switcher.classList.contains("open"));
+      if (toggle) {
+        toggleFloatingLanguageSwitcher(event);
         return;
       }
 
-      if (menu && menu.contains(event.target)) {
+      if (target && menu && menu.contains(target)) {
         return;
       }
 
       syncFloatingLanguageSwitcherState(false);
-    });
+    }, true);
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") {
@@ -831,6 +869,49 @@ const visitorCounter = (() => {
     });
   }
 
+  function startsWithWordLikeCharacter(value) {
+    return /^[A-Za-z0-9À-ž\u0600-\u06FF]/.test(value);
+  }
+
+  function endsWithWordLikeCharacter(value) {
+    return /[A-Za-z0-9À-ž\u0600-\u06FF,;:]$/.test(value);
+  }
+
+  function ensureProtectedAuthorNameSpacing() {
+    document.querySelectorAll("[data-author-name], .protected-author-name").forEach((element) => {
+      const previous = element.previousSibling;
+      const next = element.nextSibling;
+
+      if (previous?.nodeType === Node.TEXT_NODE) {
+        const value = previous.nodeValue || "";
+
+        if (value && !/\s$/.test(value) && endsWithWordLikeCharacter(value)) {
+          previous.nodeValue = `${value} `;
+        }
+      } else if (previous && previous.nodeType !== Node.TEXT_NODE) {
+        const text = previous.textContent || "";
+
+        if (text && endsWithWordLikeCharacter(text)) {
+          element.parentNode?.insertBefore(document.createTextNode(" "), element);
+        }
+      }
+
+      if (next?.nodeType === Node.TEXT_NODE) {
+        const value = next.nodeValue || "";
+
+        if (value && !/^\s/.test(value) && startsWithWordLikeCharacter(value)) {
+          next.nodeValue = ` ${value}`;
+        }
+      } else if (next && next.nodeType !== Node.TEXT_NODE) {
+        const text = next.textContent || "";
+
+        if (text && startsWithWordLikeCharacter(text)) {
+          element.parentNode?.insertBefore(document.createTextNode(" "), next);
+        }
+      }
+    });
+  }
+
   function protectCharacterNameHeadings() {
     document.querySelectorAll(".character-card h3").forEach((heading) => {
       const protectedName = heading.getAttribute("data-protected-name") || heading.textContent.trim();
@@ -876,6 +957,11 @@ const visitorCounter = (() => {
     nextText = nextText.replace(/\u0627\u0639\u0637/g, "Giv");
 
     nextText = nextText.replace(authorNamePattern, isArabic ? arabicAuthorName : latinAuthorName);
+    nextText = nextText
+      .replace(/([A-Za-z0-9À-ž\u0600-\u06FF,;:])(Mustafa EL Ahwal)/g, "$1 $2")
+      .replace(/(Mustafa EL Ahwal)(?=[A-Za-z0-9À-ž\u0600-\u06FF])/g, "$1 ")
+      .replace(/([A-Za-z0-9À-ž\u0600-\u06FF,;:])(\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644)/g, "$1 $2")
+      .replace(/(\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644)(?=[A-Za-z0-9À-ž\u0600-\u06FF])/g, "$1 ");
 
     if (nextText !== node.nodeValue) {
       node.nodeValue = nextText;
@@ -906,6 +992,8 @@ const visitorCounter = (() => {
       element.setAttribute("data-author-name", "true");
       setProtectedLanguageAttributes(element, isArabic ? "ar" : "en");
     });
+
+    ensureProtectedAuthorNameSpacing();
 
     document.querySelectorAll("[data-protected-name]:not([data-author-name])").forEach((element) => {
       const protectedName = element.getAttribute("data-protected-name");
@@ -985,6 +1073,11 @@ const visitorCounter = (() => {
     button.setAttribute("data-language-toggle", "true");
     button.setAttribute("aria-haspopup", "true");
     button.type = "button";
+
+    if (!button.dataset.languageToggleBound) {
+      button.addEventListener("click", toggleFloatingLanguageSwitcher);
+      button.dataset.languageToggleBound = "true";
+    }
   }
 
   function createFloatingLanguageSwitcher() {
@@ -1051,6 +1144,7 @@ const visitorCounter = (() => {
     protectVisibleTerms();
     repairProtectedElements(isArabic);
     repairLooseText(isArabic);
+    ensureProtectedAuthorNameSpacing();
     applyArabicNavLabels(isArabic);
     updateExistingLanguageLinks();
     createFloatingLanguageSwitcher();
