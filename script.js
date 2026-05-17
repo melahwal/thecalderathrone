@@ -253,7 +253,7 @@ const visitorCounter = (() => {
   }
 
   function canReadRemoteCounter() {
-    return (isLivePrimaryOrigin || Boolean(localCounterApiBaseUrl)) && !isTranslateProxy && !hasTranslateQuery;
+    return isLivePrimaryOrigin || isTranslateProxy || Boolean(localCounterApiBaseUrl);
   }
 
   function formatCount(value) {
