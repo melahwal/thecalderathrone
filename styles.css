@@ -440,7 +440,7 @@ p {
 .home-hero .hero-content {
   width: min(100%, 1220px);
   margin: 0 auto;
-  row-gap: clamp(6px, 0.82vw, 10px);
+  row-gap: clamp(9px, 1vw, 14px);
 }
 
 .home-hero .eyebrow {
@@ -449,15 +449,15 @@ p {
   font-size: clamp(1.02rem, 2.3vw, 2.08rem);
   font-family: var(--display);
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.1;
   text-align: center;
   text-align-last: center;
 }
 
 .home-hero h1 {
   max-width: 100%;
-  font-size: clamp(3.1rem, 7vw, 6.25rem);
-  line-height: 0.9;
+  font-size: clamp(3.05rem, 6.75vw, 6.1rem);
+  line-height: 0.96;
   text-align: center;
   text-align-last: center;
 }
@@ -465,7 +465,7 @@ p {
 .home-hero .hero-subtitle {
   margin: 0;
   font-size: clamp(1.1rem, 1.78vw, 1.62rem);
-  line-height: 1.16;
+  line-height: 1.22;
   text-align: center;
   text-align-last: center;
 }
@@ -473,7 +473,7 @@ p {
 .home-hero .tagline {
   margin: 0;
   font-size: clamp(0.96rem, 1.35vw, 1.18rem);
-  line-height: 1.16;
+  line-height: 1.22;
   text-align: center;
   text-align-last: center;
 }
@@ -490,7 +490,7 @@ p {
 }
 
 .home-hero .home-hero-actions-top {
-  margin: 0 0 clamp(4px, 0.7vw, 8px);
+  margin: 0 0 clamp(8px, 0.95vw, 12px);
 }
 
 .home-hero .hero-actions .button {
@@ -3627,7 +3627,7 @@ main > .section:first-child:not(.hero) {
 
 .home-frame-stack {
   display: grid;
-  gap: clamp(16px, 2vw, 24px);
+  gap: clamp(20px, 2.2vw, 28px);
   width: var(--page-header-width);
   margin-inline: auto;
 }
@@ -3645,7 +3645,7 @@ main > .section:first-child:not(.hero) {
 }
 
 .home-hero-frame {
-  padding: clamp(14px, 1.45vw, 18px) clamp(18px, 2.3vw, 30px);
+  padding: clamp(18px, 2.05vw, 26px) clamp(18px, 2.3vw, 30px);
 }
 
 .home-copy-frame p {
@@ -4053,6 +4053,7 @@ body.google-translated:not(.translated-ar).home-page main .home-hero {
 html.is-arabic-translation body.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
 body.google-translated.translated-ar.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
 body.translated-rtl.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+html[dir="rtl"] body.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
 html.translated-ltr body.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
 body.translated-ltr.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
 body.google-translated:not(.translated-ar).home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions) {
@@ -4062,25 +4063,55 @@ body.google-translated:not(.translated-ar).home-page main .home-hero :where(.her
   text-align-last: center !important;
 }
 
+html.is-arabic-translation body.home-page main .home-hero h1,
+body.google-translated.translated-ar.home-page main .home-hero h1,
+body.translated-rtl.home-page main .home-hero h1,
+html[dir="rtl"] body.home-page main .home-hero h1,
+html.translated-ltr body.home-page main .home-hero h1,
+body.translated-ltr.home-page main .home-hero h1,
+body.google-translated:not(.translated-ar).home-page main .home-hero h1 {
+  font-size: clamp(2.65rem, 5.85vw, 5.25rem) !important;
+  line-height: 1.04 !important;
+}
+
 html.is-arabic-translation body.home-page main .home-hero .eyebrow,
 body.google-translated.translated-ar.home-page main .home-hero .eyebrow,
 body.translated-rtl.home-page main .home-hero .eyebrow {
-  font-size: clamp(1.02rem, 2.3vw, 2.08rem) !important;
-  line-height: 1.08 !important;
+  font-size: clamp(0.98rem, 2.05vw, 1.86rem) !important;
+  line-height: 1.14 !important;
 }
 
 html.is-arabic-translation body.home-page main .home-hero .hero-subtitle,
 body.google-translated.translated-ar.home-page main .home-hero .hero-subtitle,
 body.translated-rtl.home-page main .home-hero .hero-subtitle {
   font-size: clamp(1.1rem, 1.78vw, 1.62rem) !important;
-  line-height: 1.16 !important;
+  line-height: 1.24 !important;
 }
 
 html.is-arabic-translation body.home-page main .home-hero .tagline,
 body.google-translated.translated-ar.home-page main .home-hero .tagline,
 body.translated-rtl.home-page main .home-hero .tagline {
   font-size: clamp(0.96rem, 1.35vw, 1.18rem) !important;
-  line-height: 1.16 !important;
+  line-height: 1.24 !important;
+}
+
+html.translated-ltr body.home-page main .home-hero .eyebrow,
+body.translated-ltr.home-page main .home-hero .eyebrow,
+body.google-translated:not(.translated-ar).home-page main .home-hero .eyebrow {
+  font-size: clamp(0.98rem, 2.05vw, 1.86rem) !important;
+  line-height: 1.14 !important;
+}
+
+html.translated-ltr body.home-page main .home-hero .hero-subtitle,
+body.translated-ltr.home-page main .home-hero .hero-subtitle,
+body.google-translated:not(.translated-ar).home-page main .home-hero .hero-subtitle {
+  line-height: 1.24 !important;
+}
+
+html.translated-ltr body.home-page main .home-hero .tagline,
+body.translated-ltr.home-page main .home-hero .tagline,
+body.google-translated:not(.translated-ar).home-page main .home-hero .tagline {
+  line-height: 1.24 !important;
 }
 
 @media (max-width: 760px) {
