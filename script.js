@@ -477,6 +477,10 @@ const visitorCounter = (() => {
     "\u0627\u0644\u0623\u0647\u0648\u0627\u0644",
   ];
   const protectedTerms = [
+    "THE CALDERA THRONE",
+    "THE STILL AND THE BURNING",
+    "THE EMPIRE OF LEDGERS",
+    "WHAT THE MOUNTAIN KEPT",
     "The Still and the Burning",
     "The Empire of Ledgers",
     "What the Mountain Kept",
@@ -909,7 +913,7 @@ const visitorCounter = (() => {
   function protectVisibleAuthorNames() {
     wrapTextMatches(document.body, authorNamePattern, () => {
       const span = document.createElement("span");
-      span.className = "notranslate protected-author-name";
+      span.className = "notranslate skiptranslate protected-author-name protected-inline-term";
       span.setAttribute("translate", "no");
       span.setAttribute("data-author-name", "true");
       span.textContent = latinAuthorName;
@@ -926,8 +930,8 @@ const visitorCounter = (() => {
     return /[A-Za-z0-9À-ž\u0600-\u06FF,;:]$/.test(value);
   }
 
-  function ensureProtectedAuthorNameSpacing() {
-    document.querySelectorAll("[data-author-name], .protected-author-name").forEach((element) => {
+  function ensureProtectedInlineSpacing() {
+    document.querySelectorAll("[data-author-name], .protected-author-name, [data-protected-name]").forEach((element) => {
       const previous = element.previousSibling;
       const next = element.nextSibling;
 
@@ -961,6 +965,10 @@ const visitorCounter = (() => {
     });
   }
 
+  function ensureProtectedAuthorNameSpacing() {
+    ensureProtectedInlineSpacing();
+  }
+
   function protectCharacterNameHeadings() {
     document.querySelectorAll(".character-card h3").forEach((heading) => {
       const protectedName = heading.getAttribute("data-protected-name") || heading.textContent.trim();
@@ -982,7 +990,7 @@ const visitorCounter = (() => {
 
         wrapTextMatches(document.body, pattern, () => {
           const span = document.createElement("span");
-          span.className = "notranslate";
+          span.className = "notranslate skiptranslate protected-inline-term protected-title";
           span.setAttribute("translate", "no");
           span.setAttribute("data-protected-name", term);
           span.textContent = term;
@@ -1012,6 +1020,13 @@ const visitorCounter = (() => {
       .replace(/([A-Za-z0-9À-ž\u0600-\u06FF,;:])(\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644)/g, "$1 $2")
       .replace(/(\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644)(?=[A-Za-z0-9À-ž\u0600-\u06FF])/g, "$1 ");
 
+    protectedTerms.forEach((term) => {
+      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      nextText = nextText
+        .replace(new RegExp(`([A-Za-z0-9À-ž\\u0600-\\u06FF,;:])(${escapedTerm})`, "g"), "$1 $2")
+        .replace(new RegExp(`(${escapedTerm})(?=[A-Za-z0-9À-ž\\u0600-\\u06FF])`, "g"), "$1 ");
+    });
+
     if (nextText !== node.nodeValue) {
       node.nodeValue = nextText;
     }
@@ -1038,6 +1053,7 @@ const visitorCounter = (() => {
 
       markNoTranslate(element);
       element.classList.add("protected-author-name");
+      element.classList.add("protected-inline-term");
       element.setAttribute("data-author-name", "true");
       setProtectedLanguageAttributes(element, isArabic ? "ar" : "en");
     });
@@ -1052,8 +1068,11 @@ const visitorCounter = (() => {
       }
 
       markNoTranslate(element);
+      element.classList.add("protected-inline-term");
       setProtectedLanguageAttributes(element, "en");
     });
+
+    ensureProtectedInlineSpacing();
   }
 
   function applyArabicNavLabels(isArabic) {
@@ -1090,12 +1109,18 @@ const visitorCounter = (() => {
 
     if (isArabic) {
       document.documentElement.setAttribute("lang", "ar");
-      document.documentElement.setAttribute("dir", "rtl");
-      document.body.setAttribute("dir", "rtl");
+      document.documentElement.setAttribute("dir", "ltr");
+      document.body.setAttribute("dir", "ltr");
+      document.querySelectorAll("main, .hero, .home-hero, .home-frame-stack, .home-gold-frame").forEach((element) => {
+        element.style.setProperty("direction", "ltr", "important");
+      });
     } else {
       document.documentElement.setAttribute("lang", languageCode === "en" ? "en" : languageCode);
       document.documentElement.setAttribute("dir", "ltr");
       document.body.setAttribute("dir", "ltr");
+      document.querySelectorAll("main, .hero, .home-hero, .home-frame-stack, .home-gold-frame").forEach((element) => {
+        element.style.removeProperty("direction");
+      });
     }
 
     return isArabic;
@@ -1122,11 +1147,6 @@ const visitorCounter = (() => {
     button.setAttribute("data-language-toggle", "true");
     button.setAttribute("aria-haspopup", "true");
     button.type = "button";
-
-    if (!button.dataset.languageToggleBound) {
-      button.addEventListener("click", toggleFloatingLanguageSwitcher);
-      button.dataset.languageToggleBound = "true";
-    }
   }
 
   function createFloatingLanguageSwitcher() {

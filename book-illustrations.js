@@ -94,6 +94,9 @@
     returns: [...bookReader.querySelectorAll("[data-return-selection]")]
   };
 
+  const protectedTitleMarkup = (title) =>
+    `<span class="notranslate skiptranslate protected-inline-term protected-title" translate="no" data-protected-name="${escapeHtml(title)}">${escapeHtml(title)}</span>`;
+
   if (!els.selection || !els.viewer || !els.displayTitle || !els.left || !els.right || !els.progress) {
     return;
   }
@@ -156,7 +159,7 @@
           <img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async">
         </span>
         <span class="book-select-kicker">${escapeHtml(book.kicker)}</span>
-        <strong>${escapeHtml(book.title)}</strong>
+        <strong>${protectedTitleMarkup(book.title)}</strong>
       </button>
     `).join("");
   };
@@ -167,7 +170,7 @@
 
     pageIndex = normalizePageIndex(pageIndex, total);
 
-    els.displayTitle.textContent = titleLine(book);
+    els.displayTitle.innerHTML = `${escapeHtml(book.kicker)} &mdash; ${protectedTitleMarkup(book.title)}`;
 
     const left = book.pages[pageIndex];
     const right = isMobileView() ? null : (book.pages[pageIndex + 1] || null);
