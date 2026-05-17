@@ -400,7 +400,8 @@ p {
   min-height: 100vh;
   align-content: start;
   place-items: start center;
-  padding-top: calc(var(--runtime-header-height) + 20px);
+  padding-top: calc(var(--runtime-header-height) + clamp(12px, 1.8vw, 18px));
+  padding-bottom: clamp(28px, 4vw, 52px);
   padding-inline: var(--page-edge);
   background:
     radial-gradient(ellipse at 50% 32%, rgba(216, 183, 102, 0.16), transparent 24rem),
@@ -439,7 +440,7 @@ p {
 .home-hero .hero-content {
   width: min(100%, 1220px);
   margin: 0 auto;
-  row-gap: clamp(10px, 1.35vw, 16px);
+  row-gap: clamp(6px, 0.82vw, 10px);
 }
 
 .home-hero .eyebrow {
@@ -448,22 +449,33 @@ p {
   font-size: clamp(1.02rem, 2.3vw, 2.08rem);
   font-family: var(--display);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.08;
   text-align: center;
+  text-align-last: center;
 }
 
 .home-hero h1 {
   max-width: 100%;
-  font-size: clamp(3.35rem, 7.5vw, 6.75rem);
-  line-height: 0.95;
+  font-size: clamp(3.1rem, 7vw, 6.25rem);
+  line-height: 0.9;
+  text-align: center;
+  text-align-last: center;
 }
 
 .home-hero .hero-subtitle {
   margin: 0;
+  font-size: clamp(1.1rem, 1.78vw, 1.62rem);
+  line-height: 1.16;
+  text-align: center;
+  text-align-last: center;
 }
 
 .home-hero .tagline {
   margin: 0;
+  font-size: clamp(0.96rem, 1.35vw, 1.18rem);
+  line-height: 1.16;
+  text-align: center;
+  text-align-last: center;
 }
 
 .home-hero .hero-hook {
@@ -473,18 +485,24 @@ p {
 }
 
 .home-hero .hero-actions {
+  align-items: center;
   margin-top: 0;
 }
 
 .home-hero .home-hero-actions-top {
-  margin: 0 0 clamp(8px, 1.2vw, 14px);
+  margin: 0 0 clamp(4px, 0.7vw, 8px);
 }
 
 .home-hero .hero-actions .button {
-  min-height: 66px;
-  padding: 16px 34px;
-  font-size: clamp(1.1rem, 1.9vw, 1.32rem);
+  width: auto;
+  min-width: clamp(190px, 16vw, 220px);
+  max-width: min(100%, 280px);
+  min-height: 46px;
+  padding: 9px 23px;
+  font-size: clamp(0.88rem, 1.3vw, 1.02rem);
+  line-height: 1.05;
   letter-spacing: 0.08em;
+  white-space: normal;
 }
 
 .button {
@@ -3627,7 +3645,7 @@ main > .section:first-child:not(.hero) {
 }
 
 .home-hero-frame {
-  padding: clamp(16px, 1.9vw, 24px) clamp(18px, 2.3vw, 30px);
+  padding: clamp(14px, 1.45vw, 18px) clamp(18px, 2.3vw, 30px);
 }
 
 .home-copy-frame p {
@@ -4006,6 +4024,63 @@ body.translated-ar .translate-floating-menu,
 body.translated-rtl .translate-floating-menu {
   right: 0;
   left: auto !important;
+}
+
+body.home-page main .home-hero,
+body.home-page main .home-hero .home-frame-stack,
+body.home-page main .home-hero .home-gold-frame,
+body.home-page main .home-hero .hero-content {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+html.is-arabic-translation body.home-page main .home-hero,
+body.google-translated.translated-ar.home-page main .home-hero,
+body.translated-rtl.home-page main .home-hero {
+  direction: rtl !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+html.translated-ltr body.home-page main .home-hero,
+body.translated-ltr.home-page main .home-hero,
+body.google-translated:not(.translated-ar).home-page main .home-hero {
+  direction: ltr !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+html.is-arabic-translation body.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+body.google-translated.translated-ar.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+body.translated-rtl.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+html.translated-ltr body.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+body.translated-ltr.home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions),
+body.google-translated:not(.translated-ar).home-page main .home-hero :where(.hero-content, h1, .eyebrow, .hero-subtitle, .tagline, .hero-actions) {
+  width: 100% !important;
+  max-width: min(1100px, 92vw) !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+html.is-arabic-translation body.home-page main .home-hero .eyebrow,
+body.google-translated.translated-ar.home-page main .home-hero .eyebrow,
+body.translated-rtl.home-page main .home-hero .eyebrow {
+  font-size: clamp(1.02rem, 2.3vw, 2.08rem) !important;
+  line-height: 1.08 !important;
+}
+
+html.is-arabic-translation body.home-page main .home-hero .hero-subtitle,
+body.google-translated.translated-ar.home-page main .home-hero .hero-subtitle,
+body.translated-rtl.home-page main .home-hero .hero-subtitle {
+  font-size: clamp(1.1rem, 1.78vw, 1.62rem) !important;
+  line-height: 1.16 !important;
+}
+
+html.is-arabic-translation body.home-page main .home-hero .tagline,
+body.google-translated.translated-ar.home-page main .home-hero .tagline,
+body.translated-rtl.home-page main .home-hero .tagline {
+  font-size: clamp(0.96rem, 1.35vw, 1.18rem) !important;
+  line-height: 1.16 !important;
 }
 
 @media (max-width: 760px) {
