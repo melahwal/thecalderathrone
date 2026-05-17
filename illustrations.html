@@ -22,7 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="layout-fix.css?v=20260508b">
   <link rel="stylesheet" href="book-mobile-fix.css?v=20260508d">
-  <link rel="stylesheet" href="styles.css?v=20260513fix1">
+  <link rel="stylesheet" href="styles.css?v=20260517illus1">
 </head>
 <body class="illustrations-page">
   <header class="site-header" data-header>
@@ -64,12 +64,14 @@
             </div>
 
             <div class="open-book-stage">
+              <button class="book-edge book-edge-left" type="button" data-book-prev-button aria-label="Previous illustration spread"></button>
               <div class="book-spine" aria-hidden="true"></div>
               <div class="book-pages" data-book-pages>
                 <section class="book-page book-page-left" aria-label="Book page" data-book-left></section>
                 <section class="book-page book-page-right" aria-label="Right book page" data-book-right></section>
                 <div class="turning-page" aria-hidden="true" data-turning-page></div>
               </div>
+              <button class="book-edge book-edge-right" type="button" data-book-next-button aria-label="Next illustration spread"></button>
             </div>
 
             <div class="book-reader-controls" aria-label="Book controls">
@@ -107,6 +109,6 @@
   </footer>
 
   <script src="script.js?v=20260517counter1"></script>
-  <script src="book-illustrations.js?v=20260513fix1"></script>
+  <script src="book-illustrations.js?v=20260517illus1"></script>
 </body>
 </html>
