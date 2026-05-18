@@ -4,6 +4,7 @@ const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
 const footerTopLinks = document.querySelectorAll(".site-footer-top");
 const mobileNavBreakpointQuery = "(max-width: 768px)";
+let closeMobileMorePanel = null;
 
 function syncActiveNavLink() {
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
@@ -47,6 +48,10 @@ function setMobileNavOpenState(isOpen) {
     return;
   }
 
+  if (Boolean(isOpen) && typeof closeMobileMorePanel === "function") {
+    closeMobileMorePanel();
+  }
+
   nav.classList.toggle("open", Boolean(isOpen));
   navToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
   document.body.classList.toggle("mobile-nav-open", Boolean(isOpen) && isMobileViewport());
@@ -58,12 +63,170 @@ function applyDefaultMobileMenuState() {
     return;
   }
 
-  if (isMobileViewport()) {
-    setMobileNavOpenState(true);
+  setMobileNavOpenState(false);
+}
+
+function getCurrentPageToken() {
+  const fileName = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+
+  if (fileName.includes("novels")) return "novels";
+  if (fileName.includes("illustrations") || fileName.includes("book-illustrations")) return "illustrations";
+  if (fileName.includes("characters")) return "characters";
+  if (fileName.includes("adaptation")) return "adaptation";
+  if (fileName.includes("author")) return "author";
+  if (fileName.includes("rights")) return "rights";
+  return "index";
+}
+
+function buildMobileQuickNav() {
+  if (!header || !nav || header.querySelector(".mobile-quick-nav")) {
     return;
   }
 
-  setMobileNavOpenState(false);
+  const navLinks = Array.from(nav.querySelectorAll("a"));
+
+  if (!navLinks.length) {
+    return;
+  }
+
+  const currentToken = getCurrentPageToken();
+  const quickOrder = [
+    { key: "novels", label: "NOVELS" },
+    { key: "illustrations", label: "ILLUSTRATIONS" },
+    { key: "characters", label: "CHARACTERS" },
+  ];
+  const moreOrder = [
+    { key: "adaptation", label: "ADAPTATION" },
+    { key: "author", label: "AUTHOR" },
+    { key: "rights", label: "RIGHTS" },
+  ];
+
+  function getLinkByKey(key) {
+    return navLinks.find((link) => {
+      const href = (link.getAttribute("href") || "").toLowerCase();
+      return href.includes(key);
+    }) || null;
+  }
+
+  const quickNav = document.createElement("div");
+  quickNav.className = "mobile-quick-nav notranslate skiptranslate";
+  quickNav.setAttribute("translate", "no");
+  quickNav.setAttribute("role", "navigation");
+  quickNav.setAttribute("aria-label", "Quick navigation");
+
+  quickOrder.forEach(({ key, label }) => {
+    const sourceLink = getLinkByKey(key);
+    const link = document.createElement("a");
+    link.className = "mobile-quick-link";
+    link.href = sourceLink?.getAttribute("href") || `${key}.html`;
+    link.textContent = label;
+
+    if (currentToken === key) {
+      link.classList.add("current");
+      link.setAttribute("aria-current", "page");
+    }
+
+    quickNav.append(link);
+  });
+
+  const moreButton = document.createElement("button");
+  moreButton.type = "button";
+  moreButton.className = "mobile-more-button";
+  moreButton.textContent = "MORE";
+  moreButton.setAttribute("aria-expanded", "false");
+  moreButton.setAttribute("aria-controls", "mobile-more-panel");
+  quickNav.append(moreButton);
+
+  const moreBackdrop = document.createElement("button");
+  moreBackdrop.type = "button";
+  moreBackdrop.className = "mobile-more-backdrop";
+  moreBackdrop.setAttribute("aria-label", "Close more menu");
+
+  const morePanel = document.createElement("div");
+  morePanel.className = "mobile-more-panel notranslate skiptranslate";
+  morePanel.id = "mobile-more-panel";
+  morePanel.setAttribute("translate", "no");
+  morePanel.setAttribute("aria-hidden", "true");
+
+  const moreClose = document.createElement("button");
+  moreClose.type = "button";
+  moreClose.className = "mobile-more-close";
+  moreClose.setAttribute("aria-label", "Close");
+  moreClose.textContent = "\u00D7";
+  morePanel.append(moreClose);
+
+  moreOrder.forEach(({ key, label }) => {
+    const sourceLink = getLinkByKey(key);
+    const link = document.createElement("a");
+    link.className = "mobile-more-link";
+    link.href = sourceLink?.getAttribute("href") || `${key}.html`;
+    link.textContent = label;
+
+    if (currentToken === key) {
+      link.classList.add("current");
+      link.setAttribute("aria-current", "page");
+    }
+
+    morePanel.append(link);
+  });
+
+  function closePanel() {
+    morePanel.classList.remove("open");
+    moreBackdrop.classList.remove("open");
+    moreButton.setAttribute("aria-expanded", "false");
+    morePanel.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("mobile-more-open");
+  }
+
+  function openPanel() {
+    if (!isMobileViewport()) {
+      return;
+    }
+
+    morePanel.classList.add("open");
+    moreBackdrop.classList.add("open");
+    moreButton.setAttribute("aria-expanded", "true");
+    morePanel.setAttribute("aria-hidden", "false");
+    document.body.classList.add("mobile-more-open");
+  }
+
+  function togglePanel() {
+    if (morePanel.classList.contains("open")) {
+      closePanel();
+      return;
+    }
+
+    closeMobileMorePanel?.();
+    openPanel();
+  }
+
+  moreButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    togglePanel();
+  });
+
+  moreClose.addEventListener("click", (event) => {
+    event.preventDefault();
+    closePanel();
+  });
+
+  moreBackdrop.addEventListener("click", closePanel);
+
+  morePanel.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closePanel);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closePanel();
+    }
+  });
+
+  header.insertBefore(quickNav, nav);
+  document.body.append(moreBackdrop, morePanel);
+  document.body.classList.add("has-mobile-quick-nav");
+  closeMobileMorePanel = closePanel;
 }
 
 if (navToggle && nav) {
@@ -97,6 +260,7 @@ if (footerTopLinks.length) {
 
 syncHeaderMetrics();
 syncHeader();
+buildMobileQuickNav();
 applyDefaultMobileMenuState();
 window.addEventListener("load", () => {
   applyDefaultMobileMenuState();
@@ -104,6 +268,9 @@ window.addEventListener("load", () => {
 });
 window.addEventListener("resize", () => {
   document.body.classList.toggle("mobile-nav-open", Boolean(nav && nav.classList.contains("open")) && isMobileViewport());
+  if (!isMobileViewport() && typeof closeMobileMorePanel === "function") {
+    closeMobileMorePanel();
+  }
   syncHeaderMetrics();
 }, { passive: true });
 window.addEventListener("scroll", syncHeader, { passive: true });
