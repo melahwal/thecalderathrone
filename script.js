@@ -3,6 +3,9 @@ const nav = document.querySelector("[data-nav]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const year = document.querySelector("[data-year]");
 const footerTopLinks = document.querySelectorAll(".site-footer-top");
+const mobileNavBreakpointQuery = "(max-width: 768px)";
+const mobileNavAutoOpenStorageKey = "calderaMobileMenuAutoOpened";
+let mobileNavAutoOpenFallback = false;
 
 function syncActiveNavLink() {
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
@@ -37,18 +40,55 @@ function syncHeader() {
 
 syncActiveNavLink();
 
+function isMobileViewport() {
+  return window.matchMedia(mobileNavBreakpointQuery).matches;
+}
+
+function setMobileNavOpenState(isOpen) {
+  if (!nav || !navToggle) {
+    return;
+  }
+
+  nav.classList.toggle("open", Boolean(isOpen));
+  navToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+  document.body.classList.toggle("mobile-nav-open", Boolean(isOpen) && isMobileViewport());
+  window.requestAnimationFrame(syncHeaderMetrics);
+}
+
+function hasSessionMobileMenuAutoOpened() {
+  try {
+    return sessionStorage.getItem(mobileNavAutoOpenStorageKey) === "true";
+  } catch (error) {
+    return mobileNavAutoOpenFallback;
+  }
+}
+
+function markSessionMobileMenuAutoOpened() {
+  try {
+    sessionStorage.setItem(mobileNavAutoOpenStorageKey, "true");
+  } catch (error) {
+    mobileNavAutoOpenFallback = true;
+  }
+}
+
+function autoOpenMobileMenuOncePerSession() {
+  if (!nav || !navToggle || !isMobileViewport() || hasSessionMobileMenuAutoOpened()) {
+    return;
+  }
+
+  setMobileNavOpenState(true);
+  markSessionMobileMenuAutoOpened();
+}
+
 if (navToggle && nav) {
   navToggle.addEventListener("click", () => {
-    const isOpen = nav.classList.toggle("open");
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-    window.requestAnimationFrame(syncHeaderMetrics);
+    const shouldOpen = !nav.classList.contains("open");
+    setMobileNavOpenState(shouldOpen);
   });
 
   nav.addEventListener("click", (event) => {
     if (event.target.matches("a")) {
-      nav.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      window.requestAnimationFrame(syncHeaderMetrics);
+      setMobileNavOpenState(false);
     }
   });
 }
@@ -71,8 +111,17 @@ if (footerTopLinks.length) {
 
 syncHeaderMetrics();
 syncHeader();
+autoOpenMobileMenuOncePerSession();
 window.addEventListener("load", syncHeaderMetrics);
-window.addEventListener("resize", syncHeaderMetrics, { passive: true });
+window.addEventListener("resize", () => {
+  if (nav && navToggle && !isMobileViewport()) {
+    setMobileNavOpenState(false);
+  } else {
+    document.body.classList.toggle("mobile-nav-open", Boolean(nav && nav.classList.contains("open")) && isMobileViewport());
+  }
+
+  syncHeaderMetrics();
+}, { passive: true });
 window.addEventListener("scroll", syncHeader, { passive: true });
 
 /* === Image lightbox === */
