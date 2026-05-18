@@ -1098,9 +1098,11 @@ const visitorCounter = (() => {
     document.documentElement.classList.toggle("translated-ltr", translated && !isArabic);
     document.documentElement.classList.toggle("translated-rtl", translated && isArabic);
     document.documentElement.classList.toggle("is-arabic-translation", isArabic);
+    document.documentElement.classList.toggle("is-google-translated", translated);
     document.body.classList.toggle("translated-ltr", translated && !isArabic);
     document.body.classList.toggle("translated-rtl", translated && isArabic);
     document.body.classList.toggle("google-translated", translated);
+    document.body.classList.toggle("is-google-translated", translated);
     document.body.classList.toggle("translated-ar", isArabic);
     document.body.classList.toggle("rtl-lang", isArabic);
     document.body.classList.toggle("lang-ar", isArabic);
