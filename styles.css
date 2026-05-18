@@ -4630,7 +4630,7 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
 
   #persistent-language-switcher,
   .translate-floating-control {
-    top: calc(var(--translate-toolbar-offset) + var(--runtime-header-height) + 8px) !important;
+    top: calc(var(--translate-toolbar-offset) + 8px) !important;
     right: 10px !important;
     left: auto !important;
     z-index: 2147483190;
@@ -4767,5 +4767,73 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     text-wrap: balance;
     overflow-wrap: anywhere;
     white-space: normal !important;
+  }
+
+  main :where(
+    p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+    li,
+    .synopsis,
+    .book-description,
+    .hero-hook,
+    .adaptation-closing,
+    .author-final-bio p,
+    .rights-positioning p,
+    .saga-overview p,
+    .season-structure-box p,
+    .pitch-card p,
+    .book-copy p:not(.series-label):not(.word-count),
+    .character-card p,
+    .characters-subtitle,
+    .page-disclaimer
+  ) {
+    text-align-last: auto !important;
+    word-spacing: normal !important;
+    letter-spacing: normal !important;
+    text-justify: auto !important;
+    white-space: normal !important;
+  }
+
+  body:not(.translated-rtl) main :where(
+    p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+    li,
+    .synopsis,
+    .book-description,
+    .hero-hook,
+    .adaptation-closing,
+    .author-final-bio p,
+    .rights-positioning p,
+    .saga-overview p,
+    .season-structure-box p,
+    .pitch-card p,
+    .book-copy p:not(.series-label):not(.word-count),
+    .character-card p,
+    .characters-subtitle,
+    .page-disclaimer
+  ) {
+    direction: ltr !important;
+    text-align: left !important;
+    line-height: 1.64 !important;
+  }
+
+  body.translated-rtl main :where(
+    p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
+    li,
+    .synopsis,
+    .book-description,
+    .hero-hook,
+    .adaptation-closing,
+    .author-final-bio p,
+    .rights-positioning p,
+    .saga-overview p,
+    .season-structure-box p,
+    .pitch-card p,
+    .book-copy p:not(.series-label):not(.word-count),
+    .character-card p,
+    .characters-subtitle,
+    .page-disclaimer
+  ) {
+    direction: rtl !important;
+    text-align: right !important;
+    line-height: 1.74 !important;
   }
 }

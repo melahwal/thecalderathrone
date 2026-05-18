@@ -698,8 +698,15 @@ const visitorCounter = (() => {
     if (normalized.startsWith("ja")) return "ja";
     if (normalized === "zh" || normalized.startsWith("zh-cn")) return "zh-CN";
     if (normalized.startsWith("hi")) return "hi";
+    if (normalized.startsWith("fa")) return "fa";
+    if (normalized.startsWith("he")) return "he";
+    if (normalized.startsWith("ur")) return "ur";
 
     return "en";
+  }
+
+  function isRtlLanguageCode(languageCode) {
+    return ["ar", "fa", "he", "ur"].includes(normalizeLanguageCode(languageCode));
   }
 
   function getUrl(urlValue) {
@@ -1098,33 +1105,39 @@ const visitorCounter = (() => {
   }
 
   function applyDocumentLanguageMode(languageCode = getCurrentLanguage()) {
-    const isArabic = languageCode === "ar";
-    const translated = isTranslatedPage() || languageCode !== "en";
+    const normalizedLanguageCode = normalizeLanguageCode(languageCode);
+    const isArabic = normalizedLanguageCode === "ar";
+    const isRtlLanguage = isRtlLanguageCode(normalizedLanguageCode);
+    const translated = isTranslatedPage() || normalizedLanguageCode !== "en";
     const currentUrl = getUrl(window.location.href);
 
-    document.documentElement.classList.toggle("translated-ltr", translated && !isArabic);
-    document.documentElement.classList.toggle("translated-rtl", translated && isArabic);
+    document.documentElement.classList.toggle("translated-ltr", translated && !isRtlLanguage);
+    document.documentElement.classList.toggle("translated-rtl", translated && isRtlLanguage);
     document.documentElement.classList.toggle("is-arabic-translation", isArabic);
     document.documentElement.classList.toggle("is-google-translated", translated);
-    document.body.classList.toggle("translated-ltr", translated && !isArabic);
-    document.body.classList.toggle("translated-rtl", translated && isArabic);
+    document.body.classList.toggle("translated-ltr", translated && !isRtlLanguage);
+    document.body.classList.toggle("translated-rtl", translated && isRtlLanguage);
     document.body.classList.toggle("google-translated", translated);
     document.body.classList.toggle("is-google-translated", translated);
     document.body.classList.toggle("translated-ar", isArabic);
-    document.body.classList.toggle("rtl-lang", isArabic);
+    document.body.classList.toggle("rtl-lang", isRtlLanguage);
     document.body.classList.toggle("lang-ar", isArabic);
     document.body.classList.toggle("is-arabic-translation", isArabic);
     document.body.classList.toggle("google-proxy-page", Boolean(currentUrl && isTranslateProxyUrl(currentUrl)));
+    document.documentElement.classList.remove(...Array.from(document.documentElement.classList).filter((className) => className.startsWith("lang-")));
+    document.body.classList.remove(...Array.from(document.body.classList).filter((className) => className.startsWith("lang-")));
+    document.documentElement.classList.add(`lang-${normalizedLanguageCode.toLowerCase()}`);
+    document.body.classList.add(`lang-${normalizedLanguageCode.toLowerCase()}`);
 
-    if (isArabic) {
-      document.documentElement.setAttribute("lang", "ar");
+    if (isRtlLanguage) {
+      document.documentElement.setAttribute("lang", normalizedLanguageCode);
       document.documentElement.setAttribute("dir", "ltr");
       document.body.setAttribute("dir", "ltr");
       document.querySelectorAll("main, .hero, .home-hero, .home-frame-stack, .home-gold-frame").forEach((element) => {
         element.style.setProperty("direction", "ltr", "important");
       });
     } else {
-      document.documentElement.setAttribute("lang", languageCode === "en" ? "en" : languageCode);
+      document.documentElement.setAttribute("lang", normalizedLanguageCode === "en" ? "en" : normalizedLanguageCode);
       document.documentElement.setAttribute("dir", "ltr");
       document.body.setAttribute("dir", "ltr");
       document.querySelectorAll("main, .hero, .home-hero, .home-frame-stack, .home-gold-frame").forEach((element) => {
