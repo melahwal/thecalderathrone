@@ -686,23 +686,16 @@ const visitorCounter = (() => {
       return "en";
     }
 
-    const normalized = languageCode.toLowerCase();
+    const normalized = languageCode.toLowerCase().replace(/_/g, "-").trim();
+    const baseLanguage = normalized.split("-")[0];
 
-    if (normalized.startsWith("ar")) return "ar";
-    if (normalized.startsWith("fr")) return "fr";
-    if (normalized.startsWith("es")) return "es";
-    if (normalized.startsWith("de")) return "de";
-    if (normalized.startsWith("it")) return "it";
-    if (normalized.startsWith("pt")) return "pt";
-    if (normalized.startsWith("tr")) return "tr";
-    if (normalized.startsWith("ja")) return "ja";
-    if (normalized === "zh" || normalized.startsWith("zh-cn")) return "zh-CN";
-    if (normalized.startsWith("hi")) return "hi";
-    if (normalized.startsWith("fa")) return "fa";
-    if (normalized.startsWith("he")) return "he";
-    if (normalized.startsWith("ur")) return "ur";
+    if (baseLanguage === "zh") {
+      if (normalized.startsWith("zh-cn") || normalized.startsWith("zh-hans")) return "zh-cn";
+      if (normalized.startsWith("zh-tw") || normalized.startsWith("zh-hant")) return "zh-tw";
+      return "zh";
+    }
 
-    return "en";
+    return baseLanguage || "en";
   }
 
   function isRtlLanguageCode(languageCode) {

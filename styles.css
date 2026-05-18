@@ -4630,15 +4630,24 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
 
   #persistent-language-switcher,
   .translate-floating-control {
-    top: calc(var(--translate-toolbar-offset) + 8px) !important;
-    right: 10px !important;
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: calc(var(--translate-toolbar-offset) + var(--runtime-header-height) + 10px) !important;
+    right: 60px !important;
     left: auto !important;
-    z-index: 2147483190;
+    transform: none !important;
+    z-index: 2147483290 !important;
+    max-width: calc(100vw - 28px) !important;
   }
 
   .translate-floating-button {
     min-height: 36px;
-    padding: 6px 10px 6px 8px;
+    min-width: 0 !important;
+    max-width: calc(100vw - 40px) !important;
+    gap: 6px;
+    padding: 6px 8px;
     font-size: 0.66rem;
   }
 
@@ -4646,6 +4655,11 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     width: 19px;
     height: 19px;
     font-size: 0.74rem;
+  }
+
+  .translate-floating-label {
+    font-size: 0.62rem !important;
+    letter-spacing: 0.08em !important;
   }
 
   main,
@@ -4680,30 +4694,31 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
   .home-hero,
   .home-frame-stack,
   .home-gold-frame {
-    width: calc(100vw - 32px) !important;
-    max-width: calc(100vw - 32px) !important;
+    width: calc(100vw - 40px) !important;
+    max-width: calc(100vw - 40px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     transform: none !important;
   }
 
   .home-hero {
+    padding-top: calc(var(--runtime-header-height) + 82px) !important;
     padding-inline: 0 !important;
     align-content: start;
   }
 
   .home-hero-frame,
   .home-copy-frame {
-    padding: 14px 12px !important;
+    overflow: hidden;
+    padding: 12px 10px !important;
   }
 
   .home-hero .hero-content,
   .home-hero .hero-actions,
   .home-hero .eyebrow,
+  .home-hero h1,
   .home-hero .hero-subtitle,
-  .home-hero .tagline,
-  .home-copy-frame p,
-  .home-hero .hero-hook {
+  .home-hero .tagline {
     width: 100% !important;
     max-width: 100% !important;
     margin-left: auto !important;
@@ -4716,8 +4731,8 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
   }
 
   .home-hero .eyebrow {
-    font-size: clamp(0.74rem, 2.9vw, 0.98rem) !important;
-    letter-spacing: 0.03em !important;
+    font-size: clamp(0.78rem, 3.1vw, 1rem) !important;
+    letter-spacing: 0.02em !important;
     line-height: 1.2 !important;
   }
 
@@ -4727,31 +4742,46 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     margin-right: auto !important;
     text-align: center !important;
     text-align-last: center !important;
-    font-size: clamp(1.95rem, 10.1vw, 3.45rem) !important;
-    line-height: 0.98 !important;
-    letter-spacing: 0.01em !important;
+    font-size: clamp(1.65rem, 7.6vw, 2.65rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: 0.015em !important;
     white-space: normal !important;
-    overflow-wrap: anywhere;
+    text-wrap: balance;
+    overflow-wrap: normal;
     transform: none !important;
   }
 
+  .home-hero h1 :where([data-protected-name], .protected-inline-term, .protected-title) {
+    display: inline !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
   .home-hero .hero-subtitle {
-    font-size: clamp(0.94rem, 3.25vw, 1.2rem) !important;
-    line-height: 1.24 !important;
+    font-size: clamp(0.76rem, 3vw, 0.95rem) !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.02em !important;
   }
 
   .home-hero .tagline {
-    font-size: clamp(0.82rem, 2.85vw, 1.02rem) !important;
-    line-height: 1.24 !important;
+    font-size: clamp(0.76rem, 3vw, 0.95rem) !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.02em !important;
   }
 
   .home-hero .hero-actions .button {
     width: auto !important;
-    max-width: calc(100vw - 64px) !important;
+    max-width: calc(100vw - 72px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     white-space: normal !important;
     text-align: center !important;
+    font-size: clamp(0.78rem, 3.1vw, 0.95rem) !important;
+    letter-spacing: 0.03em !important;
+    line-height: 1.15 !important;
+    padding: 10px 14px !important;
   }
 
   :where(
@@ -4761,7 +4791,7 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     .book-current-title
   ) {
     max-width: 100% !important;
-    font-size: clamp(1.56rem, 8.9vw, 2.35rem) !important;
+    font-size: clamp(1.42rem, 8vw, 2.15rem) !important;
     line-height: 1.08 !important;
     letter-spacing: 0.01em !important;
     text-wrap: balance;
@@ -4815,6 +4845,14 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     line-height: 1.64 !important;
   }
 
+  body:not(.translated-rtl) .home-copy-frame,
+  body:not(.translated-rtl) .home-copy-frame p,
+  body:not(.translated-rtl) .home-copy-frame .hero-hook {
+    direction: ltr !important;
+    text-align: left !important;
+    text-align-last: auto !important;
+  }
+
   body.translated-rtl main :where(
     p:not(.eyebrow):not(.series-label):not(.word-count):not(.book-current-title):not(.spread-counter),
     li,
@@ -4835,5 +4873,13 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     direction: rtl !important;
     text-align: right !important;
     line-height: 1.74 !important;
+  }
+
+  body.translated-rtl .home-copy-frame,
+  body.translated-rtl .home-copy-frame p,
+  body.translated-rtl .home-copy-frame .hero-hook {
+    direction: rtl !important;
+    text-align: right !important;
+    text-align-last: auto !important;
   }
 }
