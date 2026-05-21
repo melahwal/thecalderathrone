@@ -303,8 +303,8 @@ const visitorCounter = (() => {
   const localCounterApiBaseUrl = isLocalPreview ? searchParams.get("counterApiBaseUrl") : "";
   const shouldUseCounterProxy = !localCounterApiBaseUrl && (isLivePrimaryOrigin || isTranslateProxy || hasTranslateQuery);
   const counterProxyEndpoint = isLivePrimaryOrigin
-    ? "/.netlify/functions/counter"
-    : "https://thecalderathrone.com/.netlify/functions/counter";
+    ? "/counter"
+    : "https://thecalderathrone.com/counter";
   const counterApiBaseUrl = localCounterApiBaseUrl || (shouldUseCounterProxy ? counterProxyEndpoint : productionCounterApiBaseUrl);
 
   function isHomePage() {

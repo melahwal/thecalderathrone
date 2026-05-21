@@ -13,22 +13,17 @@ const headers = {
   "Content-Type": "application/json; charset=utf-8"
 };
 
-exports.handler = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers,
-      body: ""
-    };
-  }
+export async function onRequestOptions() {
+  return new Response(null, {
+    status: 204,
+    headers
+  });
+}
 
-  if (event.httpMethod !== "GET") {
-    return jsonResponse(405, { error: "Method not allowed" });
-  }
-
-  const params = event.queryStringParameters || {};
-  const counterName = typeof params.name === "string" ? params.name.trim() : "";
-  const action = typeof params.action === "string" ? params.action.trim() : "";
+export async function onRequestGet(context) {
+  const url = new URL(context.request.url);
+  const counterName = (url.searchParams.get("name") || "").trim();
+  const action = (url.searchParams.get("action") || "").trim();
 
   if (!ALLOWED_COUNTERS.has(counterName)) {
     return jsonResponse(400, { error: "Unsupported counter" });
@@ -48,13 +43,12 @@ exports.handler = async (event) => {
         Accept: "application/json"
       }
     });
-    const text = await response.text();
 
     if (!response.ok) {
       return jsonResponse(response.status, { error: "Counter request failed" });
     }
 
-    const payload = JSON.parse(text);
+    const payload = await response.json();
     const count = Number(payload && payload.count);
 
     return jsonResponse(200, {
@@ -64,12 +58,11 @@ exports.handler = async (event) => {
   } catch (error) {
     return jsonResponse(502, { error: "Counter unavailable" });
   }
-};
+}
 
-function jsonResponse(statusCode, payload) {
-  return {
-    statusCode,
-    headers,
-    body: JSON.stringify(payload)
-  };
+function jsonResponse(status, payload) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers
+  });
 }
