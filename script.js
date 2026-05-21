@@ -44,6 +44,7 @@ function setMobileNavOpenState(isOpen) {
 
   nav.classList.toggle("open", Boolean(isOpen));
   navToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+  document.body.classList.toggle("mobile-nav-open", Boolean(isOpen));
   window.requestAnimationFrame(syncHeaderMetrics);
 }
 
@@ -58,6 +59,12 @@ if (navToggle && nav) {
       setMobileNavOpenState(false);
     }
   });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768 && nav.classList.contains("open")) {
+      setMobileNavOpenState(false);
+    }
+  }, { passive: true });
 }
 
 if (year) {
@@ -170,6 +177,21 @@ const contactForm = document.querySelector("[data-contact-form]");
 if (contactForm) {
   const contactStatus = contactForm.querySelector("[data-contact-status]");
   const submitButton = contactForm.querySelector('button[type="submit"]');
+  const placeholderEndpointToken = "REPLACE_WITH_MY_FORMSPREE_ID";
+
+  function buildFallbackEmailUrl(formData) {
+    const subject = formData.get("_subject") || "The Caldera Throne - Rights / Contact Inquiry";
+    const lines = [
+      `Name: ${formData.get("name") || ""}`,
+      `Email: ${formData.get("email") || ""}`,
+      `Organization: ${formData.get("organization") || ""}`,
+      `Inquiry Type: ${formData.get("inquiryType") || ""}`,
+      "",
+      formData.get("message") || ""
+    ];
+
+    return `mailto:melahwal@hotmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+  }
 
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -182,10 +204,20 @@ if (contactForm) {
     contactStatus.className = "form-status full";
     submitButton.disabled = true;
 
+    const formData = new FormData(contactForm);
+
+    if (contactForm.action.includes(placeholderEndpointToken)) {
+      window.location.href = buildFallbackEmailUrl(formData);
+      contactStatus.textContent = "Your email app has been opened with the inquiry details. If it does not open, please email melahwal@hotmail.com directly.";
+      contactStatus.classList.add("success");
+      submitButton.disabled = false;
+      return;
+    }
+
     try {
       const response = await fetch(contactForm.action, {
         method: "POST",
-        body: new FormData(contactForm),
+        body: formData,
         headers: {
           Accept: "application/json"
         }

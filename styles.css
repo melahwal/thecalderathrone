@@ -4883,3 +4883,625 @@ body.is-google-translated :where(.site-nav a, .button, .text-button, .translate-
     text-align-last: auto !important;
   }
 }
+
+/* =========================================================
+   PROFESSIONAL RESPONSIVE LAYOUT CONSISTENCY PASS
+   Keeps the existing black/gold identity and behavior while
+   normalizing spacing, rails, buttons, cards, and overlays.
+   ========================================================= */
+
+:root {
+  --site-max: 1500px;
+  --site-gutter: clamp(16px, 4vw, 64px);
+  --site-rail: min(100%, var(--site-max));
+  --page-header-width: min(calc(100vw - (var(--site-gutter) * 2)), var(--site-max));
+  --page-header-top-gap: 54px;
+  --page-header-stack-gap: 20px;
+  --page-title-size: 4rem;
+  --page-intro-size: 1.55rem;
+  --page-intro-line-height: 1.32;
+  --frame-copy-padding: 32px;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 320px;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
+body {
+  isolation: isolate;
+}
+
+main {
+  width: 100%;
+  overflow-x: clip;
+}
+
+.site-header {
+  align-items: center !important;
+  gap: 20px !important;
+  flex-wrap: nowrap !important;
+  min-height: var(--header-height) !important;
+  padding-inline: var(--site-gutter) !important;
+}
+
+.brand {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(42vw, 520px);
+  font-size: 1.5rem;
+  line-height: 1.05;
+}
+
+.brand > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.site-nav a {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: none;
+  padding: 9px 13px !important;
+  white-space: nowrap;
+}
+
+.section {
+  width: 100%;
+  padding-inline: var(--site-gutter) !important;
+}
+
+main > .section:first-child:not(.hero),
+.book-illustrations-section {
+  padding-top: calc(var(--runtime-header-height) + var(--page-header-top-gap)) !important;
+}
+
+body:is(.novels-page, .characters-page, .illustrations-page, .adaptation-page, .author-page, .rights-page, .world-page) main :where(
+  .shared-page-header,
+  .section-heading,
+  .book-grid,
+  .novel-cover-shortcuts,
+  .character-grid,
+  .adaptation-pitch,
+  .contact-form,
+  .illustration-book-stack,
+  .book-illustrations-shell,
+  .book-selection-grid,
+  .book-viewer,
+  .author-final-shell,
+  .author-final-row,
+  .author-miniatures-section,
+  .world-copy
+) {
+  width: var(--page-header-width) !important;
+  max-width: var(--page-header-width) !important;
+  margin-inline: auto !important;
+}
+
+.shared-page-header,
+.section-heading {
+  margin-bottom: 40px !important;
+}
+
+.page-title,
+.author-final-title,
+#book-illustrations-title {
+  max-width: 100% !important;
+  font-size: var(--page-title-size) !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  overflow-wrap: normal !important;
+  text-wrap: balance;
+}
+
+.shared-page-header > h2,
+.characters-subtitle,
+.page-disclaimer,
+.author-final-name,
+.adaptation-hero h2,
+.contact .section-heading h2 {
+  max-width: 100% !important;
+  font-size: var(--page-intro-size) !important;
+  line-height: var(--page-intro-line-height) !important;
+  letter-spacing: 0 !important;
+  text-wrap: pretty;
+}
+
+.home-hero {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-inline: var(--site-gutter) !important;
+}
+
+.home-frame-stack {
+  width: var(--page-header-width) !important;
+  max-width: var(--page-header-width) !important;
+}
+
+.home-gold-frame,
+.book-panel,
+.book-copy,
+.pitch-card,
+.saga-overview,
+.season-structure-box,
+.rights-positioning,
+.contact-form,
+.author-final-bio,
+.author-miniatures-frame,
+.illustration-book {
+  border-color: rgba(216, 183, 102, 0.82) !important;
+}
+
+.home-copy-frame p,
+.book-copy p:not(.series-label):not(.word-count),
+.pitch-card p,
+.saga-overview p,
+.season-structure-box p,
+.rights-positioning p,
+.author-final-bio p,
+.character-card p,
+.page-disclaimer {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.button,
+.text-button,
+.book-control,
+.site-nav a {
+  align-items: center;
+  justify-content: center;
+  text-align: center !important;
+  text-align-last: auto !important;
+  line-height: 1.15 !important;
+}
+
+.button,
+.book-control {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.home-hero .hero-actions .button,
+.contact-form .button {
+  min-width: 0 !important;
+}
+
+.novel-cover-shortcuts {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.novel-cover-shortcut,
+.book-visual,
+.character-card,
+.book-select-card,
+.pitch-card,
+.season-timeline article {
+  min-width: 0;
+}
+
+.book-panel-inner,
+.book-copy,
+.book-visual-pair {
+  min-width: 0;
+}
+
+.book-visual-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+}
+
+.book-visual {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.book-visual img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 2 / 3;
+  object-fit: contain;
+}
+
+.character-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+}
+
+.character-card {
+  height: 100%;
+}
+
+.character-card h3 {
+  display: flex;
+  align-items: flex-end;
+  min-height: 3.15em;
+  margin: 0;
+  line-height: 1.12;
+}
+
+.character-card p {
+  display: block;
+  line-height: 1.55;
+}
+
+.screen-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.season-timeline {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.series-status {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.contact-form {
+  padding: var(--frame-copy-padding);
+  border: 1px solid rgba(216, 183, 102, 0.82);
+  background:
+    linear-gradient(145deg, rgba(216, 183, 102, 0.08), transparent 42%),
+    rgba(7, 6, 5, 0.52);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 212, 136, 0.08),
+    0 24px 62px rgba(0, 0, 0, 0.28);
+}
+
+input,
+select,
+textarea {
+  min-width: 0;
+  font-size: 1rem;
+}
+
+.image-lightbox {
+  z-index: 2147483600 !important;
+  padding: 24px;
+}
+
+.image-lightbox img {
+  max-width: min(100%, calc(100vw - 96px));
+  max-height: calc(100vh - 112px);
+}
+
+.lightbox-close,
+.lightbox-nav {
+  z-index: 2147483601 !important;
+}
+
+.lightbox-close,
+.lightbox-nav,
+.book-edge,
+.nav-toggle,
+.translate-floating-button {
+  touch-action: manipulation;
+}
+
+.open-book,
+.open-book-stage,
+.book-pages,
+.book-page,
+.book-illustration {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.book-reader-controls {
+  max-width: 100%;
+}
+
+.book-control-return {
+  white-space: normal;
+}
+
+.site-footer-inner {
+  width: min(100%, var(--site-max));
+  margin-inline: auto;
+}
+
+.footer-stats-box {
+  max-width: 100%;
+}
+
+.footer-stat {
+  min-width: 0;
+}
+
+.translate-floating-menu {
+  max-width: calc(100vw - (var(--site-gutter) * 2));
+  max-height: min(68vh, 560px);
+  overflow: auto;
+}
+
+@media (max-width: 1366px) {
+  :root {
+    --page-title-size: 3.65rem;
+    --page-intro-size: 1.42rem;
+  }
+
+  .brand {
+    font-size: 1.36rem;
+  }
+
+  .site-nav {
+    gap: 8px;
+  }
+
+  .site-nav a {
+    padding-inline: 10px !important;
+    font-size: 0.76rem !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  :root {
+    --page-title-size: 3.2rem;
+    --page-intro-size: 1.32rem;
+    --frame-copy-padding: 28px;
+  }
+
+  .brand {
+    max-width: min(34vw, 410px);
+    font-size: 1.18rem;
+  }
+
+  .site-nav a {
+    padding-inline: 9px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .screen-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .season-timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --page-title-size: 2.85rem;
+    --page-intro-size: 1.24rem;
+  }
+
+  .site-header {
+    gap: 14px !important;
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .book-selection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --site-gutter: 20px;
+    --header-height: 66px;
+    --page-header-top-gap: 78px;
+    --page-title-size: 2.2rem;
+    --page-intro-size: 1.08rem;
+    --frame-copy-padding: 20px;
+  }
+
+  .site-header {
+    padding-inline: var(--site-gutter) !important;
+  }
+
+  .brand {
+    max-width: calc(100vw - 112px);
+    font-size: 1rem;
+  }
+
+  .site-nav {
+    left: var(--site-gutter) !important;
+    right: var(--site-gutter) !important;
+    width: auto !important;
+  }
+
+  .site-nav.open {
+    padding-top: 54px;
+  }
+
+  body.mobile-nav-open #persistent-language-switcher,
+  body.mobile-nav-open .translate-floating-control {
+    top: calc(var(--translate-toolbar-offset) + var(--runtime-header-height) + 8px) !important;
+    right: calc(var(--site-gutter) + 8px) !important;
+  }
+
+  .translate-floating-button {
+    min-height: 38px !important;
+  }
+
+  .home-hero {
+    padding-top: calc(var(--runtime-header-height) + 84px) !important;
+    padding-inline: var(--site-gutter) !important;
+  }
+
+  .home-frame-stack,
+  .home-gold-frame {
+    width: var(--page-header-width) !important;
+    max-width: var(--page-header-width) !important;
+  }
+
+  .home-hero h1 {
+    font-size: 2.2rem !important;
+    line-height: 1.04 !important;
+  }
+
+  .home-hero .eyebrow,
+  .home-hero .hero-subtitle,
+  .home-hero .tagline {
+    font-size: 0.95rem !important;
+  }
+
+  .shared-page-header,
+  .section-heading {
+    margin-bottom: 28px !important;
+  }
+
+  .novel-cover-shortcuts,
+  .book-visual-pair,
+  .contact-form,
+  .series-status {
+    grid-template-columns: 1fr !important;
+  }
+
+  .character-grid,
+  .screen-grid,
+  .season-timeline,
+  .book-selection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .book-panel {
+    padding: 18px !important;
+  }
+
+  .contact-form {
+    gap: 16px;
+  }
+
+  .image-lightbox {
+    padding: 16px;
+  }
+
+  .image-lightbox img {
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 92px);
+  }
+
+  .lightbox-nav {
+    width: 42px !important;
+    height: 58px !important;
+  }
+
+  .book-illustrations-section:has(.book-viewer:not([hidden])) {
+    padding-top: calc(var(--runtime-header-height) + 16px) !important;
+  }
+
+  .open-book {
+    width: min(100%, 460px) !important;
+    margin-inline: auto;
+  }
+
+  .book-pages {
+    height: min(60vh, 540px) !important;
+    min-height: 340px !important;
+  }
+
+  .site-footer-inner {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "copy"
+      "stats"
+      "top" !important;
+    justify-items: center !important;
+  }
+}
+
+@media (max-width: 430px) {
+  :root {
+    --site-gutter: 16px;
+    --page-title-size: 1.92rem;
+    --page-intro-size: 1rem;
+    --frame-copy-padding: 16px;
+  }
+
+  .brand {
+    max-width: calc(100vw - 104px);
+    font-size: 0.82rem;
+  }
+
+  .brand-mark {
+    width: 9px;
+    height: 22px;
+  }
+
+  .page-title,
+  .author-final-title,
+  #book-illustrations-title {
+    line-height: 1.08 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .home-hero h1 {
+    font-size: 1.82rem !important;
+  }
+
+  .home-hero .hero-actions .button {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .character-grid,
+  .screen-grid,
+  .season-timeline,
+  .book-selection-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .character-card h3 {
+    min-height: auto;
+  }
+
+  .book-panel,
+  .contact-form,
+  .author-miniatures-frame {
+    padding: 14px !important;
+  }
+
+  .footer-stats-box {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .footer-stat {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 375px) {
+  :root {
+    --page-title-size: 1.72rem;
+  }
+
+  .brand {
+    font-size: 0.76rem;
+  }
+
+  .home-hero h1 {
+    font-size: 1.62rem !important;
+  }
+
+  .translate-floating-button {
+    padding-inline: 8px !important;
+  }
+}
