@@ -292,7 +292,7 @@ const visitorCounter = (() => {
   }
 
   function canReadRemoteCounter() {
-    return isLivePrimaryOrigin || isTranslateProxy || Boolean(localCounterApiBaseUrl);
+    return Boolean(localCounterApiBaseUrl);
   }
 
   function formatCount(value) {
@@ -420,6 +420,33 @@ const visitorCounter = (() => {
     writeStoredCounter(totalValueStorageKey, totalCounterValue);
   }
 
+  function syncLocalCounts() {
+    if (!isEligibleLiveHomepageCounterHit()) {
+      return;
+    }
+
+    let uniqueCounterValue = readStoredCounter(uniqueValueStorageKey);
+    let totalCounterValue = readStoredCounter(totalValueStorageKey);
+    let didUpdate = false;
+
+    if (hasLocalStorage() && !hasStoredUniqueHit()) {
+      uniqueCounterValue += 1;
+      markUniqueVisitorCounted();
+      didUpdate = true;
+    }
+
+    if (hasSessionStorage() && !hasCountedSessionVisit()) {
+      totalCounterValue += 1;
+      markSessionVisitCounted();
+      didUpdate = true;
+    }
+
+    if (didUpdate) {
+      rememberRemoteCounts(uniqueCounterValue, totalCounterValue);
+      renderCounts(uniqueCounterValue, totalCounterValue);
+    }
+  }
+
   async function syncRemoteCounts() {
     if (!canReadRemoteCounter()) {
       return;
@@ -455,16 +482,12 @@ const visitorCounter = (() => {
     const startingTotal = readStoredCounter(totalValueStorageKey);
     renderCounts(startingUnique, startingTotal);
 
-    if (isLocalPreview) {
+    if (canReadRemoteCounter()) {
       syncRemoteCounts();
       return;
     }
 
-    if (!canReadRemoteCounter()) {
-      return;
-    }
-
-    syncRemoteCounts();
+    syncLocalCounts();
   }
 
   init();
