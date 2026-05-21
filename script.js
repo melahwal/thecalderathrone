@@ -284,7 +284,7 @@ const visitorCounter = (() => {
 
   const uniqueBase = 1200;
   const totalBase = 2634;
-  const fallbackUniqueCounterValue = 34;
+  const fallbackUniqueCounterValue = 38;
   const fallbackTotalCounterValue = 47;
   const productionCounterApiBaseUrl = "https://api.counterapi.dev/v1/thecalderathrone.com";
   const uniqueCounterKey = "unique-homepage-visitors";
@@ -497,19 +497,19 @@ const visitorCounter = (() => {
     const shouldIncrementUnique = shouldIncrementCounters && hasLocalStorage() && !hasStoredUniqueHit();
     const shouldIncrementTotal = shouldIncrementCounters && hasSessionStorage() && !hasCountedSessionVisit();
 
+    if (shouldIncrementUnique) {
+      markUniqueVisitorCounted();
+    }
+
+    if (shouldIncrementTotal) {
+      markSessionVisitCounted();
+    }
+
     try {
       const [remoteUnique, remoteTotal] = await Promise.all([
         fetchCounter(uniqueCounterKey, shouldIncrementUnique),
         fetchCounter(totalCounterKey, shouldIncrementTotal)
       ]);
-
-      if (shouldIncrementUnique && remoteUnique > 0) {
-        markUniqueVisitorCounted();
-      }
-
-      if (shouldIncrementTotal && remoteTotal > 0) {
-        markSessionVisitCounted();
-      }
 
       rememberRemoteCounts(remoteUnique, remoteTotal);
       renderCounts(remoteUnique, remoteTotal);

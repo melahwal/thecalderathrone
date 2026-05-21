@@ -4,6 +4,10 @@ const ALLOWED_COUNTERS = new Set([
   "unique-homepage-visitors",
   "homepage-session-visits"
 ]);
+const FALLBACK_COUNTS = {
+  "unique-homepage-visitors": 38,
+  "homepage-session-visits": 47
+};
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -45,7 +49,11 @@ export async function onRequestGet(context) {
     });
 
     if (!response.ok) {
-      return jsonResponse(response.status, { error: "Counter request failed" });
+      return jsonResponse(200, {
+        name: counterName,
+        count: FALLBACK_COUNTS[counterName],
+        fallback: true
+      });
     }
 
     const payload = await response.json();
