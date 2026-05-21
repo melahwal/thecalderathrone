@@ -115,8 +115,66 @@
 
   const titleLine = (book) => `${book.kicker} \u2014 ${book.title}`;
 
-  const isMobileView = () => window.matchMedia("(max-width: 740px)").matches;
+  const isMobileView = () => window.matchMedia("(max-width: 820px)").matches;
   const currentSpreadSize = () => (isMobileView() ? 1 : 2);
+  const openBookElement = bookReader.querySelector(".open-book");
+  let fitFrame = 0;
+
+  const fitOpenBookToViewport = () => {
+    if (!openBookElement || els.viewer.hidden) {
+      return;
+    }
+
+    if (isMobileView()) {
+      els.viewer.style.setProperty("--book-fit-scale", "1");
+      els.viewer.style.removeProperty("--book-fit-height");
+      return;
+    }
+
+    const header = document.querySelector("[data-header]");
+    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+    const naturalWidth = openBookElement.offsetWidth || 1;
+    const naturalHeight = openBookElement.offsetHeight || 1;
+    const top = openBookElement.getBoundingClientRect().top;
+    const horizontalAllowance = Math.max(360, window.innerWidth - 36);
+    const verticalAllowance = Math.max(420, window.innerHeight - Math.max(top, headerHeight + 12) - 14);
+    const scale = Math.min(1, horizontalAllowance / naturalWidth, verticalAllowance / naturalHeight);
+    const roundedScale = Math.max(0.62, Math.floor(scale * 1000) / 1000);
+
+    els.viewer.style.setProperty("--book-fit-scale", String(roundedScale));
+    els.viewer.style.setProperty("--book-fit-height", `${Math.ceil(naturalHeight * roundedScale)}px`);
+  };
+
+  const queueOpenBookFit = () => {
+    window.cancelAnimationFrame(fitFrame);
+    fitFrame = window.requestAnimationFrame(fitOpenBookToViewport);
+  };
+
+  const scrollViewerIntoPlace = () => {
+    const section = bookReader.closest(".book-illustrations-section") || bookReader;
+    const header = document.querySelector("[data-header]");
+    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+    const targetTop = section.getBoundingClientRect().top + window.scrollY - headerHeight - 10;
+
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      left: 0,
+      behavior: "auto"
+    });
+  };
+
+  const watchCurrentImagesForFit = () => {
+    if (!els.viewer || els.viewer.hidden) {
+      return;
+    }
+
+    els.viewer.querySelectorAll(".book-illustration img").forEach((image) => {
+      if (!image.complete) {
+        image.addEventListener("load", queueOpenBookFit, { once: true });
+        image.addEventListener("error", queueOpenBookFit, { once: true });
+      }
+    });
+  };
 
   const lastSpreadIndex = (total) => {
     if (total <= 1) return 0;
@@ -196,11 +254,15 @@
     els.prev.forEach((button) => { button.disabled = atStart; });
     els.next.forEach((button) => { button.disabled = atEnd; });
     els.last.forEach((button) => { button.disabled = atEnd; });
+    watchCurrentImagesForFit();
+    queueOpenBookFit();
   };
 
   const showSelection = () => {
     els.viewer.hidden = true;
     els.selection.hidden = false;
+    els.viewer.style.removeProperty("--book-fit-scale");
+    els.viewer.style.removeProperty("--book-fit-height");
   };
 
   const openBook = (index) => {
@@ -209,6 +271,10 @@
     els.selection.hidden = true;
     els.viewer.hidden = false;
     renderCurrent();
+    window.requestAnimationFrame(() => {
+      scrollViewerIntoPlace();
+      queueOpenBookFit();
+    });
   };
 
   const flip = (direction, afterTurn) => {
@@ -282,6 +348,7 @@
   window.addEventListener("resize", () => {
     if (!els.viewer.hidden) {
       renderCurrent();
+      queueOpenBookFit();
     }
   });
 
