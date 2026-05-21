@@ -116,6 +116,9 @@
   let bookIndex = 0;
   let pageIndex = 0;
   let isTurning = false;
+  let openFrame = 0;
+  let resizeFrame = 0;
+  let turnTimer = 0;
 
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
     "&": "&amp;",
@@ -306,21 +309,40 @@
   };
 
   const showSelection = () => {
+    window.cancelAnimationFrame(openFrame);
+    window.cancelAnimationFrame(resizeFrame);
+    window.clearTimeout(turnTimer);
+    isTurning = false;
     els.viewer.hidden = true;
     els.selection.hidden = false;
     els.viewer.style.removeProperty("--book-fit-scale");
     els.viewer.style.removeProperty("--book-fit-height");
+    if (els.turning) {
+      els.turning.className = "turning-page";
+    }
   };
 
   const openBook = (index) => {
-    bookIndex = index;
+    const nextBookIndex = Number(index);
+
+    if (!Number.isInteger(nextBookIndex) || !books[nextBookIndex]) {
+      return;
+    }
+
+    window.cancelAnimationFrame(openFrame);
+    window.clearTimeout(turnTimer);
+    isTurning = false;
+    bookIndex = nextBookIndex;
     pageIndex = 0;
     els.selection.hidden = true;
     els.viewer.hidden = false;
-    renderCurrent();
-    window.requestAnimationFrame(() => {
-      scrollViewerIntoPlace();
-      queueOpenBookFit();
+
+    openFrame = window.requestAnimationFrame(() => {
+      renderCurrent();
+      window.requestAnimationFrame(() => {
+        scrollViewerIntoPlace();
+        queueOpenBookFit();
+      });
     });
   };
 
@@ -328,17 +350,23 @@
     if (isTurning || els.viewer.hidden) return;
 
     isTurning = true;
+    window.clearTimeout(turnTimer);
     if (els.turning) {
       els.turning.className = `turning-page turn-${direction}`;
     }
 
-    window.setTimeout(() => {
-      afterTurn();
-      renderCurrent();
+    turnTimer = window.setTimeout(() => {
+      if (!els.viewer.hidden) {
+        afterTurn();
+        renderCurrent();
+      }
+
       if (els.turning) {
         els.turning.className = "turning-page";
       }
+
       isTurning = false;
+      turnTimer = 0;
     }, isMobileView() ? 260 : 820);
   };
 
@@ -370,8 +398,10 @@
   };
 
   bookReader.addEventListener("click", (event) => {
-    const select = event.target.closest("[data-select-book]");
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    const select = target?.closest("[data-select-book]");
     if (select) {
+      event.preventDefault();
       openBook(Number(select.dataset.selectBook));
     }
   });
@@ -394,8 +424,11 @@
 
   window.addEventListener("resize", () => {
     if (!els.viewer.hidden) {
-      renderCurrent();
-      queueOpenBookFit();
+      window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => {
+        renderCurrent();
+        queueOpenBookFit();
+      });
     }
   });
 

@@ -270,7 +270,7 @@ if (contactForm) {
   Counter rules:
   - Unique Visitors starts at 1,200 and counts once per browser/device, but only from the live homepage.
   - Total Visits starts from the last visible live total and increases once per browser session, but only from the live homepage.
-  - Internal pages only read and display the latest saved totals.
+  - Every page renders the same shared counter snapshot, then refreshes from the same remote source when available.
   - No raw visitor identifiers are stored by this script.
 */
 
@@ -284,6 +284,8 @@ const visitorCounter = (() => {
 
   const uniqueBase = 1200;
   const totalBase = 2634;
+  const fallbackUniqueCounterValue = 34;
+  const fallbackTotalCounterValue = 47;
   const productionCounterApiBaseUrl = "https://api.counterapi.dev/v1/thecalderathrone.com";
   const uniqueCounterKey = "unique-homepage-visitors";
   const totalCounterKey = "homepage-session-visits";
@@ -299,7 +301,11 @@ const visitorCounter = (() => {
   const hasTranslateQuery = [...searchParams.keys()].some((key) => key.startsWith("_x_tr_"));
   const isLivePrimaryOrigin = window.location.origin === "https://thecalderathrone.com";
   const localCounterApiBaseUrl = isLocalPreview ? searchParams.get("counterApiBaseUrl") : "";
-  const counterApiBaseUrl = localCounterApiBaseUrl || productionCounterApiBaseUrl;
+  const shouldUseCounterProxy = !localCounterApiBaseUrl && (isLivePrimaryOrigin || isTranslateProxy || hasTranslateQuery);
+  const counterProxyEndpoint = isLivePrimaryOrigin
+    ? "/.netlify/functions/counter"
+    : "https://thecalderathrone.com/.netlify/functions/counter";
+  const counterApiBaseUrl = localCounterApiBaseUrl || (shouldUseCounterProxy ? counterProxyEndpoint : productionCounterApiBaseUrl);
 
   function isHomePage() {
     const path = window.location.pathname.replace(/\/+$/, "");
@@ -318,7 +324,7 @@ const visitorCounter = (() => {
   }
 
   function canReadRemoteCounter() {
-    return Boolean(localCounterApiBaseUrl);
+    return Boolean(localCounterApiBaseUrl || shouldUseCounterProxy);
   }
 
   function formatCount(value) {
@@ -330,9 +336,14 @@ const visitorCounter = (() => {
     return value <= baseValue ? `${formatted}+` : formatted;
   }
 
-  function renderCounts(uniqueCounterValue, totalCounterValue) {
-    const uniqueCount = uniqueBase + uniqueCounterValue;
-    const totalCount = totalBase + totalCounterValue;
+  function normalizeCounterValue(value, fallbackValue) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) && numericValue >= 0 ? numericValue : fallbackValue;
+  }
+
+  function renderCounts(uniqueCounterValue = fallbackUniqueCounterValue, totalCounterValue = fallbackTotalCounterValue) {
+    const uniqueCount = uniqueBase + normalizeCounterValue(uniqueCounterValue, fallbackUniqueCounterValue);
+    const totalCount = totalBase + normalizeCounterValue(totalCounterValue, fallbackTotalCounterValue);
 
     uniqueVisitors.textContent = formatDisplayCount(uniqueCount, uniqueBase);
     totalVisits.textContent = formatDisplayCount(totalCount, totalBase);
@@ -411,9 +422,8 @@ const visitorCounter = (() => {
   }
 
   async function fetchCounter(counterName, shouldIncrement = false) {
-    const encodedName = encodeURIComponent(counterName);
-    const action = shouldIncrement ? "/up" : "/";
-    let response = await fetch(`${counterApiBaseUrl}/${encodedName}${action}`, {
+    const requestUrl = buildCounterUrl(counterName, shouldIncrement);
+    let response = await fetch(requestUrl, {
       cache: "no-store"
     });
 
@@ -422,7 +432,7 @@ const visitorCounter = (() => {
         window.setTimeout(resolve, 200);
       });
 
-      response = await fetch(`${counterApiBaseUrl}/${encodedName}${action}`, {
+      response = await fetch(requestUrl, {
         cache: "no-store"
       });
     }
@@ -441,6 +451,24 @@ const visitorCounter = (() => {
     return Number.isFinite(value) && value >= 0 ? value : 0;
   }
 
+  function buildCounterUrl(counterName, shouldIncrement = false) {
+    if (shouldUseCounterProxy) {
+      const proxyUrl = new URL(counterApiBaseUrl, window.location.origin);
+      proxyUrl.searchParams.set("name", counterName);
+
+      if (shouldIncrement) {
+        proxyUrl.searchParams.set("action", "up");
+      }
+
+      return proxyUrl.toString();
+    }
+
+    const encodedName = encodeURIComponent(counterName);
+    const action = shouldIncrement ? "/up" : "/";
+
+    return `${counterApiBaseUrl}/${encodedName}${action}`;
+  }
+
   function rememberRemoteCounts(uniqueCounterValue, totalCounterValue) {
     writeStoredCounter(uniqueValueStorageKey, uniqueCounterValue);
     writeStoredCounter(totalValueStorageKey, totalCounterValue);
@@ -451,25 +479,12 @@ const visitorCounter = (() => {
       return;
     }
 
-    let uniqueCounterValue = readStoredCounter(uniqueValueStorageKey);
-    let totalCounterValue = readStoredCounter(totalValueStorageKey);
-    let didUpdate = false;
-
     if (hasLocalStorage() && !hasStoredUniqueHit()) {
-      uniqueCounterValue += 1;
       markUniqueVisitorCounted();
-      didUpdate = true;
     }
 
     if (hasSessionStorage() && !hasCountedSessionVisit()) {
-      totalCounterValue += 1;
       markSessionVisitCounted();
-      didUpdate = true;
-    }
-
-    if (didUpdate) {
-      rememberRemoteCounts(uniqueCounterValue, totalCounterValue);
-      renderCounts(uniqueCounterValue, totalCounterValue);
     }
   }
 
@@ -499,14 +514,12 @@ const visitorCounter = (() => {
       rememberRemoteCounts(remoteUnique, remoteTotal);
       renderCounts(remoteUnique, remoteTotal);
     } catch (error) {
-      renderCounts(readStoredCounter(uniqueValueStorageKey), readStoredCounter(totalValueStorageKey));
+      renderCounts();
     }
   }
 
   function init() {
-    const startingUnique = readStoredCounter(uniqueValueStorageKey);
-    const startingTotal = readStoredCounter(totalValueStorageKey);
-    renderCounts(startingUnique, startingTotal);
+    renderCounts();
 
     if (canReadRemoteCounter()) {
       syncRemoteCounts();

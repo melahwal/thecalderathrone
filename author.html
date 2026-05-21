@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="layout-fix.css?v=20260508b">
-  <link rel="stylesheet" href="styles.css?v=arabic-localization-20260521f">
+  <link rel="stylesheet" href="styles.css?v=mobile-arabic-fixes-20260521a">
 
   <style>
     body.author-page-final .site-nav a {
@@ -267,8 +267,10 @@
     html.translated-rtl body.author-page-final .author-final-bio p,
     body.translated-rtl.author-page-final .author-final-bio p {
       direction: rtl !important;
-      text-align: justify !important;
+      text-align: right !important;
       text-align-last: right !important;
+      text-justify: auto !important;
+      word-spacing: normal !important;
       font-size: clamp(1.42rem, 1.6vw, 1.58rem) !important;
       line-height: 1.48 !important;
     }
@@ -276,8 +278,10 @@
     html.is-arabic-translation body.author-page-final .author-miniatures-copy,
     body.translated-rtl.author-page-final .author-miniatures-copy {
       direction: rtl !important;
-      text-align: justify !important;
+      text-align: right !important;
       text-align-last: right !important;
+      text-justify: auto !important;
+      word-spacing: normal !important;
     }
 
     html.translated-ltr body.author-page-final .author-final-bio p,
@@ -336,6 +340,8 @@
       }
 
       body.author-page-final .author-final-row {
+        display: flex !important;
+        flex-direction: column !important;
         grid-template-columns: 1fr !important;
       }
 
@@ -348,9 +354,19 @@
       }
 
       body.author-page-final .author-final-photo {
+        order: 1 !important;
         margin: 0 auto !important;
         width: min(100%, 420px) !important;
         max-width: 420px !important;
+      }
+
+      body.author-page-final .author-final-bio {
+        order: 2 !important;
+      }
+
+      body.author-page-final .author-final-photo img {
+        aspect-ratio: 4 / 5 !important;
+        object-fit: cover !important;
       }
 
       body.author-page-final .author-miniatures-grid {
@@ -593,6 +609,6 @@
     </div>
   </footer>
 
-<script src="script.js?v=arabic-localization-20260521f"></script></body>
+<script src="script.js?v=mobile-arabic-fixes-20260521a"></script></body>
 </html>
 

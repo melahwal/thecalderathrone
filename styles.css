@@ -6341,3 +6341,97 @@ body.lang-ar.novels-page main .shared-page-header h2 {
   text-justify: auto !important;
   word-spacing: normal !important;
 }
+
+/* Final mobile RTL pass: Arabic long-form copy should read from the right, not as centered blocks. */
+@media (max-width: 768px) {
+  body.lang-ar main :where(
+    p,
+    li,
+    .shared-page-header > h2,
+    .characters-subtitle,
+    .page-disclaimer,
+    .adaptation-hero h2,
+    .season-format,
+    .author-final-name,
+    .author-final-bio p,
+    .author-miniatures-copy,
+    .rights-copy,
+    .book-description,
+    .pitch-card p,
+    .saga-overview p,
+    .season-structure-box p,
+    .rights-positioning p,
+    .home-copy-frame p,
+    .hero-hook
+  ) {
+    direction: rtl !important;
+    text-align: right !important;
+    text-align-last: auto !important;
+    text-justify: auto !important;
+    word-spacing: normal !important;
+    white-space: normal !important;
+  }
+
+  body.lang-ar main :where(.shared-page-header > h2, .characters-subtitle, .page-disclaimer, .adaptation-hero h2, .season-format) {
+    max-width: min(100%, 42rem) !important;
+    margin-inline: auto !important;
+    line-height: 1.72 !important;
+    text-wrap: pretty;
+  }
+
+  body.lang-ar main :where(.page-title, h1, .author-final-title, #book-illustrations-title, .open-book-title) {
+    direction: rtl !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    text-justify: auto !important;
+    word-spacing: normal !important;
+  }
+
+  body.lang-ar.home-page main :where(.eyebrow, .hero-subtitle, .tagline),
+  body.lang-ar.illustrations-page main :where(.book-select-card, .book-select-card strong, .book-illustration figcaption),
+  body.lang-ar main :where(.button, .text-button, .book-control, .book-progress),
+  body.lang-ar .site-nav a {
+    text-align: center !important;
+    text-align-last: center !important;
+  }
+
+  body.lang-ar.adaptation-page .season-timeline article,
+  body.lang-ar.adaptation-page .series-status span {
+    direction: rtl !important;
+  }
+
+  body.lang-ar.adaptation-page .season-timeline article span,
+  body.lang-ar.adaptation-page .season-timeline article strong,
+  body.lang-ar.adaptation-page .series-status span,
+  body.lang-ar.adaptation-page .series-status span:first-child,
+  body.lang-ar.adaptation-page .series-status span:last-child {
+    justify-content: flex-start !important;
+    text-align: right !important;
+    text-align-last: auto !important;
+    word-spacing: normal !important;
+  }
+
+  body.lang-ar.novels-page main .shared-page-header > h2,
+  body.lang-ar.characters-page main .characters-subtitle,
+  body.lang-ar.illustrations-page main .page-disclaimer,
+  body.lang-ar.adaptation-page main .adaptation-hero h2,
+  body.lang-ar.adaptation-page main .season-format,
+  body.lang-ar.rights-page main .shared-page-header > h2 {
+    direction: rtl !important;
+    text-align: right !important;
+    text-align-last: auto !important;
+    text-justify: auto !important;
+    word-spacing: normal !important;
+  }
+}
+
+@media (max-width: 430px) {
+  body.lang-ar main :where(.shared-page-header > h2, .characters-subtitle, .page-disclaimer, .adaptation-hero h2, .season-format) {
+    font-size: clamp(0.96rem, 4.6vw, 1.08rem) !important;
+    line-height: 1.68 !important;
+  }
+
+  body.lang-ar main :where(p, li, .author-final-bio p, .author-miniatures-copy) {
+    line-height: 1.78 !important;
+  }
+}
