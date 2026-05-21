@@ -178,6 +178,32 @@ if (contactForm) {
   const contactStatus = contactForm.querySelector("[data-contact-status]");
   const submitButton = contactForm.querySelector('button[type="submit"]');
   const placeholderEndpointToken = "REPLACE_WITH_MY_FORMSPREE_ID";
+  const contactLanguageUrl = (() => {
+    try {
+      return new URL(window.location.href);
+    } catch {
+      return null;
+    }
+  })();
+  const contactLanguage = (
+    contactLanguageUrl?.searchParams.get("_x_tr_tl") ||
+    contactLanguageUrl?.searchParams.get("tl") ||
+    document.documentElement.lang ||
+    "en"
+  ).toLowerCase().split("-")[0];
+  const contactCopy = contactLanguage === "ar"
+    ? {
+        sending: "جارٍ إرسال الاستفسار...",
+        fallback: "تم فتح تطبيق البريد الإلكتروني متضمناً تفاصيل الاستفسار. إذا لم يفتح تلقائياً، يُرجى مراسلة melahwal@hotmail.com مباشرة.",
+        success: "شكراً لك. تم إرسال الاستفسار بنجاح.",
+        error: "تعذّر إرسال الرسالة. يُرجى مراسلة melahwal@hotmail.com مباشرة."
+      }
+    : {
+        sending: "Sending your inquiry...",
+        fallback: "Your email app has been opened with the inquiry details. If it does not open, please email melahwal@hotmail.com directly.",
+        success: "Thank you. Your inquiry has been sent successfully.",
+        error: "Sorry, your message could not be sent. Please email melahwal@hotmail.com directly."
+      };
 
   function buildFallbackEmailUrl(formData) {
     const subject = formData.get("_subject") || "The Caldera Throne - Rights / Contact Inquiry";
@@ -200,7 +226,7 @@ if (contactForm) {
       return;
     }
 
-    contactStatus.textContent = "Sending your inquiry...";
+    contactStatus.textContent = contactCopy.sending;
     contactStatus.className = "form-status full";
     submitButton.disabled = true;
 
@@ -208,7 +234,7 @@ if (contactForm) {
 
     if (contactForm.action.includes(placeholderEndpointToken)) {
       window.location.href = buildFallbackEmailUrl(formData);
-      contactStatus.textContent = "Your email app has been opened with the inquiry details. If it does not open, please email melahwal@hotmail.com directly.";
+      contactStatus.textContent = contactCopy.fallback;
       contactStatus.classList.add("success");
       submitButton.disabled = false;
       return;
@@ -228,10 +254,10 @@ if (contactForm) {
       }
 
       contactForm.reset();
-      contactStatus.textContent = "Thank you. Your inquiry has been sent successfully.";
+      contactStatus.textContent = contactCopy.success;
       contactStatus.classList.add("success");
     } catch (error) {
-      contactStatus.textContent = "Sorry, your message could not be sent. Please email melahwal@hotmail.com directly.";
+      contactStatus.textContent = contactCopy.error;
       contactStatus.classList.add("error");
     } finally {
       submitButton.disabled = false;
@@ -523,9 +549,26 @@ const visitorCounter = (() => {
     adaptation: { local: "/adaptation.html", public: "/adaptation" },
     author: { local: "/author.html", public: "/author" },
     rights: { local: "/rights.html", public: "/rights" },
+    world: { local: "/world.html", public: "/world" },
   };
   const arabicAuthorName = "\u0645\u0635\u0637\u0641\u0649 \u0645\u062d\u0645\u062f \u0627\u0644\u0623\u062d\u0648\u0644";
   const latinAuthorName = "Mustafa EL Ahwal";
+  const arabicSeriesTitle = "مملكة فوهة البركان";
+  const englishSeriesTitleVariants = new Set(["the caldera throne"]);
+  const arabicTitleReplacements = [
+    ["عرش الكالديرا", arabicSeriesTitle],
+    ["عرش كالديرا", arabicSeriesTitle],
+    ["عرش الفوهة", arabicSeriesTitle],
+    ["عرش البركان", arabicSeriesTitle],
+    ["العرش كالديرا", arabicSeriesTitle],
+    ["THE CALDERA THRONE", arabicSeriesTitle],
+    ["The Caldera Throne", arabicSeriesTitle],
+    ["حقوق البث التلفزيوني والعرض على الشاشة", "حقوق الاقتباس التلفزيوني والسينمائي"],
+    ["حقوق التلفزيون والشاشة", "حقوق الاقتباس التلفزيوني والسينمائي"],
+    ["حقوق التلفزيون والعرض على الشاشة", "حقوق الاقتباس التلفزيوني والسينمائي"],
+    ["معرضٌ للحكام والناجين والخبراء الاستراتيجيين والأدوات الهادئة للتغيير.", "معرضٌ للحكام والناجين والمخططين الاستراتيجيين وصنّاع التغيير في الظل."],
+    ["معرض للحكام والناجين والخبراء الاستراتيجيين والأدوات الهادئة للتغيير.", "معرضٌ للحكام والناجين والمخططين الاستراتيجيين وصنّاع التغيير في الظل."]
+  ];
   const authorNamePattern = /Mustafa(?:\s+M\.?|\s+M)?\s+(?:El|EL|el|Al)\s+Ahwal|Mustafa\s+M\.\s+Ahwal|Mustafa\s+Ahwal/g;
   const incorrectArabicAuthorVariants = [
     "\u0645\u0635\u0637\u0641\u0649 \u0645. \u0627\u0644\u0623\u0647\u0648\u0627\u0644",
@@ -613,12 +656,54 @@ const visitorCounter = (() => {
     "Mai",
   ];
   const arabicNavLabels = {
-    novels: "\u0631\u0648\u0627\u064a\u0627\u062a",
+    novels: "\u0627\u0644\u0631\u0648\u0627\u064a\u0627\u062a",
     characters: "\u0627\u0644\u0634\u062e\u0635\u064a\u0627\u062a",
-    illustrations: "\u0627\u0644\u0631\u0633\u0648\u0645\u0627\u062a \u0627\u0644\u062a\u0648\u0636\u064a\u062d\u064a\u0629",
-    adaptation: "\u0627\u0644\u0627\u0642\u062a\u0628\u0627\u0633 \u0627\u0644\u062a\u0644\u0641\u0632\u064a\u0648\u0646\u064a",
+    illustrations: "\u0627\u0644\u0631\u0633\u0648\u0645",
+    adaptation: "\u0627\u0644\u0627\u0642\u062a\u0628\u0627\u0633",
     author: "\u0627\u0644\u0645\u0624\u0644\u0641",
-    rights: "\u0627\u0644\u062d\u0642\u0648\u0642",
+    rights: "\u0627\u0644\u062d\u0642\u0648\u0642 \u0648\u0627\u0644\u062a\u0648\u0627\u0635\u0644",
+  };
+  const arabicCharacterDescriptions = {
+    Adrian: "حدّاد من دمٍ ملكي واستراتيجي ينجذب إلى سلطةٍ لم يسعَ إليها.",
+    Mai: "أميرة ماريّا وقائدة منضبطة تحمل حزن مملكةٍ كاملة نحو العودة.",
+    Elyanna: "جسرٌ حي بين البرّ الرئيسي والجزيرة بعد ثلاثين عاماً من الصمت.",
+    Marcus: "حاكم ذكي ومدمّر يخلط بين الطاعة والشرعية.",
+    Helena: "الملكة الأم، ذاكرة القصر، وحارسة خطرة لحقائق مدفونة.",
+    "King Aurelius": "ملك شرعي آفل، تفتح سرقته الصامتة شقاً في مستقبل الجزيرة.",
+    Tomas: "جزّار وأب وثقل أخلاقي للمقاومة العادية.",
+    Greger: "خبّاز قزم، صديق وفيّ، شاهد حاد، ومرآة صادقة للحكاية.",
+    Livia: "قارئة للأنماط تحوّل السجلات والمسارات والشذوذ إلى استخبارات.",
+    Rorik: "قائد حرس يتحوّل قسمه المكسور إلى تصدّع أخلاقي داخل القصر.",
+    Rhia: "قائدة غريهوك؛ عملية، منضبطة، وصافية البصيرة تحت الضغط.",
+    Cassandra: "أخت هيلينا، ضحّية الثقة وسلاح ماركوس بعد الموت.",
+    Azadeh: "أميرة داريانية عالقة داخل نظام تفهمه أكثر ممن يستخدمونه.",
+    "King Shen": "ملك مارياني يتحول حزنه إلى سياسة، وذاكرته إلى أسطول يُعاد بناؤه.",
+    "King Bahram": "ملك دارياني يقرأ الهوامش والسجلات والديون القديمة أفضل من الخطب.",
+    Jian: "ناجٍ من الأسطول الغارق وملاحٌ للمياه والحقيقة والصمت.",
+    Rustom: "أمير دارياني شاب وجسر عملي بين البرّ الرئيسي والجزيرة.",
+    Ashbourne: "مشغّل سياسي أنيق يحوّل الوصول والسجلات والخدمة إلى نفوذ.",
+    Draven: "زعيم فاركاني يحكم بالخوف والدَّين والغضب المضبوط.",
+    Varric: "مهندس فاركاني وعقل استخباراتي يحرس أسرار الجبل المدفونة.",
+    Kaito: "جنرال مارياني تحوّل عقيدته الهجوم إلى واجب.",
+    Akira: "سلاح اجتماعي نبيل المولد يجرح ماي بالتوقيت والنبرة والإجراء.",
+    Arvand: "صانع انقلاب إداري يسيطر على الواقع بالسجلات والأختام والتأخير.",
+    Babak: "أداة أرفاند في الممرات؛ خطره يتجلى في الغرف الصغيرة والعتبات الهادئة.",
+    "Prince Kael": "ابن درافن، يائس لإثبات نفسه، وتسلله يجرح القصر.",
+    "Varyn Ironfist": "سيد الحرب؛ جندي صارم وناجٍ من ولاءات متبدلة.",
+    Kellus: "سيد المال، يترك بتحذيره الأخير مفتاح اللعبة في يد ليفيا.",
+    Giv: "حارس بهرام الصامت؛ وفيّ كالصخر وخطر قبل أن يُرى الخطر.",
+    "The Twins â€“ Turgut & Turan": "توأمان منفّذان لا يرحمان، يخشاهما الجميع لعنفهما وولائهما وقوتهما الخام.",
+    Arash: "شاهد آزاده الهادئ، يصون السجل قبل أن يُدفن.",
+    Ilva: "طفلة فاركانية تقرأ إشارات الجبل قبل أن يستطيع الآخرون تسميتها.",
+    Elara: "زوجة توماس، تمسك بالدكان والطفلة ونفسها كي لا يتفكك شيء.",
+    Mira: "ابنة توماس، والسبب الإنساني الكامن خلف قوته.",
+    Narseh: "كاتب مثقل بالديون يُفسد عبر محادثة ممر قابلة للإنكار.",
+    Saburo: "قائد قافلة ماي؛ دقيق، منضبط، ولا يمكن تشتيته.",
+    Rellin: "قائد حرس القصر، تنتهي طاعته الباردة تحت نظرة ماركوس.",
+    Sorush: "مهندس مراسلات يبني الصمود داخل شبكة الاستخبارات.",
+    Drosan: "قائد فاريك الأقدم، منفّذ القرارات وكاتب كلفتها.",
+    Namik: "كاتب أرشيف يحفظ البيت الكامل حيث تنسى الذاكرة الرسمية أن تبحث.",
+    Oru: "رئيس مرفأ كايشو، يحوّل الحزن إلى عمل ويواصل البناء."
   };
 
   let repairQueued = false;
@@ -736,6 +821,29 @@ const visitorCounter = (() => {
     element.setAttribute("dir", "ltr");
   }
 
+  function normalizeProtectedTitle(value = "") {
+    return String(value).replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function isSeriesTitle(value = "") {
+    return englishSeriesTitleVariants.has(normalizeProtectedTitle(value));
+  }
+
+  function getProtectedDisplayName(protectedName, isArabic) {
+    if (isArabic && isSeriesTitle(protectedName)) {
+      return arabicSeriesTitle;
+    }
+
+    return protectedName;
+  }
+
+  function applyArabicPhraseReplacements(value) {
+    return arabicTitleReplacements.reduce(
+      (nextValue, [source, replacement]) => nextValue.split(source).join(replacement),
+      value
+    );
+  }
+
   function normalizeLanguageCode(languageCode) {
     if (!languageCode) {
       return "en";
@@ -794,6 +902,7 @@ const visitorCounter = (() => {
     if (path.endsWith("/adaptation") || path.endsWith("/adaptation.html")) return "/adaptation";
     if (path.endsWith("/author") || path.endsWith("/author.html")) return "/author";
     if (path.endsWith("/rights") || path.endsWith("/rights.html")) return "/rights";
+    if (path.endsWith("/world") || path.endsWith("/world.html")) return "/world";
 
     return path.startsWith("/") ? path : `/${path}`;
   }
@@ -836,6 +945,7 @@ const visitorCounter = (() => {
     if (path.endsWith("/adaptation") || path.endsWith("/adaptation.html")) return "adaptation";
     if (path.endsWith("/author") || path.endsWith("/author.html")) return "author";
     if (path.endsWith("/rights") || path.endsWith("/rights.html")) return "rights";
+    if (path.endsWith("/world") || path.endsWith("/world.html")) return "world";
 
     return "index";
   }
@@ -1089,6 +1199,10 @@ const visitorCounter = (() => {
         .replace(new RegExp(`(${escapedTerm})(?=[A-Za-z0-9À-ž\\u0600-\\u06FF])`, "g"), "$1 ");
     });
 
+    if (isArabic) {
+      nextText = applyArabicPhraseReplacements(nextText);
+    }
+
     if (nextText !== node.nodeValue) {
       node.nodeValue = nextText;
     }
@@ -1124,14 +1238,15 @@ const visitorCounter = (() => {
 
     document.querySelectorAll("[data-protected-name]:not([data-author-name])").forEach((element) => {
       const protectedName = element.getAttribute("data-protected-name");
+      const targetName = getProtectedDisplayName(protectedName, isArabic);
 
-      if (protectedName && element.textContent !== protectedName) {
-        element.textContent = protectedName;
+      if (targetName && element.textContent !== targetName) {
+        element.textContent = targetName;
       }
 
       markNoTranslate(element);
       element.classList.add("protected-inline-term");
-      setProtectedLanguageAttributes(element, "en");
+      setProtectedLanguageAttributes(element, isArabic && isSeriesTitle(protectedName) ? "ar" : "en");
     });
 
     ensureProtectedInlineSpacing();
@@ -1150,6 +1265,276 @@ const visitorCounter = (() => {
         link.textContent = arabicNavLabels[key];
       }
     });
+  }
+
+  function localizedAuthorMarkup() {
+    return `<span class="notranslate skiptranslate protected-author-name protected-inline-term" translate="no" data-author-name="true" lang="ar" dir="rtl">${arabicAuthorName}</span>`;
+  }
+
+  function localizedProtectedTitleMarkup(protectedName, displayName = getProtectedDisplayName(protectedName, true)) {
+    const language = isSeriesTitle(protectedName) ? "ar" : "en";
+    const direction = language === "ar" ? "rtl" : "ltr";
+
+    return `<span class="notranslate skiptranslate protected-inline-term protected-title" translate="no" data-protected-name="${protectedName}" lang="${language}" dir="${direction}">${displayName}</span>`;
+  }
+
+  function setArabicText(selector, value, root = document) {
+    root.querySelectorAll(selector).forEach((element) => {
+      if (element.textContent.trim() !== value) {
+        element.textContent = value;
+      }
+
+      element.setAttribute("lang", "ar");
+      element.setAttribute("dir", "rtl");
+    });
+  }
+
+  function setArabicHtml(selector, value, root = document) {
+    root.querySelectorAll(selector).forEach((element) => {
+      if (element.innerHTML.trim() !== value.trim()) {
+        element.innerHTML = value;
+      }
+
+      element.setAttribute("lang", "ar");
+      element.setAttribute("dir", "rtl");
+    });
+  }
+
+  function setArabicLabelForControl(selector, labelText) {
+    const control = document.querySelector(selector);
+    const label = control?.closest("label");
+
+    if (!label) {
+      return;
+    }
+
+    const directTextNode = Array.from(label.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.nodeValue.trim());
+
+    if (directTextNode) {
+      directTextNode.nodeValue = `\n          ${labelText}\n          `;
+    } else {
+      label.insertBefore(document.createTextNode(`\n          ${labelText}\n          `), label.firstChild);
+    }
+
+    label.setAttribute("lang", "ar");
+    label.setAttribute("dir", "rtl");
+  }
+
+  function setSelectOptionsArabic(selector, labels) {
+    const select = document.querySelector(selector);
+
+    if (!select) {
+      return;
+    }
+
+    Array.from(select.options).forEach((option, index) => {
+      if (labels[index]) {
+        option.textContent = labels[index];
+      }
+    });
+  }
+
+  function localizeArabicFooter() {
+    setArabicHtml(".site-footer-copy", `&copy; 2026 ${localizedAuthorMarkup()}. جميع الحقوق محفوظة.`);
+    document.querySelectorAll(".footer-stat").forEach((stat, index) => {
+      const label = stat.querySelector(".footer-stat-label");
+
+      if (label) {
+        label.textContent = index === 0 ? "زوار فريدون" : "إجمالي الزيارات";
+        label.setAttribute("lang", "ar");
+        label.setAttribute("dir", "rtl");
+      }
+    });
+    setArabicText(".site-footer-top", "العودة إلى الأعلى");
+  }
+
+  function localizeArabicIllustrationReader() {
+    const bookKickers = ["الكتاب الأول", "الكتاب الثاني", "الكتاب الثالث", "الكتاب الرابع"];
+
+    document.querySelectorAll("[data-select-book]").forEach((card) => {
+      const index = Number(card.getAttribute("data-select-book"));
+      const kicker = card.querySelector(".book-select-kicker");
+
+      if (kicker && bookKickers[index]) {
+        kicker.textContent = bookKickers[index];
+        kicker.setAttribute("lang", "ar");
+        kicker.setAttribute("dir", "rtl");
+      }
+    });
+
+    setArabicText("[data-return-selection]", "العودة إلى اختيار الكتب");
+    setArabicText("[data-book-first]", "الصفحة الأولى");
+    setArabicText(".book-reader-controls [data-book-prev-button]", "السابق");
+    setArabicText(".book-reader-controls [data-book-next-button]", "التالي");
+    setArabicText("[data-book-last]", "الصفحة الأخيرة");
+  }
+
+  function localizeArabicContactForm() {
+    setArabicLabelForControl('input[name="name"]', "الاسم");
+    setArabicLabelForControl('input[name="email"]', "البريد الإلكتروني");
+    setArabicLabelForControl('input[name="organization"]', "الجهة / المؤسسة");
+    setArabicLabelForControl('select[name="inquiryType"]', "نوع الاستفسار");
+    setArabicLabelForControl('textarea[name="message"]', "الرسالة");
+    setSelectOptionsArabic('select[name="inquiryType"]', [
+      "اختر نوع الاستفسار",
+      "تمثيل أدبي",
+      "استفسار نشر",
+      "استفسار اقتباس تلفزيوني أو سينمائي",
+      "تواصل عام"
+    ]);
+    setArabicText(".direct-inquiries", "للاستفسارات المباشرة: melahwal@hotmail.com");
+    setArabicText(".contact-form .button.primary", "إرسال الاستفسار");
+  }
+
+  function localizeArabicCharacterCards() {
+    document.querySelectorAll(".character-card").forEach((card) => {
+      const protectedName = card.querySelector("[data-protected-name]")?.getAttribute("data-protected-name");
+      const description = arabicCharacterDescriptions[protectedName];
+      const paragraph = card.querySelector("p");
+
+      if (!description || !paragraph) {
+        return;
+      }
+
+      paragraph.textContent = description;
+      paragraph.setAttribute("lang", "ar");
+      paragraph.setAttribute("dir", "rtl");
+    });
+  }
+
+  function applyArabicLocalizations(isArabic) {
+    if (!isArabic) {
+      return;
+    }
+
+    const pageKey = getCurrentPageKey();
+
+    localizeArabicFooter();
+    localizeArabicIllustrationReader();
+
+    switch (pageKey) {
+      case "index":
+        setArabicText(".home-hero-actions-top .button.primary", "ادخل إلى الروايات");
+        setArabicHtml(".home-hero .eyebrow", `${localizedAuthorMarkup()} يقدّم`);
+        setArabicText(".home-hero .hero-subtitle", "سلسلة فانتازيا سياسية حربية أصلية بطابع فاخر");
+        setArabicText(".home-hero .tagline", "الحرب عبر الأنظمة. والسلطة عبر الصمت.");
+        setArabicText(".home-copy-frame > p:not(.hero-hook)", "ملحمة سياسية حربية من خمسة كتب عن الشرعية والذاكرة والغذاء والسجلات والنبوءة وكلفة الحكم؛ حيث تبدأ الحروب في دفاتر الحساب قبل أن تصل إلى السيف.");
+        setArabicHtml(".home-copy-frame .hero-hook", `${localizedProtectedTitleMarkup("The Caldera Throne")} سلسلة فانتازيا سياسية ملحمية للبالغين بقلم ${localizedAuthorMarkup()}، تتشكل حول السلطة والشرعية والنبوءة والدفاتر واللوجستيات والخلافة الملكية وانهيار المؤسسات. عبر ${localizedProtectedTitleMarkup("The Still and the Burning", "The Still and the Burning")}، و${localizedProtectedTitleMarkup("The Empire of Ledgers", "The Empire of Ledgers")}، و${localizedProtectedTitleMarkup("What the Mountain Kept", "What the Mountain Kept")}، تستكشف السلسلة كيف تصنع السجلات وخطوط الإمداد والصمت والأنظمة مسار الحروب قبل السيوف والجيوش.`);
+        break;
+
+      case "novels":
+        setArabicText(".page-title", "الروايات");
+        setArabicText(".shared-page-header h2", "ثلاثة كتب من الضغط والإرث والانهيار المؤسسي؛ فانتازيا سياسية حربية راقية تتحرك فيها السلطة عبر المجالس والدفاتر والشرعية المدفونة قبل أن تزحف الجيوش.");
+        document.querySelectorAll(".series-label").forEach((label, index) => {
+          const names = ["الكتاب الأول من", "الكتاب الثاني من", "الكتاب الثالث من"];
+          if (names[index]) {
+            label.innerHTML = `${names[index]} ${localizedProtectedTitleMarkup("The Caldera Throne")}`;
+            label.setAttribute("lang", "ar");
+            label.setAttribute("dir", "rtl");
+          }
+        });
+        document.querySelectorAll(".word-count").forEach((count, index) => {
+          const values = ["عدد الكلمات: 115,000 كلمة", "عدد الكلمات: نحو 112,000 كلمة", "عدد الكلمات: 120,000 كلمة"];
+          if (values[index]) {
+            count.textContent = values[index];
+            count.setAttribute("lang", "ar");
+            count.setAttribute("dir", "rtl");
+          }
+        });
+        setArabicText(".text-button", "الحقوق والاستفسارات");
+        break;
+
+      case "characters":
+        setArabicText(".page-title", "الشخصيات");
+        setArabicText(".characters-subtitle", "معرضٌ للحكام والناجين والمخططين الاستراتيجيين وصنّاع التغيير في الظل.");
+        localizeArabicCharacterCards();
+        break;
+
+      case "illustrations":
+        setArabicText(".page-title", "التطوير البصري");
+        setArabicHtml(".page-disclaimer", `تعرض هذه الصفحة تطويراً بصرياً تصورياً لسلسلة ${localizedProtectedTitleMarkup("The Caldera Throne")}. الروايات أعمال غير منشورة قيد التطوير، ولم يُنتج أو يُكلّف أي اقتباس تلفزيوني أو سينمائي حتى الآن.`);
+        break;
+
+      case "world":
+        setArabicText(".page-title", "الرسوم");
+        setArabicHtml(".shared-page-header h2", `رسوم الكتب من ${localizedProtectedTitleMarkup("The Caldera Throne")}.`);
+        document.querySelectorAll(".series-label").forEach((label, index) => {
+          const names = ["الكتاب الأول", "الكتاب الثاني", "الكتاب الثالث"];
+          if (names[index]) {
+            label.textContent = names[index];
+            label.setAttribute("lang", "ar");
+            label.setAttribute("dir", "rtl");
+          }
+        });
+        break;
+
+      case "adaptation":
+        setArabicText(".page-title", "حقوق الاقتباس التلفزيوني والسينمائي");
+        setArabicText(".adaptation-hero h2", "فانتازيا سياسية حربية فاخرة متعددة المواسم، مبنية حول السلطة والشرعية والنبوءة واللوجستيات وكلفة الحكم.");
+        setArabicHtml(".adaptation-hero p", `${localizedProtectedTitleMarkup("THE CALDERA THRONE")} مصممة لتلفزيون طويل النفس بطابع فاخر: عمل للبالغين، سياسي، سينمائي، ومحكوم بعواقب القرارات. تتحرك دراماه عبر المجالس والسجلات وأنظمة الغذاء والضغط العسكري والشرعية المدفونة والكلفة الأخلاقية للحكم. تكوّن الكتب الثلاثة الأولى قوساً أساسياً مكتملاً، بينما توسع الكتب الرابعة والخامسة الملحمة نحو إعادة البناء والضغط الإمبراطوري والخلافة.`);
+        setArabicText(".screen-grid .pitch-card:nth-child(1) h3", "محرك سياسي");
+        setArabicText(".screen-grid .pitch-card:nth-child(1) p", "تتحرك السلطة عبر المجالس والسجلات وأنظمة الغذاء وادعاءات الخلافة والسرديات المضبوطة قبل أن تتحرك الجيوش.");
+        setArabicText(".screen-grid .pitch-card:nth-child(2) h3", "عوالم بصرية متمايزة");
+        setArabicText(".screen-grid .pitch-card:nth-child(2) p", "جزيرة بركانية، عاصمة داخل فوهة، حصون ساحلية، قاعات سجلات في البر الرئيسي، مرافئ ملكية، وضغط إمبراطوري من ساركاثر.");
+        setArabicText(".screen-grid .pitch-card:nth-child(3) h3", "طاقم جماعي واسع");
+        setArabicText(".screen-grid .pitch-card:nth-child(3) p", "شخصيات بالغة متعددة الطبقات، صالحة للولاء والخيانة والتصدع الأخلاقي وتراكم العائد الدرامي عبر المواسم.");
+        setArabicText(".screen-grid .pitch-card:nth-child(4) h3", "تصاعد موسمي");
+        setArabicText(".screen-grid .pitch-card:nth-child(4) p", "كل موسم يدفع الملكية السردية إلى مرحلة جديدة: الانهيار، حرب الحبر، العودة، إعادة البناء، ثم الحساب الأخير.");
+        setArabicText(".saga-overview h2", "محرك السلسلة");
+        setArabicHtml(".saga-overview p", `${localizedProtectedTitleMarkup("THE CALDERA THRONE")} فانتازيا سياسية حربية للبالغين من خمسة كتب، عن الشرعية والذاكرة وكلفة إعادة بناء عالم مكسور. تصل الحرب عبر الدفاتر قبل السيوف. وتعمل النبوءة كأداة ضبط للدولة قبل أن تعمل كشيء غيبي. تقدم الثلاثية المكتملة الانهيار والتقارب، بينما تنفتح الكتب الرابعة والخامسة على إعادة البناء والضغط الإمبراطوري والخلافة والحساب الأخير.`);
+        setArabicText("#season-structure-title", "بنية المواسم");
+        document.querySelectorAll(".season-format").forEach((paragraph, index) => {
+          const values = [
+            "يُتصور كل موسم في 8 حلقات تتراوح مدة الواحدة منها بين 50 و60 دقيقة تقريباً.",
+            "تُبنى السلسلة لاقتباس من خمسة مواسم، يتمحور كل موسم حول محرك درامي واضح: الانهيار، حرب الحبر، العودة، إعادة البناء، والحساب."
+          ];
+          if (values[index]) {
+            paragraph.textContent = values[index];
+            paragraph.setAttribute("lang", "ar");
+            paragraph.setAttribute("dir", "rtl");
+          }
+        });
+        document.querySelectorAll(".season-timeline article").forEach((item, index) => {
+          const seasonLabels = ["الموسم الأول — الانهيار", "الموسم الثاني — حرب الحبر", "الموسم الثالث — العودة", "الموسم الرابع — إعادة البناء", "الموسم الخامس — الحساب"];
+          const bookLabels = [
+            `الكتاب الأول: ${localizedProtectedTitleMarkup("The Still and the Burning", "The Still and the Burning")}`,
+            `الكتاب الثاني: ${localizedProtectedTitleMarkup("The Empire of Ledgers", "The Empire of Ledgers")}`,
+            `الكتاب الثالث: ${localizedProtectedTitleMarkup("What the Mountain Kept", "What the Mountain Kept")}`,
+            "قوس التوسّع",
+            "قوس التوسّع"
+          ];
+          const span = item.querySelector("span");
+          const strong = item.querySelector("strong");
+          if (span && seasonLabels[index]) span.textContent = seasonLabels[index];
+          if (strong && bookLabels[index]) strong.innerHTML = bookLabels[index];
+          item.setAttribute("lang", "ar");
+          item.setAttribute("dir", "rtl");
+        });
+        setArabicText(".rights-positioning h2", "تموضع حقوق الاقتباس");
+        setArabicText(".rights-positioning p", "تُبنى السلسلة لتلفزيون متسلسل فاخر: كثيف سياسياً، متميز بصرياً، جماعي الشخصيات، ومؤسس على العواقب لا على الاستعراض وحده. تشكّل الكتب الثلاثة الأولى قوساً أساسياً مكتملاً، وتمدد الكتب الرابعة والخامسة العالم نحو إعادة البناء والضغط الإمبراطوري والخلافة.");
+        document.querySelectorAll(".series-status span").forEach((item, index) => {
+          item.textContent = index === 0 ? "الثلاثية الأساسية: الكتب 1–3 مكتملة" : "قوس التوسّع: الكتابان 4–5 قيد التطوير";
+          item.setAttribute("lang", "ar");
+          item.setAttribute("dir", "rtl");
+        });
+        break;
+
+      case "author":
+        setArabicText(".author-final-title", "عن المؤلف");
+        setArabicHtml(".author-final-name", localizedAuthorMarkup());
+        setArabicHtml(".author-final-bio p:nth-child(1)", `نهاراً، يعمل ${localizedAuthorMarkup()} في عالم المال شديد التعقيد؛ مهنة علّمته كيف تدور العجلات الهادئة للسلطة والحوكمة بالفعل. لكنه في جوهره بنّاء عوالم.`);
+        setArabicHtml(".author-final-bio p:nth-child(2)", `في ساعاته الهادئة، يصنع مصطفى بيوتاً مصغّرة دقيقة، ويجد سلامه في الصبر اللازم لنسج التفاصيل الصغيرة داخل عالم حي. هذه العناية نفسها تمنح الحياة لـ <em>${localizedProtectedTitleMarkup("The Caldera Throne")}</em>. إنه يبني قصته طبقة بعد طبقة، من الاتساع الهائل للممالك إلى ثقل اختيار خاص واحد.`);
+        setArabicText(".author-final-bio p:nth-child(3)", "وُلد كثير من عمله في صمت الصحراء العميق. وبوصفه محباً للتخييم الفردي، كثيراً ما يكتب مصطفى تحت سماء الليل المفتوحة، حيث تساعده رحابة الأرض ووحدتها على تشكيل الروح المناخية لرواياته.");
+        setArabicText(".author-miniatures-heading", "عوالم مصغّرة وحِرفية");
+        setArabicHtml(".author-miniatures-copy", `بيوت وداخلات مصغّرة دقيقة صُنعت بالصبر نفسه والحس نفسه بالمقياس والجو الذي يشكل ${localizedProtectedTitleMarkup("The Caldera Throne")}.`);
+        break;
+
+      case "rights":
+        setArabicText(".page-title", "استفسارات الحقوق والتواصل");
+        setArabicText(".shared-page-header h2", "للوكلاء الأدبيين، والنشر، والاقتباس التلفزيوني أو السينمائي، والتواصل العام.");
+        localizeArabicContactForm();
+        break;
+    }
   }
 
   function applyDocumentLanguageMode(languageCode = getCurrentLanguage()) {
@@ -1209,11 +1594,13 @@ const visitorCounter = (() => {
       return;
     }
 
+    const isArabic = getCurrentLanguage() === "ar";
+
     button.innerHTML = `
       <span class="translate-floating-globe" aria-hidden="true">\uD83C\uDF10</span>
-      <span class="translate-floating-label">LANG</span>
+      <span class="translate-floating-label">${isArabic ? "اللغة" : "LANG"}</span>
     `;
-    button.setAttribute("aria-label", "Choose site language");
+    button.setAttribute("aria-label", isArabic ? "اختيار لغة الموقع" : "Choose site language");
     button.setAttribute("data-language-toggle", "true");
     button.setAttribute("aria-haspopup", "true");
     button.type = "button";
@@ -1287,6 +1674,7 @@ const visitorCounter = (() => {
     applyArabicNavLabels(isArabic);
     updateExistingLanguageLinks();
     createFloatingLanguageSwitcher();
+    applyArabicLocalizations(isArabic);
     syncHeaderMetrics();
   }
 

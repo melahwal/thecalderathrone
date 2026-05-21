@@ -6067,3 +6067,277 @@ body.illustrations-page .book-edge-right {
     z-index: 2147483300 !important;
   }
 }
+
+/* Arabic localization polish: curated copy needs compact RTL typography without changing the black/gold identity. */
+.goog-text-highlight,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.lang-ar,
+body.lang-ar {
+  overflow-x: clip;
+}
+
+body.lang-ar main :where(
+  p,
+  li,
+  label,
+  h1,
+  h2,
+  h3,
+  h4,
+  .page-title,
+  .hero-subtitle,
+  .tagline,
+  .eyebrow,
+  .button,
+  .text-button,
+  .book-control,
+  .book-progress,
+  .footer-stat-label,
+  .site-footer-copy,
+  .site-footer-top
+),
+body.lang-ar .site-nav a,
+body.lang-ar .translate-floating-button,
+body.lang-ar .translate-floating-menu a {
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif !important;
+  letter-spacing: 0 !important;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+body.lang-ar main :where(p, li, label, .author-final-bio, .rights-copy, .book-description) {
+  line-height: 1.85 !important;
+  text-align: right !important;
+}
+
+body.lang-ar main :where(.shared-page-header, .page-title, h1, h2, h3, h4) {
+  direction: rtl !important;
+  text-align: center !important;
+}
+
+body.lang-ar .page-title,
+body.lang-ar .author-final-title,
+body.lang-ar .author-miniatures-heading {
+  font-size: clamp(1.85rem, 4.3vw, 4.1rem) !important;
+  line-height: 1.18 !important;
+}
+
+body.lang-ar.home-page .home-hero h1 {
+  font-size: clamp(2rem, 6vw, 5.5rem) !important;
+  line-height: 1.12 !important;
+}
+
+body.lang-ar.home-page .hero-subtitle {
+  font-size: clamp(1rem, 2.3vw, 1.62rem) !important;
+}
+
+body.lang-ar.home-page .tagline {
+  font-size: clamp(0.9rem, 1.7vw, 1.18rem) !important;
+}
+
+body.lang-ar .site-nav a {
+  min-width: 0;
+  padding-inline: clamp(10px, 1vw, 16px) !important;
+  font-size: clamp(0.72rem, 0.82vw, 0.86rem) !important;
+  white-space: nowrap !important;
+}
+
+body.lang-ar :where(.button, .text-button, .book-control, .book-progress) {
+  min-width: 0 !important;
+  max-width: 100%;
+  white-space: normal !important;
+}
+
+body.lang-ar .translate-floating-button {
+  min-width: 0 !important;
+  padding-inline: 12px !important;
+}
+
+body.lang-ar .characters-subtitle {
+  max-width: min(760px, 92vw);
+  margin-inline: auto;
+  font-size: clamp(1rem, 1.9vw, 1.28rem) !important;
+}
+
+body.lang-ar .character-card p {
+  line-height: 1.75 !important;
+}
+
+body.lang-ar.adaptation-page .adaptation-hero .page-title {
+  max-width: min(940px, 100%);
+  margin-inline: auto;
+  font-size: clamp(1.72rem, 3.8vw, 3.55rem) !important;
+}
+
+body.lang-ar.adaptation-page .pitch-card,
+body.lang-ar.adaptation-page .pitch-section,
+body.lang-ar.adaptation-page .season-timeline article {
+  direction: rtl;
+}
+
+body.lang-ar.adaptation-page .season-timeline article {
+  gap: 10px !important;
+  padding-inline: clamp(16px, 2vw, 24px) !important;
+}
+
+body.lang-ar.adaptation-page .season-timeline article span,
+body.lang-ar.adaptation-page .season-timeline article strong {
+  width: 100%;
+  line-height: 1.55 !important;
+  text-align: center !important;
+}
+
+body.lang-ar.adaptation-page .series-status span:first-child {
+  justify-content: flex-start;
+  text-align: right;
+}
+
+body.lang-ar.adaptation-page .series-status span:last-child {
+  justify-content: flex-end;
+  text-align: left;
+}
+
+body.lang-ar.illustrations-page .page-disclaimer,
+body.lang-ar.illustrations-page .book-select-card,
+body.lang-ar.illustrations-page .open-book-title,
+body.lang-ar.illustrations-page .book-illustration figcaption {
+  direction: rtl;
+  text-align: center !important;
+}
+
+body.lang-ar.illustrations-page .book-reader-controls {
+  direction: rtl;
+}
+
+body.lang-ar.rights-page .contact-form {
+  direction: rtl;
+}
+
+body.lang-ar.rights-page .contact-form label {
+  text-align: right !important;
+}
+
+body.lang-ar.rights-page .contact-form input,
+body.lang-ar.rights-page .contact-form textarea,
+body.lang-ar.rights-page .contact-form select {
+  direction: rtl;
+  text-align: right;
+}
+
+body.lang-ar.rights-page .contact-form input[type="email"] {
+  direction: ltr;
+  text-align: left;
+}
+
+body.lang-ar .site-footer-inner {
+  direction: rtl;
+}
+
+body.lang-ar .footer-stats-box {
+  direction: rtl;
+}
+
+body.lang-ar .footer-stat {
+  min-width: min(100%, 150px);
+}
+
+@media (max-width: 1024px) {
+  body.lang-ar .site-nav a {
+    font-size: 0.72rem !important;
+    padding-inline: 9px !important;
+  }
+
+  body.lang-ar .page-title,
+  body.lang-ar .author-final-title,
+  body.lang-ar .author-miniatures-heading {
+    font-size: clamp(1.65rem, 5vw, 3.15rem) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body.lang-ar .site-nav a {
+    white-space: normal !important;
+    text-align: center;
+  }
+
+  body.lang-ar .home-copy-frame p,
+  body.lang-ar .hero-hook {
+    text-align: right !important;
+  }
+
+  body.lang-ar.adaptation-page .series-status span,
+  body.lang-ar.adaptation-page .series-status span:first-child,
+  body.lang-ar.adaptation-page .series-status span:last-child {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 430px) {
+  body.lang-ar .page-title,
+  body.lang-ar.adaptation-page .adaptation-hero .page-title {
+    font-size: clamp(1.45rem, 9vw, 2.2rem) !important;
+  }
+
+  body.lang-ar.home-page .home-hero h1 {
+    font-size: clamp(1.72rem, 10vw, 2.7rem) !important;
+  }
+
+  body.lang-ar .translate-floating-button {
+    padding-inline: 10px !important;
+  }
+
+  body.lang-ar.illustrations-page .book-control {
+    font-size: 0.68rem !important;
+  }
+}
+
+body.lang-ar.home-page main .home-copy-frame p,
+body.lang-ar.home-page main .hero-hook,
+body.lang-ar.adaptation-page main .adaptation-hero > p:first-of-type,
+body.lang-ar.adaptation-page main :where(.pitch-card p, .saga-overview p, .season-structure-box p, .rights-positioning p),
+body.lang-ar.author-page-final main .author-final-bio p,
+body.lang-ar.characters-page main .character-card p {
+  text-align: right !important;
+  text-align-last: auto !important;
+  text-justify: auto !important;
+  word-spacing: normal !important;
+}
+
+body.lang-ar.adaptation-page main .adaptation-hero > p:first-of-type {
+  max-width: min(780px, 100%) !important;
+  margin-inline: auto !important;
+  font-size: clamp(0.98rem, 1.6vw, 1.14rem) !important;
+  line-height: 1.9 !important;
+}
+
+body.lang-ar.characters-page main .characters-subtitle {
+  display: block;
+  max-width: min(760px, 92vw) !important;
+  margin-inline: auto !important;
+  text-align: center !important;
+  text-align-last: center !important;
+  text-justify: auto !important;
+  word-spacing: normal !important;
+  line-height: 1.85 !important;
+}
+
+body.lang-ar.characters-page main .character-card p {
+  font-size: clamp(0.95rem, 1.7vw, 1.08rem) !important;
+  line-height: 1.8 !important;
+}
+
+body.lang-ar.adaptation-page main .adaptation-hero h2,
+body.lang-ar.adaptation-page main .season-format,
+body.lang-ar.rights-page main .shared-page-header h2,
+body.lang-ar.novels-page main .shared-page-header h2 {
+  text-align: center !important;
+  text-align-last: center !important;
+  text-justify: auto !important;
+  word-spacing: normal !important;
+}

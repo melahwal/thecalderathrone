@@ -8,6 +8,18 @@
   const imagePage = (src, caption) => ({ src, caption });
   const pad2 = (n) => String(n).padStart(2, "0");
   const pad3 = (n) => String(n).padStart(3, "0");
+  const arabicBookKickers = {
+    "Book 1": "الكتاب الأول",
+    "Book 2": "الكتاب الثاني",
+    "Book 3": "الكتاب الثالث",
+    "Book 4": "الكتاب الرابع"
+  };
+  const arabicBookOrdinals = {
+    1: "الأول",
+    2: "الثاني",
+    3: "الثالث",
+    4: "الرابع"
+  };
 
   const books = [
     {
@@ -113,9 +125,38 @@
     "'": "&#39;"
   })[character]);
 
-  const titleLine = (book) => `${book.kicker} \u2014 ${book.title}`;
-
   const isMobileView = () => window.matchMedia("(max-width: 820px)").matches;
+  const isArabicView = () => document.body.classList.contains("lang-ar") || document.documentElement.classList.contains("lang-ar");
+  const localizedBookKicker = (book) => (isArabicView() ? arabicBookKickers[book.kicker] || book.kicker : book.kicker);
+  const titleLine = (book) => `${localizedBookKicker(book)} \u2014 ${book.title}`;
+  const localizedProgress = (leftNumber, rightNumber, total) => {
+    if (!isArabicView()) {
+      return rightNumber ? `${leftNumber}\u2013${rightNumber} of ${total}` : `${leftNumber} of ${total}`;
+    }
+
+    return rightNumber ? `${leftNumber}\u2013${rightNumber} من ${total}` : `${leftNumber} من ${total}`;
+  };
+  const localizedCaption = (caption) => {
+    if (!isArabicView()) {
+      return caption;
+    }
+
+    if (caption === "Title Page") return "صفحة العنوان";
+    if (caption === "Opening Scene") return "المشهد الافتتاحي";
+    if (caption === "Last Illustration") return "الرسم الأخير";
+
+    const mainMatch = caption.match(/^Book (\d+) Main Illustration$/);
+    if (mainMatch) {
+      return `الرسم الرئيسي للكتاب ${arabicBookOrdinals[mainMatch[1]] || mainMatch[1]}`;
+    }
+
+    const illustrationMatch = caption.match(/^Book (\d+) Illustration (\d+)$/);
+    if (illustrationMatch) {
+      return `رسم الكتاب ${arabicBookOrdinals[illustrationMatch[1]] || illustrationMatch[1]} رقم ${illustrationMatch[2]}`;
+    }
+
+    return caption;
+  };
   const currentSpreadSize = () => (isMobileView() ? 1 : 2);
   const openBookElement = bookReader.querySelector(".open-book");
   let fitFrame = 0;
@@ -202,10 +243,12 @@
       return '<div class="book-blank-page" aria-hidden="true"></div>';
     }
 
+    const caption = localizedCaption(page.caption);
+
     return `
       <figure class="book-illustration book-illustration-${side}">
-        <img src="${encodeURI(page.src)}" alt="${escapeHtml(page.caption)} illustration from The Caldera Throne." loading="eager" decoding="async">
-        <figcaption>${escapeHtml(page.caption)}</figcaption>
+        <img src="${encodeURI(page.src)}" alt="${escapeHtml(caption)} illustration from The Caldera Throne." loading="eager" decoding="async">
+        <figcaption>${escapeHtml(caption)}</figcaption>
       </figure>
     `;
   };
@@ -216,7 +259,7 @@
         <span class="book-select-image">
           <img src="${encodeURI(book.entryImage)}" alt="${escapeHtml(titleLine(book))} entry image" loading="eager" decoding="async">
         </span>
-        <span class="book-select-kicker">${escapeHtml(book.kicker)}</span>
+        <span class="book-select-kicker">${escapeHtml(localizedBookKicker(book))}</span>
         <strong>${protectedTitleMarkup(book.title)}</strong>
       </button>
     `).join("");
@@ -228,7 +271,7 @@
 
     pageIndex = normalizePageIndex(pageIndex, total);
 
-    els.displayTitle.innerHTML = `${escapeHtml(book.kicker)} &mdash; ${protectedTitleMarkup(book.title)}`;
+    els.displayTitle.innerHTML = `${escapeHtml(localizedBookKicker(book))} &mdash; ${protectedTitleMarkup(book.title)}`;
 
     const left = book.pages[pageIndex];
     const right = isMobileView() ? null : (book.pages[pageIndex + 1] || null);
@@ -240,11 +283,15 @@
     const leftNumber = pageIndex + 1;
     const rightNumber = right ? pageIndex + 2 : null;
 
-    els.progress.textContent = rightNumber ? `${leftNumber}\u2013${rightNumber} of ${total}` : `${leftNumber} of ${total}`;
+    els.progress.textContent = localizedProgress(leftNumber, rightNumber, total);
     if (els.status) {
       els.status.textContent = rightNumber
-        ? `${titleLine(book)}, images ${leftNumber} to ${rightNumber} of ${total}`
-        : `${titleLine(book)}, image ${leftNumber} of ${total}`;
+        ? (isArabicView()
+          ? `${titleLine(book)}، الصور ${leftNumber} إلى ${rightNumber} من ${total}`
+          : `${titleLine(book)}, images ${leftNumber} to ${rightNumber} of ${total}`)
+        : (isArabicView()
+          ? `${titleLine(book)}، الصورة ${leftNumber} من ${total}`
+          : `${titleLine(book)}, image ${leftNumber} of ${total}`);
     }
 
     const atStart = pageIndex === 0;
